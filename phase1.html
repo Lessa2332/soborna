@@ -8,10 +8,59 @@
   <!-- Шрифти -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
-  <!-- Головні стилі -->
-  <link rel="stylesheet" href="css/pysanka-theme.css">
-  
   <style>
+    :root {
+      --bordo: #6a1e2a;
+      --bordo-light: #8b2f3c;
+      --gold: #c9a03d;
+      --gold-light: #e5b73b;
+      --cream: #f5eee6;
+      --brown: #4a2c1a;
+      --beige: #e8d9c0;
+      --dark: #1a1a1a;
+      --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
+      --font-body: 'Open Sans', 'Helvetica', sans-serif;
+      --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background-color: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+      background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23c9a03d" stroke-width="0.5" opacity="0.1"/></svg>');
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      font-family: var(--font-heading);
+      color: var(--bordo);
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+    
+    .ornament {
+      background-image: url('data:image/svg+xml;utf8,<svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg"><path d="M10 15 L30 5 L50 15 L70 5 L90 15 L110 5" stroke="%23c9a03d" fill="none" stroke-width="1.5"/><circle cx="20" cy="15" r="2" fill="%236a1e2a"/><circle cx="50" cy="15" r="2" fill="%236a1e2a"/><circle cx="80" cy="15" r="2" fill="%236a1e2a"/><circle cx="110" cy="15" r="2" fill="%236a1e2a"/></svg>');
+      height: 30px;
+      width: 100%;
+      background-repeat: repeat-x;
+      margin: 20px 0;
+      opacity: 0.5;
+    }
+    
     .magic-mirror {
       position: relative;
       width: 280px;
@@ -123,23 +172,65 @@
       transition: width 4s linear;
     }
     
-    .region-ornament {
-      width: 100px;
-      height: 100px;
-      background-size: cover;
-      margin: 20px auto;
-      opacity: 0;
-      transition: opacity 1s;
+    .btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: transparent;
+      border: 2px solid var(--bordo);
+      color: var(--bordo);
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--bordo);
+      transition: var(--transition);
+      z-index: -1;
+    }
+    
+    .btn:hover {
+      color: var(--cream);
+    }
+    
+    .btn:hover:before {
+      left: 0;
+    }
+    
+    .btn-gold {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    
+    .btn-gold:before {
+      background: var(--gold);
+    }
+    
+    .btn-gold:hover {
+      color: var(--bordo);
     }
   </style>
 </head>
 <body>
-  <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div class="container">
     
     <!-- Декоративна голівка -->
     <div class="ornament"></div>
     
-    <h1 style="text-align: center;">Поклик предків</h1>
+    <h1>Поклик предків</h1>
     <p style="text-align: center; color: var(--bordo); margin-bottom: 40px;">Доторкнись до чарівної писанки, щоб дізнатись свій край</p>
     
     <!-- Головний елемент - чарівне дзеркало -->
@@ -164,8 +255,6 @@
         <div class="progress-bar" id="progressBar">
           <div class="progress-fill" id="progressFill"></div>
         </div>
-        
-        <div id="regionOrnament" class="region-ornament"></div>
       </div>
     </div>
     
@@ -180,21 +269,112 @@
     
     <!-- Приховане поле для збереження регіону -->
     <input type="hidden" id="selectedRegion" value="">
+    <input type="hidden" id="selectedRegionId" value="">
     
     <div class="ornament" style="margin-top: 50px;"></div>
   </div>
   
   <script>
-    // Дані про регіони
+    // ============ 14 РЕГІОНІВ З ЧИСЛОВИМИ ID ============
     const REGIONS = [
-      { id: 'podillia', name: 'Поділля', ornament: '🌻', symbol: '🌸' },
-      { id: 'polissia', name: 'Полісся', ornament: '🌲', symbol: '🌿' },
-      { id: 'carpathians', name: 'Карпати', ornament: '🏔️', symbol: '🌲' },
-      { id: 'slobozhanshchina', name: 'Слобожанщина', ornament: '🌾', symbol: '🌽' },
-      { id: 'poltava', name: 'Полтавщина', ornament: '🌻', symbol: '🌻' },
-      { id: 'kyiv', name: 'Київщина', ornament: '🏛️', symbol: '⚜️' },
-      { id: 'odesa', name: 'Одещина', ornament: '🌊', symbol: '⚓' },
-      { id: 'lviv', name: 'Львівщина', symbol: '🦁' }
+      { 
+        id: 1, 
+        name: 'Поділля', 
+        ornament: '🌻', 
+        symbol: '🌸',
+        texture: 'assets/regions/1-podillya.png'
+      },
+      { 
+        id: 2, 
+        name: 'Полісся', 
+        ornament: '🌲', 
+        symbol: '🌿',
+        texture: 'assets/regions/2-polissya.png'
+      },
+      { 
+        id: 3, 
+        name: 'Карпати', 
+        ornament: '🏔️', 
+        symbol: '🌲',
+        texture: 'assets/regions/3-carpathians.png'
+      },
+      { 
+        id: 4, 
+        name: 'Київщина', 
+        ornament: '🏛️', 
+        symbol: '⚜️',
+        texture: 'assets/regions/4-kyiv.png'
+      },
+      { 
+        id: 5, 
+        name: 'Львівщина', 
+        ornament: '🦁', 
+        symbol: '🦁',
+        texture: 'assets/regions/5-lviv.png'
+      },
+      { 
+        id: 6, 
+        name: 'Одещина', 
+        ornament: '🌊', 
+        symbol: '⚓',
+        texture: 'assets/regions/6-odesa.png'
+      },
+      { 
+        id: 7, 
+        name: 'Харківщина', 
+        ornament: '⚙️', 
+        symbol: '⚙️',
+        texture: 'assets/regions/7-kharkiv.png'
+      },
+      { 
+        id: 8, 
+        name: 'Дніпропетровщина', 
+        ornament: '🌊', 
+        symbol: '🌊',
+        texture: 'assets/regions/8-dnipro.png'
+      },
+      { 
+        id: 9, 
+        name: 'Полтавщина', 
+        ornament: '🌻', 
+        symbol: '🌻',
+        texture: 'assets/regions/9-poltava.png'
+      },
+      { 
+        id: 10, 
+        name: 'Чернігівщина', 
+        ornament: '📚', 
+        symbol: '📚',
+        texture: 'assets/regions/10-chernihiv.png'
+      },
+      { 
+        id: 11, 
+        name: 'Черкащина', 
+        ornament: '🎭', 
+        symbol: '🎭',
+        texture: 'assets/regions/11-cherkasy.png'
+      },
+      { 
+        id: 12, 
+        name: 'Крим', 
+        ornament: '🏖️', 
+        symbol: '🏖️',
+        texture: 'assets/regions/12-crimea.png'
+      },
+      { 
+        id: 13, 
+        name: 'Донеччина', 
+        ornament: '⛏️', 
+        symbol: '⛏️',
+        texture: 'assets/regions/13-donetsk.png'
+      },
+      { 
+        id: 14, 
+        name: 'Луганщина', 
+        ornament: '🌻', 
+        symbol: '🌻',
+        texture: 'assets/regions/14-luhansk.png'
+      }
     ];
     
     let currentRegion = null;
@@ -251,7 +431,8 @@
         // Оновлюємо UI
         document.getElementById('regionDisplay').innerHTML = currentRegion.name;
         document.getElementById('symbol').innerHTML = currentRegion.symbol || '🥚';
-        document.getElementById('selectedRegion').value = currentRegion.id;
+        document.getElementById('selectedRegion').value = currentRegion.name;
+        document.getElementById('selectedRegionId').value = currentRegion.id;
         
         initialMsg.innerHTML = `Твій край — <strong style="color: var(--gold);">${currentRegion.name}</strong>`;
         
@@ -263,17 +444,28 @@
           <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px;">
             <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання, дитино ${currentRegion.name}!</p>
             <p>Твій рід походить з цього благословенного краю.</p>
-            <p style="font-size: 36px; margin: 15px 0;">${currentRegion.ornament || '🥚'}</p>
+            <p style="font-size: 48px; margin: 15px 0;">${currentRegion.ornament || '🥚'}</p>
             <p>Запам'ятай цей образ — він знадобиться тобі на наступному етапі.</p>
           </div>
         `;
         
         // Зберігаємо в localStorage для наступних етапів
-        localStorage.setItem('pysanka_region', JSON.stringify(currentRegion));
+        localStorage.setItem('pysanka_region', JSON.stringify({
+          id: currentRegion.id,
+          name: currentRegion.name,
+          symbol: currentRegion.symbol,
+          ornament: currentRegion.ornament,
+          texture: currentRegion.texture
+        }));
         
         // Показуємо кнопки
         document.getElementById('resetBtn').style.display = 'inline-block';
         document.getElementById('continueBtn').style.display = 'inline-block';
+        
+        // Вібрація для мобільних
+        if (navigator.vibrate) {
+          navigator.vibrate(200);
+        }
         
         symbol.style.animation = 'none';
         magicMirror.style.pointerEvents = 'auto';
@@ -289,6 +481,8 @@
       document.getElementById('result').innerHTML = '';
       document.getElementById('resetBtn').style.display = 'none';
       document.getElementById('continueBtn').style.display = 'none';
+      document.getElementById('selectedRegion').value = '';
+      document.getElementById('selectedRegionId').value = '';
       document.getElementById('magicMirror').style.pointerEvents = 'auto';
       
       // Скидаємо руни
@@ -300,13 +494,35 @@
       localStorage.removeItem('pysanka_region');
     }
     
-    // Адаптація для мобільних
+    // Перевіряємо, чи є вже збережений регіон
     window.addEventListener('load', function() {
-      if ('vibrate' in navigator) {
-        // Додаємо вібрацію при завершенні (опціонально)
+      const savedRegion = localStorage.getItem('pysanka_region');
+      if (savedRegion) {
+        try {
+          const region = JSON.parse(savedRegion);
+          if (region && region.id) {
+            // Відновлюємо стан
+            document.getElementById('regionDisplay').innerHTML = region.name;
+            document.getElementById('symbol').innerHTML = region.symbol || '🥚';
+            document.getElementById('selectedRegion').value = region.name;
+            document.getElementById('selectedRegionId').value = region.id;
+            
+            document.getElementById('result').innerHTML = `
+              <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px;">
+                <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання, дитино ${region.name}!</p>
+                <p>Твій край вже обрано</p>
+                <p style="font-size: 48px; margin: 15px 0;">${region.ornament || '🥚'}</p>
+              </div>
+            `;
+            
+            document.getElementById('resetBtn').style.display = 'inline-block';
+            document.getElementById('continueBtn').style.display = 'inline-block';
+          }
+        } catch (e) {
+          console.log('Немає збереженого регіону');
+        }
       }
     });
   </script>
 </body>
 </html>
-
