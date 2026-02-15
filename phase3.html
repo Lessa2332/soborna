@@ -1,301 +1,760 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="AR-сцена з писанкою для дітей">
-    <title>🥚«Писанка» 🎨</title>
-
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Етап 3: Передай енергію | 14 регіонів України</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bordo: #6a1e2a;
+      --bordo-light: #8b2f3c;
+      --gold: #c9a03d;
+      --gold-light: #e5b73b;
+      --cream: #f5eee6;
+      --brown: #4a2c1a;
+      --beige: #e8d9c0;
+      --dark: #1a1a1a;
+      --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
+      --font-body: 'Open Sans', 'Helvetica', sans-serif;
+    }
     
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: transparent;
-        }
-        
-        a-scene {
-            width: 100% !important;
-            height: 100% !important;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: transparent;
-        }
-
-        .arjs-loader {
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: rgba(135, 206, 235, 0.2);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #FF4500;
-            font-size: 1.8em;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .pulse { animation: pulse 1.5s infinite; }
-
-        .controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10000;
-            display: flex;
-            gap: 10px;
-        }
-
-        .sound-btn, .youtube-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif;
-            font-size: 1em;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-decoration: none;
-        }
-
-        .sound-btn { background-color: #4CAF50; color: white; }
-        .sound-btn.off { background-color: #f44336; }
-        .youtube-btn { background-color: #FF9800; color: white; }
-        .youtube-btn:hover { background-color: #FFB300; }
-    </style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background-color: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+      background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23c9a03d" stroke-width="0.5" opacity="0.1"/></svg>');
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1, h2, h3 {
+      font-family: var(--font-heading);
+      color: var(--bordo);
+    }
+    
+    .ornament {
+      background-image: url('data:image/svg+xml;utf8,<svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg"><path d="M10 15 L30 5 L50 15 L70 5 L90 15 L110 5" stroke="%23c9a03d" fill="none" stroke-width="1.5"/><circle cx="20" cy="15" r="2" fill="%236a1e2a"/><circle cx="50" cy="15" r="2" fill="%236a1e2a"/><circle cx="80" cy="15" r="2" fill="%236a1e2a"/><circle cx="110" cy="15" r="2" fill="%236a1e2a"/></svg>');
+      height: 30px;
+      width: 100%;
+      background-repeat: repeat-x;
+      margin: 20px 0;
+      opacity: 0.5;
+    }
+    
+    .scroll-container {
+      position: relative;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 40px 30px;
+      background: var(--beige);
+      border: 1px solid var(--gold);
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(106, 30, 42, 0.2);
+      background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20 20 L80 20 L80 80 L20 80 Z" fill="none" stroke="%23c9a03d" stroke-width="0.5" opacity="0.2"/></svg>');
+    }
+    
+    .scroll-container:before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 10%;
+      width: 80%;
+      height: 10px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      border-radius: 50%;
+    }
+    
+    .scroll-container:after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 10%;
+      width: 80%;
+      height: 10px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      border-radius: 50%;
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+    }
+    
+    .form-label {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 18px;
+      color: var(--bordo);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--gold);
+      background: rgba(255, 255, 255, 0.8);
+      font-family: var(--font-body);
+      font-size: 16px;
+      border-radius: 4px;
+    }
+    
+    .input-field:focus {
+      outline: none;
+      border-color: var(--bordo);
+      box-shadow: 0 0 0 3px rgba(106, 30, 42, 0.1);
+    }
+    
+    .city-suggestions {
+      background: white;
+      border: 1px solid var(--gold);
+      border-top: none;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      border-radius: 0 0 8px 8px;
+      position: absolute;
+      width: calc(100% - 60px);
+      z-index: 100;
+    }
+    
+    .city-suggestion-item {
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .city-suggestion-item:hover {
+      background: var(--gold-light);
+      color: var(--bordo);
+    }
+    
+    .energy-transfer {
+      margin: 40px 0;
+      text-align: center;
+    }
+    
+    .pysanka-energy {
+      width: 100px;
+      height: 140px;
+      margin: 20px auto;
+      position: relative;
+    }
+    
+    .energy-core {
+      width: 60px;
+      height: 80px;
+      background: radial-gradient(circle at 30% 30%, var(--gold), var(--bordo));
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      margin: 0 auto;
+      animation: energyPulse 2s infinite;
+    }
+    
+    @keyframes energyPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 30px var(--gold); }
+      50% { transform: scale(1.1); box-shadow: 0 0 60px var(--gold); }
+    }
+    
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: particleFloat 3s infinite;
+    }
+    
+    @keyframes particleFloat {
+      0% { transform: translate(0, 0); opacity: 1; }
+      100% { transform: translate(var(--tx, 50px), var(--ty, -50px)); opacity: 0; }
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: transparent;
+      border: 2px solid var(--bordo);
+      color: var(--bordo);
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--bordo);
+      transition: all 0.3s ease;
+      z-index: -1;
+    }
+    
+    .btn:hover {
+      color: var(--cream);
+    }
+    
+    .btn:hover:before {
+      left: 0;
+    }
+    
+    .btn-gold {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    
+    .btn-gold:before {
+      background: var(--gold);
+    }
+    
+    .btn-gold:hover {
+      color: var(--bordo);
+    }
+    
+    .status-message {
+      text-align: center;
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+    
+    .status-success {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid #4CAF50;
+      color: #2E7D32;
+    }
+    
+    .status-error {
+      background: rgba(244, 67, 54, 0.2);
+      border: 1px solid #F44336;
+      color: #C62828;
+    }
+    
+    .status-loading {
+      background: rgba(255, 193, 7, 0.2);
+      border: 1px solid #FFC107;
+      color: #FF8F00;
+    }
+    
+    .map-preview {
+      width: 100%;
+      height: 200px;
+      background: #e8d9c0;
+      border-radius: 8px;
+      margin: 30px 0;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid var(--gold);
+      background-image: url('data:image/svg+xml;utf8,<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M100 20 L180 100 L100 180 L20 100 Z" fill="none" stroke="%23c9a03d" stroke-width="1" opacity="0.3"/></svg>');
+    }
+    
+    .map-dot {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--bordo);
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: dotPulse 1.5s infinite;
+    }
+    
+    .map-dot:after {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      right: -15px;
+      bottom: -15px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      animation: ripple 2s infinite;
+    }
+    
+    @keyframes ripple {
+      0% { transform: scale(0.5); opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+    
+    @keyframes dotPulse {
+      0%, 100% { box-shadow: 0 0 10px var(--gold); }
+      50% { box-shadow: 0 0 20px var(--gold); }
+    }
+    
+    .region-badge {
+      background: var(--bordo);
+      color: var(--gold);
+      padding: 10px 20px;
+      border-radius: 40px;
+      display: inline-block;
+      font-weight: bold;
+      margin: 10px 0;
+      font-size: 20px;
+    }
+    
+    .regions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 20px 0;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 5px;
+    }
+    
+    .region-badge-small {
+      padding: 8px 5px;
+      background: var(--bordo);
+      color: var(--gold);
+      border-radius: 20px;
+      font-size: 12px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: 1px solid var(--gold);
+      opacity: 0.6;
+    }
+    
+    .region-badge-small.active {
+      opacity: 1;
+      background: var(--gold);
+      color: var(--bordo);
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <div class="arjs-loader" id="loader">
-        <div class="pulse">🥚 Писанка на долоні 🎨</div>
-        <div style="margin-top: 20px; font-size: 1.2em;">Наведи камеру на маркер! 😊🎨</div>
+  <div class="container">
+    
+    <div class="ornament"></div>
+    
+    <h1 style="text-align: center;">Передай енергію</h1>
+    <p style="text-align: center; color: var(--bordo); margin-bottom: 40px;">14 регіонів України чекають на твій внесок</p>
+    
+    <div class="scroll-container">
+      <!-- Інформація про регіон -->
+      <div id="regionInfo" style="text-align: center; margin-bottom: 30px;"></div>
+      
+      <!-- Сітка всіх регіонів для контексту -->
+      <div class="regions-grid" id="regionsGrid"></div>
+      
+      <!-- Форма -->
+      <form id="energyForm" onsubmit="event.preventDefault(); sendEnergy();">
+        <div class="form-group">
+          <label class="form-label">Твоє ім'я</label>
+          <input type="text" id="userName" class="input-field" placeholder="Як тебе звати?" required>
+        </div>
+        
+        <div class="form-group" style="position: relative;">
+          <label class="form-label">Місто (де ти зараз / звідки ти родом)</label>
+          <input type="text" id="userCity" class="input-field" placeholder="Наприклад: Львів" required autocomplete="off">
+          <div id="citySuggestions" class="city-suggestions"></div>
+        </div>
+        
+        <!-- Енергетична анімація -->
+        <div class="energy-transfer">
+          <div class="pysanka-energy">
+            <div class="energy-core" id="energyCore"></div>
+          </div>
+          <p style="color: var(--bordo);">Твоя енергія готова до передачі</p>
+        </div>
+        
+        <!-- Приховані поля -->
+        <input type="hidden" id="regionId">
+        <input type="hidden" id="regionName">
+        
+        <!-- Кнопка -->
+        <button type="submit" class="btn btn-gold" style="width: 100%;" id="submitBtn">
+          🥚 ВІДПРАВИТИ КОД
+        </button>
+      </form>
+      
+      <!-- Статус повідомлення -->
+      <div id="statusMessage" class="status-message"></div>
+      
+      <!-- Попередній перегляд на карті -->
+      <div id="mapPreview" class="map-preview" style="display: none;">
+        <div id="userDot" class="map-dot" style="display: none;"></div>
+      </div>
     </div>
-
-    <a-scene
-        mindar-image="imageTargetSrc: ./my-marker.mind;"
-        vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false"
-        loading-screen="enabled: false"
-        embedded
-        renderer="colorManagement: true; physicallyCorrectLights: true;"
-        touch-gestures
-    >
-        <a-assets>
-            <audio id="bg-music" src="./bg-music.mp3" preload="auto" loop></audio>
-            <img id="pisanka-texture-1" src="./pisanka-1.jpg">
-            <img id="pisanka-texture-2" src="./pisanka-2.jpg">
-            <img id="pisanka-texture-3" src="./pisanka-3.jpg">
-            <img id="pisanka-texture-4" src="./pisanka-4.jpg">
-        </a-assets>
-
-        <a-camera
-            id="camera"
-            position="0 0 1.5"
-            look-controls="enabled: false"
-        ></a-camera>
-
-        <a-entity mindar-image-target="targetIndex: 0">
-            <a-sphere
-                id="pisanka"
-                position="0 0 -0.5"
-                radius="0.4"
-                scale="0.6 1 0.6"
-                src="#pisanka-texture-1"
-                visible="false"
-                material="opacity: 1; transparent: false"
-            >
-                <a-animation
-                    attribute="rotation"
-                    to="0 360 0"
-                    dur="5000"
-                    repeat="indefinite"
-                ></a-animation>
-            </a-sphere>
-        </a-entity>
-    </a-scene>
-
-    <div class="controls">
-        <button id="sound-btn" class="sound-btn">Увімкнути звук</button>
-        <button id="next-btn" class="sound-btn">Далі ➡️</button>
-        <a href="https://www.youtube.com/playlist?list=PL6UDFwT9TzFw5K8Tzu_OgsDz7vV3N9eY-" target="_blank" class="youtube-btn">YouTube SmartLessa</a>
+    
+    <div style="display: flex; justify-content: center; margin: 30px 0;">
+      <a href="dashboard.html" class="btn" id="viewMapBtn" style="display: none;">Побачити спільну карту</a>
     </div>
-
-    <script>
-        // Адаптивність для повного екрану
-        function fixHeight() {
-            document.body.style.height = window.innerHeight + 'px';
-        }
-        fixHeight();
-        window.addEventListener('resize', fixHeight);
-
-        // Посилання на елементи
-        const loader = document.querySelector('#loader');
-        const targetEntity = document.querySelector('[mindar-image-target]');
-        const pisanka = document.querySelector('#pisanka');
-        const bgMusic = document.querySelector('#bg-music');
-        const soundBtn = document.querySelector('#sound-btn');
-        const nextBtn = document.querySelector('#next-btn');
-
-        // Масив з ідентифікаторами текстур
-        const pisankaTextures = ['#pisanka-texture-1', '#pisanka-texture-2', '#pisanka-texture-3', '#pisanka-texture-4'];
-        let currentTextureIndex = 0;
-
-        // Перевірка завантаження текстур
-        pisankaTextures.forEach(id => {
-            const textureEl = document.querySelector(id);
-            if (textureEl) {
-                textureEl.addEventListener('load', () => {
-                    console.log(`Текстура ${id} успішно завантажена`);
-                });
-                textureEl.addEventListener('error', () => {
-                    console.error(`Помилка завантаження текстури ${id}`);
-                });
-            }
-        });
-
-        // Компонент для обробки сенсорних жестів (реєструється перед його використанням в HTML)
-        AFRAME.registerComponent('touch-gestures', {
-            schema: {
-                minScale: { type: 'number', default: 0.2 },
-                maxScale: { type: 'number', default: 3.0 },
-                rotationSpeed: { type: 'number', default: 2.0 }
-            },
-            init: function () {
-                this.isRotating = false;
-                this.isPinching = false;
-                this.startPos = { x: 0, y: 0 };
-                this.currentScale = 1;
-                this.pisanka = document.querySelector('#pisanka');
-
-                if (!this.pisanka) {
-                    console.error('Писанка не знайдена в компоненті touch-gestures');
-                    return;
-                }
-
-                this.el.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    if (e.touches.length === 1) {
-                        this.isRotating = true;
-                        this.startPos.x = e.touches[0].pageX;
-                        this.startPos.y = e.touches[0].pageY;
-                    } else if (e.touches.length === 2) {
-                        this.isPinching = true;
-                        this.isRotating = false;
-                        this.initialDistance = Math.hypot(
-                            e.touches[0].pageX - e.touches[1].pageX,
-                            e.touches[0].pageY - e.touches[1].pageY
-                        );
-                        this.currentScale = this.pisanka.object3D.scale.x;
-                    }
-                });
-
-                this.el.addEventListener('touchmove', (e) => {
-                    e.preventDefault();
-                    if (this.isPinching && e.touches.length === 2) {
-                        const currentDistance = Math.hypot(
-                            e.touches[0].pageX - e.touches[1].pageX,
-                            e.touches[0].pageY - e.touches[1].pageY
-                        );
-                        const scaleFactor = currentDistance / this.initialDistance;
-                        const newScale = Math.max(this.data.minScale, Math.min(this.data.maxScale, this.currentScale * scaleFactor));
-                        const eggScaleX = newScale * 0.6;
-                        const eggScaleY = newScale * 1;
-                        const eggScaleZ = newScale * 0.6;
-                        this.pisanka.object3D.scale.set(eggScaleX, eggScaleY, eggScaleZ);
-                    } else if (this.isRotating && e.touches.length === 1) {
-                        const deltaX = (e.touches[0].pageX - this.startPos.x) * this.data.rotationSpeed;
-                        const deltaY = (e.touches[0].pageY - this.startPos.y) * this.data.rotationSpeed;
-                        this.pisanka.object3D.rotation.y += THREE.MathUtils.degToRad(deltaX);
-                        this.pisanka.object3D.rotation.x += THREE.MathUtils.degToRad(deltaY);
-                        this.startPos.x = e.touches[0].pageX;
-                        this.startPos.y = e.touches[0].pageY;
-                    }
-                });
-
-                this.el.addEventListener('touchend', () => {
-                    this.isRotating = false;
-                    this.isPinching = false;
-                });
-            }
-        });
-
-        // Логіка відстеження маркера
-        if (targetEntity) {
-            targetEntity.addEventListener('targetFound', () => {
-                console.log("🎯 Маркер знайдено! Писанка з'явилася.");
-                loader.style.display = 'none';
-                if (pisanka) {
-                    pisanka.setAttribute('visible', 'true');
-                    console.log("Писанка видима:", pisanka.getAttribute('visible'));
-                    pisanka.components.animation.pause();
-                }
-                if (bgMusic && bgMusic.paused) {
-                    bgMusic.play().catch(e => console.log("🔇 Помилка відтворення музики:", e));
-                    soundBtn.classList.remove('off');
-                    soundBtn.textContent = 'Вимкнути звук';
-                }
-            });
-
-            targetEntity.addEventListener('targetLost', () => {
-                console.log("ℹ️ Маркер втрачено.");
-                if (pisanka) {
-                    pisanka.setAttribute('visible', 'false');
-                    console.log("Писанка невидима:", pisanka.getAttribute('visible'));
-                    pisanka.components.animation.play();
-                }
-                if (bgMusic && !bgMusic.paused) bgMusic.pause();
-                loader.style.display = 'flex';
-                loader.querySelector('.pulse').textContent = '🥚 Писанка на долоні 🎨';
-                loader.querySelector('div[style]').textContent = 'Наведи камеру на маркер! 😊🎨';
-            });
+    
+    <div class="ornament"></div>
+  </div>
+  
+  <script>
+    // ============ 14 РЕГІОНІВ УКРАЇНИ ============
+    const REGIONS = [
+      { id: 1, name: 'Поділля', symbol: '🌻', color: '#8B4513' },
+      { id: 2, name: 'Полісся', symbol: '🌲', color: '#228B22' },
+      { id: 3, name: 'Карпати', symbol: '🏔️', color: '#4A7023' },
+      { id: 4, name: 'Київщина', symbol: '🏛️', color: '#C41E3A' },
+      { id: 5, name: 'Львівщина', symbol: '🦁', color: '#FFD700' },
+      { id: 6, name: 'Одещина', symbol: '⚓', color: '#1E90FF' },
+      { id: 7, name: 'Харківщина', symbol: '⚙️', color: '#B22222' },
+      { id: 8, name: 'Дніпропетровщина', symbol: '🌊', color: '#4682B4' },
+      { id: 9, name: 'Полтавщина', symbol: '🌾', color: '#DAA520' },
+      { id: 10, name: 'Чернігівщина', symbol: '📚', color: '#2E8B57' },
+      { id: 11, name: 'Черкащина', symbol: '🎭', color: '#CD5C5C' },
+      { id: 12, name: 'Крим', symbol: '🏖️', color: '#F4A460' },
+      { id: 13, name: 'Донеччина', symbol: '⛏️', color: '#696969' },
+      { id: 14, name: 'Луганщина', symbol: '🌻', color: '#9ACD32' }
+    ];
+    
+    // ============ КООРДИНАТИ МІСТ ДЛЯ 14 РЕГІОНІВ ============
+    const CITY_COORDS = {
+      // Поділля (1)
+      'вінниця': { x: 40, y: 50, regionId: 1, region: 'Поділля' },
+      'хмельницький': { x: 35, y: 50, regionId: 1, region: 'Поділля' },
+      'тернопіль': { x: 30, y: 45, regionId: 1, region: 'Поділля' },
+      'кам\'янець-подільський': { x: 33, y: 55, regionId: 1, region: 'Поділля' },
+      
+      // Полісся (2)
+      'житомир': { x: 40, y: 35, regionId: 2, region: 'Полісся' },
+      'чернігів': { x: 50, y: 25, regionId: 2, region: 'Полісся' },
+      'рівне': { x: 30, y: 35, regionId: 2, region: 'Полісся' },
+      'луцьк': { x: 25, y: 30, regionId: 2, region: 'Волинь' },
+      
+      // Карпати (3)
+      'івано-франківськ': { x: 25, y: 55, regionId: 3, region: 'Карпати' },
+      'ужгород': { x: 15, y: 55, regionId: 3, region: 'Закарпаття' },
+      'чернівці': { x: 30, y: 60, regionId: 3, region: 'Буковина' },
+      'коломия': { x: 24, y: 57, regionId: 3, region: 'Карпати' },
+      'рахов': { x: 20, y: 58, regionId: 3, region: 'Карпати' },
+      
+      // Київщина (4)
+      'київ': { x: 50, y: 45, regionId: 4, region: 'Київщина' },
+      'біла церква': { x: 48, y: 48, regionId: 4, region: 'Київщина' },
+      'фастів': { x: 47, y: 44, regionId: 4, region: 'Київщина' },
+      
+      // Львівщина (5)
+      'львів': { x: 20, y: 40, regionId: 5, region: 'Львівщина' },
+      'дрогобич': { x: 18, y: 43, regionId: 5, region: 'Львівщина' },
+      'струсів': { x: 19, y: 42, regionId: 5, region: 'Львівщина' },
+      
+      // Одещина (6)
+      'одеса': { x: 45, y: 70, regionId: 6, region: 'Одещина' },
+      'ізмаїл': { x: 40, y: 80, regionId: 6, region: 'Одещина' },
+      'чорноморськ': { x: 46, y: 68, regionId: 6, region: 'Одещина' },
+      
+      // Харківщина (7)
+      'харків': { x: 75, y: 35, regionId: 7, region: 'Харківщина' },
+      'ізюм': { x: 78, y: 40, regionId: 7, region: 'Харківщина' },
+      'чугуїв': { x: 76, y: 36, regionId: 7, region: 'Харківщина' },
+      
+      // Дніпропетровщина (8)
+      'дніпро': { x: 65, y: 55, regionId: 8, region: 'Дніпропетровщина' },
+      'кривий ріг': { x: 60, y: 60, regionId: 8, region: 'Дніпропетровщина' },
+      'кам\'янське': { x: 64, y: 54, regionId: 8, region: 'Дніпропетровщина' },
+      
+      // Полтавщина (9)
+      'полтава': { x: 60, y: 45, regionId: 9, region: 'Полтавщина' },
+      'кременчук': { x: 58, y: 50, regionId: 9, region: 'Полтавщина' },
+      'лубни': { x: 59, y: 43, regionId: 9, region: 'Полтавщина' },
+      
+      // Чернігівщина (10)
+      'чернігів': { x: 50, y: 25, regionId: 10, region: 'Чернігівщина' },
+      'ніжин': { x: 53, y: 28, regionId: 10, region: 'Чернігівщина' },
+      'прилуки': { x: 55, y: 30, regionId: 10, region: 'Чернігівщина' },
+      
+      // Черкащина (11)
+      'черкаси': { x: 55, y: 50, regionId: 11, region: 'Черкащина' },
+      'умань': { x: 52, y: 53, regionId: 11, region: 'Черкащина' },
+      'золотоноша': { x: 56, y: 48, regionId: 11, region: 'Черкащина' },
+      
+      // Крим (12)
+      'сімферополь': { x: 65, y: 85, regionId: 12, region: 'Крим' },
+      'севастополь': { x: 62, y: 87, regionId: 12, region: 'Крим' },
+      'ялта': { x: 66, y: 88, regionId: 12, region: 'Крим' },
+      'феодосія': { x: 70, y: 86, regionId: 12, region: 'Крим' },
+      'євпаторія': { x: 58, y: 86, regionId: 12, region: 'Крим' },
+      
+      // Донеччина (13)
+      'донецьк': { x: 80, y: 55, regionId: 13, region: 'Донеччина' },
+      'маріуполь': { x: 82, y: 65, regionId: 13, region: 'Донеччина' },
+      'краматорськ': { x: 79, y: 52, regionId: 13, region: 'Донеччина' },
+      'слов\'янськ': { x: 78, y: 53, regionId: 13, region: 'Донеччина' },
+      
+      // Луганщина (14)
+      'луганськ': { x: 85, y: 55, regionId: 14, region: 'Луганщина' },
+      'сіверськодонецьк': { x: 84, y: 52, regionId: 14, region: 'Луганщина' },
+      'лисичанськ': { x: 83, y: 53, regionId: 14, region: 'Луганщина' }
+    };
+    
+    // Список всіх міст для автодоповнення
+    const ALL_CITIES = Object.keys(CITY_COORDS).sort();
+    
+    let userRegion = null;
+    let selectedCity = null;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      // Відображаємо сітку всіх регіонів
+      displayRegionsGrid();
+      
+      // Отримуємо регіон з localStorage
+      try {
+        const savedRegion = localStorage.getItem('pysanka_region');
+        if (savedRegion) {
+          userRegion = JSON.parse(savedRegion);
+          
+          // Знаходимо повну інформацію про регіон
+          const regionInfo = REGIONS.find(r => r.id === userRegion.id) || REGIONS[0];
+          
+          document.getElementById('regionId').value = regionInfo.id;
+          document.getElementById('regionName').value = regionInfo.name;
+          
+          document.getElementById('regionInfo').innerHTML = `
+            <div style="background: var(--bordo); color: var(--gold); padding: 15px; border-radius: 8px;">
+              <span style="font-size: 40px;">${regionInfo.symbol || '🥚'}</span>
+              <h3 style="color: var(--gold); margin: 10px 0;">${regionInfo.name}</h3>
+              <p>Твій край чекає на твою енергію</p>
+            </div>
+          `;
+          
+          // Підсвічуємо активний регіон в сітці
+          highlightActiveRegion(regionInfo.id);
         } else {
-            console.error('Елемент mindar-image-target не знайдено!');
+          // Якщо немає регіону, вибираємо випадковий для демо
+          const randomIndex = Math.floor(Math.random() * REGIONS.length);
+          userRegion = REGIONS[randomIndex];
+          localStorage.setItem('pysanka_region', JSON.stringify(userRegion));
+          location.reload();
         }
-
-        // Обробка кнопки звуку
-        soundBtn.addEventListener('click', () => {
-            if (bgMusic.paused) {
-                bgMusic.play().catch(e => console.log("🔇 Помилка відтворення музики:", e));
-                soundBtn.classList.remove('off');
-                soundBtn.textContent = 'Вимкнути звук';
-            } else {
-                bgMusic.pause();
-                soundBtn.classList.add('off');
-                soundBtn.textContent = 'Увімкнути звук';
-            }
+      } catch (e) {
+        console.error('Помилка завантаження регіону:', e);
+      }
+      
+      // Налаштовуємо автодоповнення міст
+      setupCityAutocomplete();
+    });
+    
+    function displayRegionsGrid() {
+      const grid = document.getElementById('regionsGrid');
+      grid.innerHTML = REGIONS.map(region => `
+        <div class="region-badge-small" data-region-id="${region.id}">
+          ${region.symbol} ${region.name}
+        </div>
+      `).join('');
+    }
+    
+    function highlightActiveRegion(activeId) {
+      document.querySelectorAll('.region-badge-small').forEach(el => {
+        const id = parseInt(el.dataset.regionId);
+        if (id === activeId) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      });
+    }
+    
+    function setupCityAutocomplete() {
+      const cityInput = document.getElementById('userCity');
+      const suggestions = document.getElementById('citySuggestions');
+      
+      cityInput.addEventListener('input', function() {
+        const value = this.value.toLowerCase().trim();
+        if (value.length < 2) {
+          suggestions.style.display = 'none';
+          return;
+        }
+        
+        const matches = ALL_CITIES.filter(city => city.includes(value));
+        
+        if (matches.length > 0) {
+          suggestions.innerHTML = matches
+            .map(city => {
+              const cityInfo = CITY_COORDS[city];
+              return `<div class="city-suggestion-item" onclick="selectCity('${city}')">
+                ${city.charAt(0).toUpperCase() + city.slice(1)} 
+                <span style="color: var(--gold);">(${cityInfo.region})</span>
+              </div>`;
+            })
+            .join('');
+          suggestions.style.display = 'block';
+        } else {
+          suggestions.style.display = 'none';
+        }
+      });
+      
+      // Ховаємо підказки при кліку поза
+      document.addEventListener('click', function(e) {
+        if (!cityInput.contains(e.target) && !suggestions.contains(e.target)) {
+          suggestions.style.display = 'none';
+        }
+      });
+    }
+    
+    window.selectCity = function(city) {
+      document.getElementById('userCity').value = city.charAt(0).toUpperCase() + city.slice(1);
+      document.getElementById('citySuggestions').style.display = 'none';
+      
+      // Показуємо точку на карті
+      showCityOnMap(city);
+    };
+    
+    function showCityOnMap(city) {
+      const cityData = CITY_COORDS[city.toLowerCase()];
+      if (!cityData) return;
+      
+      const mapPreview = document.getElementById('mapPreview');
+      const userDot = document.getElementById('userDot');
+      
+      mapPreview.style.display = 'block';
+      userDot.style.display = 'block';
+      
+      // Встановлюємо позицію на умовній карті
+      userDot.style.left = cityData.x + '%';
+      userDot.style.top = cityData.y + '%';
+      
+      selectedCity = {
+        name: city,
+        coords: cityData
+      };
+      
+      // Перевіряємо, чи збігається регіон міста з регіоном користувача
+      if (userRegion && cityData.regionId !== userRegion.id) {
+        showStatus(`Увага! Місто ${city} знаходиться в іншому регіоні. Ти впевнений?`, 'loading');
+      }
+    }
+    
+    async function sendEnergy() {
+      const userName = document.getElementById('userName').value.trim();
+      const userCity = document.getElementById('userCity').value.trim();
+      const regionId = document.getElementById('regionId').value;
+      const regionName = document.getElementById('regionName').value;
+      
+      if (!userName || !userCity) {
+        showStatus('Будь ласка, заповни всі поля', 'error');
+        return;
+      }
+      
+      // Блокуємо кнопку
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Відправляється...';
+      
+      // Показуємо статус завантаження
+      showStatus('Енергія передається...', 'loading');
+      
+      // Анімація писанки
+      animateEnergyTransfer();
+      
+      try {
+        // Імітація відправки на сервер
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Отримуємо координати міста
+        const cityLower = userCity.toLowerCase();
+        const cityCoords = CITY_COORDS[cityLower] || { x: 50, y: 50, regionId: parseInt(regionId), region: regionName };
+        
+        // Зберігаємо в localStorage для карти
+        const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
+        participants.push({
+          id: Date.now(),
+          name: userName,
+          city: userCity,
+          region: regionName,
+          regionId: parseInt(regionId),
+          timestamp: new Date().toISOString(),
+          coords: cityCoords,
+          symbol: REGIONS.find(r => r.id === parseInt(regionId))?.symbol || '🥚'
         });
-
-        // Обробка кнопки "Далі"
-        nextBtn.addEventListener('click', () => {
-            currentTextureIndex = (currentTextureIndex + 1) % pisankaTextures.length;
-            pisanka.setAttribute('src', pisankaTextures[currentTextureIndex]);
-            console.log(`🖼️ Змінено текстуру на: ${pisankaTextures[currentTextureIndex]}`);
-        });
-    </script>
+        localStorage.setItem('pysanka_participants', JSON.stringify(participants));
+        
+        // Оновлюємо лічильник учасників в регіонах
+        updateRegionStats(parseInt(regionId));
+        
+        // Показуємо успіх
+        showStatus(`Дякуємо, ${userName}! Твоя енергія приєдналася до Соборної Писанки!`, 'success');
+        
+        // Показуємо кнопку переходу до карти
+        document.getElementById('viewMapBtn').style.display = 'inline-block';
+        
+        // Вібрація
+        if (navigator.vibrate) {
+          navigator.vibrate(200);
+        }
+        
+      } catch (error) {
+        console.error('Помилка:', error);
+        showStatus('Сталася помилка. Спробуй ще раз.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'ВІДПРАВИТИ КОД';
+      }
+    }
+    
+    function updateRegionStats(regionId) {
+      // Оновлюємо статистику регіонів в localStorage
+      const stats = JSON.parse(localStorage.getItem('pysanka_stats') || '{}');
+      stats[regionId] = (stats[regionId] || 0) + 1;
+      localStorage.setItem('pysanka_stats', JSON.stringify(stats));
+      
+      // Підсвічуємо регіон в сітці
+      highlightActiveRegion(regionId);
+    }
+    
+    function animateEnergyTransfer() {
+      const core = document.getElementById('energyCore');
+      
+      // Додаємо частинки
+      for (let i = 0; i < 8; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.setProperty('--tx', (Math.random() * 100 - 50) + 'px');
+        particle.style.setProperty('--ty', (Math.random() * -100 - 50) + 'px');
+        particle.style.animationDelay = i * 0.1 + 's';
+        core.parentElement.appendChild(particle);
+        
+        setTimeout(() => {
+          particle.remove();
+        }, 3000);
+      }
+    }
+    
+    function showStatus(message, type) {
+      const statusEl = document.getElementById('statusMessage');
+      statusEl.textContent = message;
+      statusEl.className = 'status-message status-' + type;
+      statusEl.style.display = 'block';
+      
+      // Автоматично ховаємо через 5 секунд
+      if (type === 'success') {
+        setTimeout(() => {
+          statusEl.style.display = 'none';
+        }, 5000);
+      }
+    }
+  </script>
 </body>
 </html>
-
-
-
-
-
-
