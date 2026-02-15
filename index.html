@@ -1,301 +1,186 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="AR-сцена з писанкою для дітей">
-    <title>🥚«Писанка» 🎨</title>
-
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Соборна Писанка | Музей Писанкарства</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/pysanka-theme.css">
+  
+  <style>
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(135deg, var(--bordo), var(--brown));
+      color: white;
+      margin-bottom: 40px;
+      border-radius: 0 0 50px 50px;
+    }
     
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: transparent;
-        }
-        
-        a-scene {
-            width: 100% !important;
-            height: 100% !important;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: transparent;
-        }
-
-        .arjs-loader {
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: rgba(135, 206, 235, 0.2);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #FF4500;
-            font-size: 1.8em;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-            font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .pulse { animation: pulse 1.5s infinite; }
-
-        .controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10000;
-            display: flex;
-            gap: 10px;
-        }
-
-        .sound-btn, .youtube-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif;
-            font-size: 1em;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-decoration: none;
-        }
-
-        .sound-btn { background-color: #4CAF50; color: white; }
-        .sound-btn.off { background-color: #f44336; }
-        .youtube-btn { background-color: #FF9800; color: white; }
-        .youtube-btn:hover { background-color: #FFB300; }
-    </style>
+    .hero h1 {
+      font-size: 48px;
+      color: var(--gold);
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+    }
+    
+    .egg-animation {
+      width: 150px;
+      height: 210px;
+      margin: 30px auto;
+      background: radial-gradient(circle at 30% 30%, var(--gold), var(--bordo));
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: float 3s ease-in-out infinite;
+      box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .steps {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .step-card {
+      background: white;
+      padding: 30px;
+      text-align: center;
+      border: 1px solid var(--gold);
+      border-radius: 16px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    
+    .step-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .step-number {
+      width: 50px;
+      height: 50px;
+      background: var(--bordo);
+      color: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0 auto 20px;
+    }
+    
+    .step-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .qr-section {
+      text-align: center;
+      padding: 40px;
+      background: var(--beige);
+      border-radius: 30px;
+      margin: 40px auto;
+      max-width: 500px;
+    }
+    
+    .qr-code {
+      width: 200px;
+      height: 200px;
+      background: var(--bordo);
+      margin: 20px auto;
+      padding: 10px;
+      border-radius: 20px;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 40px;
+      background: var(--bordo);
+      color: white;
+      margin-top: 60px;
+    }
+  </style>
 </head>
 <body>
-    <div class="arjs-loader" id="loader">
-        <div class="pulse">🥚 Писанка на долоні 🎨</div>
-        <div style="margin-top: 20px; font-size: 1.2em;">Наведи камеру на маркер! 😊🎨</div>
+  <div class="hero">
+    <div class="egg-animation"></div>
+    <h1>🥚 СОБОРНА ПИСАНКА 🥚</h1>
+    <p style="font-size: 20px; max-width: 600px; margin: 20px auto;">
+      Інтерактивна AR-подорож у світ української писанки
+    </p>
+  </div>
+  
+  <div class="steps">
+    <div class="step-card" onclick="location.href='phase1.html'">
+      <div class="step-number">1</div>
+      <div class="step-icon">🔮</div>
+      <h3>Поклик предків</h3>
+      <p>Дізнайся свій регіон через чарівне дзеркало</p>
     </div>
-
-    <a-scene
-        mindar-image="imageTargetSrc: ./my-marker.mind;"
-        vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false"
-        loading-screen="enabled: false"
-        embedded
-        renderer="colorManagement: true; physicallyCorrectLights: true;"
-        touch-gestures
-    >
-        <a-assets>
-            <audio id="bg-music" src="./bg-music.mp3" preload="auto" loop></audio>
-            <img id="pisanka-texture-1" src="./pisanka-1.jpg">
-            <img id="pisanka-texture-2" src="./pisanka-2.jpg">
-            <img id="pisanka-texture-3" src="./pisanka-3.jpg">
-            <img id="pisanka-texture-4" src="./pisanka-4.jpg">
-        </a-assets>
-
-        <a-camera
-            id="camera"
-            position="0 0 1.5"
-            look-controls="enabled: false"
-        ></a-camera>
-
-        <a-entity mindar-image-target="targetIndex: 0">
-            <a-sphere
-                id="pisanka"
-                position="0 0 -0.5"
-                radius="0.4"
-                scale="0.6 1 0.6"
-                src="#pisanka-texture-1"
-                visible="false"
-                material="opacity: 1; transparent: false"
-            >
-                <a-animation
-                    attribute="rotation"
-                    to="0 360 0"
-                    dur="5000"
-                    repeat="indefinite"
-                ></a-animation>
-            </a-sphere>
-        </a-entity>
-    </a-scene>
-
-    <div class="controls">
-        <button id="sound-btn" class="sound-btn">Увімкнути звук</button>
-        <button id="next-btn" class="sound-btn">Далі ➡️</button>
-        <a href="https://www.youtube.com/playlist?list=PL6UDFwT9TzFw5K8Tzu_OgsDz7vV3N9eY-" target="_blank" class="youtube-btn">YouTube SmartLessa</a>
+    
+    <div class="step-card" onclick="location.href='phase2.html'">
+      <div class="step-number">2</div>
+      <div class="step-icon">🗺️</div>
+      <h3>Оживи карту</h3>
+      <p>Знайди свій край на фізичній карті</p>
     </div>
-
-    <script>
-        // Адаптивність для повного екрану
-        function fixHeight() {
-            document.body.style.height = window.innerHeight + 'px';
-        }
-        fixHeight();
-        window.addEventListener('resize', fixHeight);
-
-        // Посилання на елементи
-        const loader = document.querySelector('#loader');
-        const targetEntity = document.querySelector('[mindar-image-target]');
-        const pisanka = document.querySelector('#pisanka');
-        const bgMusic = document.querySelector('#bg-music');
-        const soundBtn = document.querySelector('#sound-btn');
-        const nextBtn = document.querySelector('#next-btn');
-
-        // Масив з ідентифікаторами текстур
-        const pisankaTextures = ['#pisanka-texture-1', '#pisanka-texture-2', '#pisanka-texture-3', '#pisanka-texture-4'];
-        let currentTextureIndex = 0;
-
-        // Перевірка завантаження текстур
-        pisankaTextures.forEach(id => {
-            const textureEl = document.querySelector(id);
-            if (textureEl) {
-                textureEl.addEventListener('load', () => {
-                    console.log(`Текстура ${id} успішно завантажена`);
-                });
-                textureEl.addEventListener('error', () => {
-                    console.error(`Помилка завантаження текстури ${id}`);
-                });
-            }
-        });
-
-        // Компонент для обробки сенсорних жестів (реєструється перед його використанням в HTML)
-        AFRAME.registerComponent('touch-gestures', {
-            schema: {
-                minScale: { type: 'number', default: 0.2 },
-                maxScale: { type: 'number', default: 3.0 },
-                rotationSpeed: { type: 'number', default: 2.0 }
-            },
-            init: function () {
-                this.isRotating = false;
-                this.isPinching = false;
-                this.startPos = { x: 0, y: 0 };
-                this.currentScale = 1;
-                this.pisanka = document.querySelector('#pisanka');
-
-                if (!this.pisanka) {
-                    console.error('Писанка не знайдена в компоненті touch-gestures');
-                    return;
-                }
-
-                this.el.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    if (e.touches.length === 1) {
-                        this.isRotating = true;
-                        this.startPos.x = e.touches[0].pageX;
-                        this.startPos.y = e.touches[0].pageY;
-                    } else if (e.touches.length === 2) {
-                        this.isPinching = true;
-                        this.isRotating = false;
-                        this.initialDistance = Math.hypot(
-                            e.touches[0].pageX - e.touches[1].pageX,
-                            e.touches[0].pageY - e.touches[1].pageY
-                        );
-                        this.currentScale = this.pisanka.object3D.scale.x;
-                    }
-                });
-
-                this.el.addEventListener('touchmove', (e) => {
-                    e.preventDefault();
-                    if (this.isPinching && e.touches.length === 2) {
-                        const currentDistance = Math.hypot(
-                            e.touches[0].pageX - e.touches[1].pageX,
-                            e.touches[0].pageY - e.touches[1].pageY
-                        );
-                        const scaleFactor = currentDistance / this.initialDistance;
-                        const newScale = Math.max(this.data.minScale, Math.min(this.data.maxScale, this.currentScale * scaleFactor));
-                        const eggScaleX = newScale * 0.6;
-                        const eggScaleY = newScale * 1;
-                        const eggScaleZ = newScale * 0.6;
-                        this.pisanka.object3D.scale.set(eggScaleX, eggScaleY, eggScaleZ);
-                    } else if (this.isRotating && e.touches.length === 1) {
-                        const deltaX = (e.touches[0].pageX - this.startPos.x) * this.data.rotationSpeed;
-                        const deltaY = (e.touches[0].pageY - this.startPos.y) * this.data.rotationSpeed;
-                        this.pisanka.object3D.rotation.y += THREE.MathUtils.degToRad(deltaX);
-                        this.pisanka.object3D.rotation.x += THREE.MathUtils.degToRad(deltaY);
-                        this.startPos.x = e.touches[0].pageX;
-                        this.startPos.y = e.touches[0].pageY;
-                    }
-                });
-
-                this.el.addEventListener('touchend', () => {
-                    this.isRotating = false;
-                    this.isPinching = false;
-                });
-            }
-        });
-
-        // Логіка відстеження маркера
-        if (targetEntity) {
-            targetEntity.addEventListener('targetFound', () => {
-                console.log("🎯 Маркер знайдено! Писанка з'явилася.");
-                loader.style.display = 'none';
-                if (pisanka) {
-                    pisanka.setAttribute('visible', 'true');
-                    console.log("Писанка видима:", pisanka.getAttribute('visible'));
-                    pisanka.components.animation.pause();
-                }
-                if (bgMusic && bgMusic.paused) {
-                    bgMusic.play().catch(e => console.log("🔇 Помилка відтворення музики:", e));
-                    soundBtn.classList.remove('off');
-                    soundBtn.textContent = 'Вимкнути звук';
-                }
-            });
-
-            targetEntity.addEventListener('targetLost', () => {
-                console.log("ℹ️ Маркер втрачено.");
-                if (pisanka) {
-                    pisanka.setAttribute('visible', 'false');
-                    console.log("Писанка невидима:", pisanka.getAttribute('visible'));
-                    pisanka.components.animation.play();
-                }
-                if (bgMusic && !bgMusic.paused) bgMusic.pause();
-                loader.style.display = 'flex';
-                loader.querySelector('.pulse').textContent = '🥚 Писанка на долоні 🎨';
-                loader.querySelector('div[style]').textContent = 'Наведи камеру на маркер! 😊🎨';
-            });
-        } else {
-            console.error('Елемент mindar-image-target не знайдено!');
-        }
-
-        // Обробка кнопки звуку
-        soundBtn.addEventListener('click', () => {
-            if (bgMusic.paused) {
-                bgMusic.play().catch(e => console.log("🔇 Помилка відтворення музики:", e));
-                soundBtn.classList.remove('off');
-                soundBtn.textContent = 'Вимкнути звук';
-            } else {
-                bgMusic.pause();
-                soundBtn.classList.add('off');
-                soundBtn.textContent = 'Увімкнути звук';
-            }
-        });
-
-        // Обробка кнопки "Далі"
-        nextBtn.addEventListener('click', () => {
-            currentTextureIndex = (currentTextureIndex + 1) % pisankaTextures.length;
-            pisanka.setAttribute('src', pisankaTextures[currentTextureIndex]);
-            console.log(`🖼️ Змінено текстуру на: ${pisankaTextures[currentTextureIndex]}`);
-        });
-    </script>
+    
+    <div class="step-card" onclick="location.href='phase3.html'">
+      <div class="step-number">3</div>
+      <div class="step-icon">⚡</div>
+      <h3>Передай енергію</h3>
+      <p>Залиш своє ім'я на спільній карті</p>
+    </div>
+    
+    <div class="step-card" onclick="location.href='dashboard.html'">
+      <div class="step-number">4</div>
+      <div class="step-icon">🥚</div>
+      <h3>Соборність</h3>
+      <p>Побач єднання всіх регіонів</p>
+    </div>
+  </div>
+  
+  <div class="qr-section">
+    <h2 style="color: var(--bordo);">Скануй для участі</h2>
+    <div class="qr-code" id="qrCode">
+      <!-- Тут буде QR-код з посиланням -->
+      <div style="color: white; font-size: 14px; padding: 40px 0;">QR-код для мобільного</div>
+    </div>
+    <p>Наведи камеру смартфона, щоб розпочати</p>
+  </div>
+  
+  <div class="footer">
+    <img src="assets/logo-museum.png" alt="Музей Писанкарства" style="height: 50px; margin-bottom: 20px;">
+    <p>Проєкт створено для Національного музею народного мистецтва Гуцульщини та Покуття</p>
+    <p>© 2025 | Соборна Писанка AR</p>
+  </div>
+  
+  <script>
+    // Генерація QR-коду (можна використати бібліотеку)
+    if (window.location.hostname !== 'localhost') {
+      // Тут можна додати реальний QR-код
+    }
+  </script>
 </body>
 </html>
-
-
-
-
-
-
