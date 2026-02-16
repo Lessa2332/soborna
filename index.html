@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Соборна Писанка | Музей Писанкарства</title>
+  <title> Писанка | Код предків </title>
   
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
@@ -252,7 +252,7 @@
     <div class="egg-animation"></div>
     <h1>🥚 СОБОРНА ПИСАНКА 🥚</h1>
     <p style="font-size: 20px; max-width: 600px; margin: 20px auto;">
-      Інтерактивна AR-подорож у світ української писанки
+      Інтерактивна AR-подорож у світ духовних координат
     </p>
     <div class="region-count">14 регіонів України</div>
   </div>
@@ -262,7 +262,7 @@
       <div class="step-number">1</div>
       <div class="step-icon">🔮</div>
       <h3>Поклик предків</h3>
-      <p>Дізнайся свій регіон через чарівне дзеркало</p>
+      <p>Дізнайся свій ДНК-код</p>
     </div>
     
     <div class="step-card" onclick="location.href='phase2.html'">
@@ -292,18 +292,48 @@
     <span id="participantsCount">0</span> учасників уже долучилися до Соборної Писанки!
   </div>
   
-  <div class="qr-section">
-    <h2 style="color: var(--bordo);">Скануй для участі</h2>
-    <div class="qr-code" id="qrCode">
-      <div class="qr-placeholder" id="qrPlaceholder">
-        QR-код<br>для мобільного
-      </div>
+<div class="qr-section" style="
+    background: linear-gradient(135deg, #f5eee6 0%, #e8d9c0 100%);
+    padding: 30px;
+    border-radius: 30px;
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--gold);
+">
+    <h2 style="color: var(--bordo); font-family: 'Cormorant Garamond', serif; margin-bottom: 20px; font-size: 28px;">
+        🥚 Скануй для участі
+    </h2>
+    <div class="qr-code" id="qrCode" style="
+        background: white;
+        padding: 15px;
+        border-radius: 20px;
+        display: inline-block;
+        box-shadow: 0 10px 30px rgba(106, 30, 42, 0.2);
+    ">
+        <img src="qr-code.png" 
+             alt="QR-код" 
+             style="width: 100%; max-width: 250px; height: auto; display: block; border-radius: 10px;">
     </div>
-    <p>Наведи камеру смартфона, щоб розпочати подорож</p>
-    <button class="btn" onclick="generateQR()" style="margin-top: 15px; padding: 8px 20px; font-size: 14px;">
-      Показати QR-код
+    <p style="margin: 20px 0; color: var(--brown); font-size: 18px;">
+        Наведи камеру смартфона, щоб розпочати подорож
+    </p>
+    <button class="btn" onclick="window.location.href='phase1.html'" style="
+        background: var(--gold);
+        color: var(--bordo);
+        border: none;
+        padding: 12px 30px;
+        font-size: 18px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 600;
+        transition: all 0.3s;
+    ">
+        🥚 Почати подорож
     </button>
-  </div>
+</div>
   
   <div class="footer">
     <div class="footer-logo">🥚</div>
@@ -404,3 +434,4 @@
   </style>
 </body>
 </html>
+
