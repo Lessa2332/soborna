@@ -698,7 +698,7 @@
     <div class="celebration-content">
       <div class="celebration-egg">🥚</div>
       <div class="celebration-title">ВЕСНА ПЕРЕМОГИ!</div>
-      <div class="celebration-text">14 регіонів єдині</div>
+      <div class="celebration-text">Ми соборні!</div>
       <button class="control-btn" onclick="event.stopPropagation(); hideCelebration()" style="background: var(--gold); color: var(--bordo); margin: 0 auto;">
         До карти
       </button>
@@ -709,42 +709,189 @@
     // ============ КОНФІГУРАЦІЯ ============
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEnTeoAdgYv_4DTh3P9g8BPILmXPi4B7FTrHz-54q7nZxpPBEvejaWsIP_jWjZQtdM/exec';
     
-    // Координати міст
+    // ============ РОЗШИРЕНИЙ СПИСОК КООРДИНАТ МІСТ ============
     const CITY_COORDS = {
-      'вінниця': { lat: 49.23, lng: 28.47, regionId: 1 },
-      'хмельницький': { lat: 49.42, lng: 26.98, regionId: 1 },
-      'тернопіль': { lat: 49.55, lng: 25.59, regionId: 1 },
-      'житомир': { lat: 50.25, lng: 28.66, regionId: 2 },
-      'чернігів': { lat: 51.50, lng: 31.29, regionId: 2 },
-      'рівне': { lat: 50.62, lng: 26.25, regionId: 2 },
-      'луцьк': { lat: 50.75, lng: 25.34, regionId: 2 },
-      'івано-франківськ': { lat: 48.92, lng: 24.71, regionId: 3 },
-      'ужгород': { lat: 48.62, lng: 22.30, regionId: 3 },
-      'чернівці': { lat: 48.29, lng: 25.94, regionId: 3 },
-      'київ': { lat: 50.45, lng: 30.52, regionId: 4 },
-      'львів': { lat: 49.84, lng: 24.03, regionId: 5 },
-      'одеса': { lat: 46.48, lng: 30.72, regionId: 6 },
-      'харків': { lat: 49.99, lng: 36.23, regionId: 7 },
-      'дніпро': { lat: 48.46, lng: 35.04, regionId: 8 },
-      'полтава': { lat: 49.59, lng: 34.55, regionId: 9 },
-      'черкаси': { lat: 49.44, lng: 32.06, regionId: 11 },
-      'сімферополь': { lat: 44.95, lng: 34.10, regionId: 12 },
-      'донецьк': { lat: 48.02, lng: 37.80, regionId: 13 },
-      'луганськ': { lat: 48.57, lng: 39.31, regionId: 14 }
+      // Обласні центри
+      'вінниця': { lat: 49.23, lng: 28.47, regionId: 1, region: 'Поділля' },
+      'хмельницький': { lat: 49.42, lng: 26.98, regionId: 1, region: 'Поділля' },
+      'тернопіль': { lat: 49.55, lng: 25.59, regionId: 1, region: 'Поділля' },
+      'житомир': { lat: 50.25, lng: 28.66, regionId: 2, region: 'Полісся' },
+      'чернігів': { lat: 51.50, lng: 31.29, regionId: 2, region: 'Полісся' },
+      'рівне': { lat: 50.62, lng: 26.25, regionId: 2, region: 'Полісся' },
+      'луцьк': { lat: 50.75, lng: 25.34, regionId: 2, region: 'Полісся' },
+      'івано-франківськ': { lat: 48.92, lng: 24.71, regionId: 3, region: 'Карпати' },
+      'ужгород': { lat: 48.62, lng: 22.30, regionId: 3, region: 'Карпати' },
+      'чернівці': { lat: 48.29, lng: 25.94, regionId: 3, region: 'Карпати' },
+      'київ': { lat: 50.45, lng: 30.52, regionId: 4, region: 'Київщина' },
+      'львів': { lat: 49.84, lng: 24.03, regionId: 5, region: 'Львівщина' },
+      'одеса': { lat: 46.48, lng: 30.72, regionId: 6, region: 'Одещина' },
+      'харків': { lat: 49.99, lng: 36.23, regionId: 7, region: 'Харківщина' },
+      'дніпро': { lat: 48.46, lng: 35.04, regionId: 8, region: 'Дніпропетровщина' },
+      'полтава': { lat: 49.59, lng: 34.55, regionId: 9, region: 'Полтавщина' },
+      'черкаси': { lat: 49.44, lng: 32.06, regionId: 11, region: 'Черкащина' },
+      'сімферополь': { lat: 44.95, lng: 34.10, regionId: 12, region: 'Крим' },
+      'донецьк': { lat: 48.02, lng: 37.80, regionId: 13, region: 'Донеччина' },
+      'луганськ': { lat: 48.57, lng: 39.31, regionId: 14, region: 'Луганщина' },
+      
+      // Одеська область
+      'чорноморськ': { lat: 46.30, lng: 30.66, regionId: 6, region: 'Одещина' },
+      'ізмаїл': { lat: 45.35, lng: 28.84, regionId: 6, region: 'Одещина' },
+      'білгород-дністровський': { lat: 46.18, lng: 30.34, regionId: 6, region: 'Одещина' },
+      'подільськ': { lat: 47.74, lng: 29.53, regionId: 6, region: 'Одещина' },
+      'южне': { lat: 46.62, lng: 31.10, regionId: 6, region: 'Одещина' },
+      
+      // Черкаська область
+      'умань': { lat: 48.75, lng: 30.22, regionId: 11, region: 'Черкащина' },
+      'смола': { lat: 49.22, lng: 31.87, regionId: 11, region: 'Черкащина' },
+      'золотоноша': { lat: 49.67, lng: 32.04, regionId: 11, region: 'Черкащина' },
+      'канів': { lat: 49.75, lng: 31.47, regionId: 11, region: 'Черкащина' },
+      'корсунь-шевченківський': { lat: 49.42, lng: 31.26, regionId: 11, region: 'Черкащина' },
+      
+      // Київська область
+      'біла церква': { lat: 49.80, lng: 30.12, regionId: 4, region: 'Київщина' },
+      'бровари': { lat: 50.51, lng: 30.79, regionId: 4, region: 'Київщина' },
+      'бориспіль': { lat: 50.35, lng: 30.95, regionId: 4, region: 'Київщина' },
+      'фастів': { lat: 50.07, lng: 29.92, regionId: 4, region: 'Київщина' },
+      'ірпінь': { lat: 50.52, lng: 30.25, regionId: 4, region: 'Київщина' },
+      'вишгород': { lat: 50.58, lng: 30.49, regionId: 4, region: 'Київщина' },
+      'обухів': { lat: 50.11, lng: 30.63, regionId: 4, region: 'Київщина' },
+      
+      // Львівська область
+      'дрогобич': { lat: 49.35, lng: 23.51, regionId: 5, region: 'Львівщина' },
+      'стрий': { lat: 49.25, lng: 23.85, regionId: 5, region: 'Львівщина' },
+      'самбір': { lat: 49.52, lng: 23.20, regionId: 5, region: 'Львівщина' },
+      'трускавець': { lat: 49.28, lng: 23.51, regionId: 5, region: 'Львівщина' },
+      'новояворівськ': { lat: 49.93, lng: 23.57, regionId: 5, region: 'Львівщина' },
+      'червоноград': { lat: 50.39, lng: 24.23, regionId: 5, region: 'Львівщина' },
+      
+      // Дніпропетровська область
+      'кривий ріг': { lat: 47.91, lng: 33.39, regionId: 8, region: 'Дніпропетровщина' },
+      'каміньське': { lat: 48.52, lng: 34.61, regionId: 8, region: 'Дніпропетровщина' },
+      'нікополь': { lat: 47.57, lng: 34.39, regionId: 8, region: 'Дніпропетровщина' },
+      'павлоград': { lat: 48.52, lng: 35.87, regionId: 8, region: 'Дніпропетровщина' },
+      'новомосковськ': { lat: 48.63, lng: 35.22, regionId: 8, region: 'Дніпропетровщина' },
+      'жовті води': { lat: 48.35, lng: 33.50, regionId: 8, region: 'Дніпропетровщина' },
+      'марганець': { lat: 47.65, lng: 34.62, regionId: 8, region: 'Дніпропетровщина' },
+      
+      // Донецька область
+      'маріуполь': { lat: 47.10, lng: 37.55, regionId: 13, region: 'Донеччина' },
+      'краматорськ': { lat: 48.72, lng: 37.53, regionId: 13, region: 'Донеччина' },
+      'словянськ': { lat: 48.85, lng: 37.61, regionId: 13, region: 'Донеччина' },
+      'бахмут': { lat: 48.60, lng: 38.00, regionId: 13, region: 'Донеччина' },
+      'покровськ': { lat: 48.28, lng: 37.18, regionId: 13, region: 'Донеччина' },
+      'горлівка': { lat: 48.33, lng: 38.09, regionId: 13, region: 'Донеччина' },
+      'макіївка': { lat: 48.05, lng: 37.97, regionId: 13, region: 'Донеччина' },
+      
+      // Харківська область
+      'суми': { lat: 50.91, lng: 34.80, regionId: 7, region: 'Харківщина' },
+      'ізюм': { lat: 49.19, lng: 37.27, regionId: 7, region: 'Харківщина' },
+      'лозова': { lat: 48.89, lng: 36.31, regionId: 7, region: 'Харківщина' },
+      'чугуїв': { lat: 49.84, lng: 36.68, regionId: 7, region: 'Харківщина' },
+      'первомайський': { lat: 49.39, lng: 36.21, regionId: 7, region: 'Харківщина' },
+      
+      // Запорізька область
+      'мелітополь': { lat: 46.84, lng: 35.36, regionId: 8, region: 'Дніпропетровщина' },
+      'бердянськ': { lat: 46.75, lng: 36.79, regionId: 8, region: 'Дніпропетровщина' },
+      'енергодар': { lat: 47.50, lng: 34.66, regionId: 8, region: 'Дніпропетровщина' },
+      'токмак': { lat: 47.25, lng: 35.71, regionId: 8, region: 'Дніпропетровщина' },
+      'пологи': { lat: 47.48, lng: 36.25, regionId: 8, region: 'Дніпропетровщина' },
+      
+      // Полтавська область
+      'кременчук': { lat: 49.06, lng: 33.40, regionId: 9, region: 'Полтавщина' },
+      'лубни': { lat: 50.02, lng: 33.00, regionId: 9, region: 'Полтавщина' },
+      'миргород': { lat: 49.97, lng: 33.61, regionId: 9, region: 'Полтавщина' },
+      'гадяч': { lat: 50.37, lng: 34.00, regionId: 9, region: 'Полтавщина' },
+      
+      // Волинська область
+      'володимир': { lat: 50.85, lng: 24.32, regionId: 2, region: 'Полісся' },
+      'ковель': { lat: 51.22, lng: 24.71, regionId: 2, region: 'Полісся' },
+      'нововолинськ': { lat: 50.74, lng: 24.16, regionId: 2, region: 'Полісся' },
+      
+      // Закарпатська область
+      'мукачево': { lat: 48.44, lng: 22.71, regionId: 3, region: 'Карпати' },
+      'хуст': { lat: 48.18, lng: 23.30, regionId: 3, region: 'Карпати' },
+      'берегово': { lat: 48.20, lng: 22.64, regionId: 3, region: 'Карпати' },
+      'чоп': { lat: 48.43, lng: 22.21, regionId: 3, region: 'Карпати' },
+      'рахів': { lat: 48.06, lng: 24.21, regionId: 3, region: 'Карпати' },
+      
+      // Івано-Франківська область
+      'калуш': { lat: 49.01, lng: 24.37, regionId: 3, region: 'Карпати' },
+      'коломия': { lat: 48.53, lng: 25.04, regionId: 3, region: 'Карпати' },
+      'надвірна': { lat: 48.63, lng: 24.57, regionId: 3, region: 'Карпати' },
+      'долина': { lat: 48.97, lng: 24.01, regionId: 3, region: 'Карпати' },
+      
+      // Крим
+      'ялта': { lat: 44.50, lng: 34.17, regionId: 12, region: 'Крим' },
+      'феодосія': { lat: 45.03, lng: 35.38, regionId: 12, region: 'Крим' },
+      'євпаторія': { lat: 45.20, lng: 33.36, regionId: 12, region: 'Крим' },
+      'керч': { lat: 45.36, lng: 36.47, regionId: 12, region: 'Крим' },
+      'саки': { lat: 45.13, lng: 33.60, regionId: 12, region: 'Крим' },
+      'джанкой': { lat: 45.71, lng: 34.39, regionId: 12, region: 'Крим' },
+      'алушта': { lat: 44.67, lng: 34.41, regionId: 12, region: 'Крим' },
+      'судак': { lat: 44.85, lng: 34.98, regionId: 12, region: 'Крим' },
+      
+      // ============ МІСТА ДІАСПОРИ ============
+      'торонто': { lat: 43.65, lng: -79.38, country: 'Канада', isDiaspora: true },
+      'чикаго': { lat: 41.88, lng: -87.63, country: 'США', isDiaspora: true },
+      'нью-йорк': { lat: 40.71, lng: -74.01, country: 'США', isDiaspora: true },
+      'варшава': { lat: 52.23, lng: 21.01, country: 'Польща', isDiaspora: true },
+      'берлін': { lat: 52.52, lng: 13.40, country: 'Німеччина', isDiaspora: true },
+      'лондон': { lat: 51.51, lng: -0.13, country: 'Велика Британія', isDiaspora: true },
+      'париж': { lat: 48.86, lng: 2.35, country: 'Франція', isDiaspora: true },
+      'рим': { lat: 41.90, lng: 12.50, country: 'Італія', isDiaspora: true },
+      'мадрид': { lat: 40.42, lng: -3.70, country: 'Іспанія', isDiaspora: true },
+      'лісабон': { lat: 38.72, lng: -9.14, country: 'Португалія', isDiaspora: true },
+      'прага': { lat: 50.08, lng: 14.42, country: 'Чехія', isDiaspora: true },
+      'відень': { lat: 48.21, lng: 16.37, country: 'Австрія', isDiaspora: true },
+      'будапешт': { lat: 47.50, lng: 19.04, country: 'Угорщина', isDiaspora: true }
     };
+
+    // ============ ФУНКЦІЯ ДЛЯ ЗНАХОДЖЕННЯ КООРДИНАТ МІСТА ============
+    function findCityCoords(cityInput) {
+      if (!cityInput) return { lat: 49.0, lng: 32.0, region: 'Україна' };
+      
+      const cityLower = cityInput.toLowerCase().trim();
+      
+      // 1. Точний збіг
+      if (CITY_COORDS[cityLower]) {
+        return CITY_COORDS[cityLower];
+      }
+      
+      // 2. Частковий збіг
+      for (let [key, value] of Object.entries(CITY_COORDS)) {
+        if (cityLower.includes(key) || key.includes(cityLower)) {
+          console.log(`✅ Знайдено місто: ${key}`);
+          return value;
+        }
+      }
+      
+      // 3. Спеціальні випадки
+      if (cityLower.includes('крим') || cityLower.includes('crimea')) {
+        return { lat: 45.0, lng: 34.0, regionId: 12, region: 'Крим' };
+      }
+      
+      if (cityLower.includes('донбас') || cityLower.includes('donbas')) {
+        return { lat: 48.0, lng: 37.8, regionId: 13, region: 'Донбас' };
+      }
+      
+      // 4. Центр України за замовчуванням
+      console.log(`❌ Місто не знайдено: ${cityInput}, використовуємо центр`);
+      return { lat: 49.0, lng: 32.0, region: 'Україна' };
+    }
     
-    // Масив кольорів
+    // ============ МАСИВ КОЛЬОРІВ ============
     const RAINBOW_CLASSES = [
       'rainbow-1', 'rainbow-2', 'rainbow-3', 'rainbow-4',
       'rainbow-5', 'rainbow-6', 'rainbow-7', 'rainbow-8'
     ];
     
-    // Символи регіонів
+    // ============ СИМВОЛИ РЕГІОНІВ ============
     const REGION_SYMBOLS = {
       1: '🌻', 2: '🌲', 3: '🏔️', 4: '🏛️', 5: '🦁', 6: '⚓', 7: '⚙️',
       8: '🌊', 9: '🌾', 10: '📚', 11: '🎭', 12: '🏖️', 13: '⛏️', 14: '🌻'
     };
     
+    // ============ ЗМІННІ ============
     let map;
     let markers = [];
     let participants = [];
@@ -776,21 +923,20 @@
       }
     }
     
-    // Ініціалізація
+    // ============ ІНІЦІАЛІЗАЦІЯ ============
     document.addEventListener('DOMContentLoaded', function() {
       autoCleanOnLoad();
       initMap();
       loadParticipants();
       setInterval(loadParticipants, 5000);
       
-      // Запобігаємо скролу body
       document.body.addEventListener('touchmove', (e) => {
         if (e.target.closest('.participants-list') || e.target.closest('.admin-content')) return;
         e.preventDefault();
       }, { passive: false });
     });
     
-    // Ініціалізація карти
+    // ============ ІНІЦІАЛІЗАЦІЯ КАРТИ ============
     function initMap() {
       map = L.map('ukraine-map', {
         zoomControl: false,
@@ -805,19 +951,18 @@
         minZoom: 5
       }).addTo(map);
       
-      // Додаємо кнопки zoom на мобільні
       if (window.innerWidth < 768) {
         L.control.zoom({ position: 'bottomleft' }).addTo(map);
       }
     }
     
-    // Завантаження учасників
+    // ============ ЗАВАНТАЖЕННЯ УЧАСНИКІВ ============
     function loadParticipants() {
       loadFromLocalStorage();
       loadFromGoogleSheets();
     }
     
-    // З localStorage
+    // ============ З LOCALSTORAGE ============
     function loadFromLocalStorage() {
       try {
         const saved = localStorage.getItem('pysanka_participants');
@@ -837,13 +982,12 @@
       } catch (e) {}
     }
     
-    // З Google Sheets
+    // ============ З GOOGLE SHEETS ============
     function loadFromGoogleSheets() {
       fetch(GOOGLE_SCRIPT_URL)
         .then(response => response.json())
         .then(data => {
           if (data && data.length > 0) {
-            // Фільтруємо тільки валідні записи з Google Sheets
             const validGoogleData = data.filter(item => 
               item.city && 
               item.city.trim() !== '' && 
@@ -851,15 +995,21 @@
               item.name.trim() !== ''
             );
             
-            const googleParticipants = validGoogleData.map(item => ({
-              name: item.name,
-              city: item.city,
-              region: item.regionName,
-              regionId: item.regionId,
-              timestamp: item.timestamp,
-              coords: CITY_COORDS[item.city?.toLowerCase()] || { lat: 49.0, lng: 32.0 },
-              symbol: REGION_SYMBOLS[item.regionId] || '🥚'
-            }));
+            const googleParticipants = validGoogleData.map(item => {
+              const cityCoords = findCityCoords(item.city);
+              
+              return {
+                name: item.name,
+                city: item.city,
+                region: cityCoords.region || item.regionName || 'Україна',
+                regionId: cityCoords.regionId || item.regionId || null,
+                country: cityCoords.country || 'Україна',
+                timestamp: item.timestamp,
+                coords: { lat: cityCoords.lat, lng: cityCoords.lng },
+                symbol: REGION_SYMBOLS[cityCoords.regionId || item.regionId] || '🥚',
+                isDiaspora: cityCoords.isDiaspora || false
+              };
+            });
             
             const allParticipants = [...participants];
             
@@ -883,7 +1033,7 @@
         .catch(() => {});
     }
     
-    // Оновлення карти
+    // ============ ОНОВЛЕННЯ КАРТИ ============
     function updateMap() {
       markers.forEach(m => map.removeLayer(m));
       markers = [];
@@ -893,7 +1043,7 @@
       const regionCount = {};
       
       participants.forEach((p, index) => {
-        const coords = p.coords || CITY_COORDS[p.city?.toLowerCase()] || { lat: 49.0, lng: 32.0 };
+        const coords = p.coords || { lat: 49.0, lng: 32.0 };
         const regionId = p.regionId;
         
         if (regionId) regionCount[regionId] = (regionCount[regionId] || 0) + 1;
@@ -907,10 +1057,9 @@
       updateRegionProgress(regionCount);
     }
     
-    // Створення маркера
+    // ============ СТВОРЕННЯ МАРКЕРА ============
     function createMarker(participant, lat, lng, colorClass) {
-      const symbol = participant.symbol || 
-                    (participant.regionId ? REGION_SYMBOLS[participant.regionId] : '🥚');
+      const symbol = participant.symbol || '🥚';
       
       const markerHtml = `
         <div class="pysanka-marker" title="${participant.name}, ${participant.city}">
@@ -930,11 +1079,15 @@
       
       const marker = L.marker([lat, lng], { icon: icon });
       
+      const diasporaText = participant.isDiaspora ? '<br><small style="color:#ff9800;">🇺🇦 Серце з Україною</small>' : '';
+      
       marker.bindPopup(`
         <div style="text-align: center; font-family: 'Cormorant Garamond', serif; min-width: 140px; padding: 5px;">
           <div style="font-size: 28px; margin-bottom: 5px;">${symbol}</div>
           <b style="color: #6a1e2a; font-size: 16px;">${participant.name}</b><br>
           <i style="color: #c9a03d; font-size: 14px;">${participant.city}</i>
+          ${participant.country ? `<br><small style="color: #666;">${participant.country}</small>` : ''}
+          ${diasporaText}
         </div>
       `, {
         className: 'custom-popup',
@@ -944,7 +1097,7 @@
       return marker;
     }
     
-    // Оновлення статистики
+    // ============ ОНОВЛЕННЯ СТАТИСТИКИ ============
     function updateStats() {
       const count = participants.length;
       document.getElementById('participantCount').textContent = count;
@@ -969,7 +1122,6 @@
         `;
       }).join('');
       
-      // Перевіряємо чи треба приховати
       if (count > 30 && statsVisible) {
         setTimeout(() => {
           if (statsVisible && count > 30) {
@@ -980,14 +1132,12 @@
       }
     }
     
-    // Переліт до учасника
+    // ============ ПЕРЕЛІТ ДО УЧАСНИКА ============
     window.flyToParticipant = function(name) {
       const p = participants.find(p => p.name === name);
       if (p) {
-        const coords = p.coords || CITY_COORDS[p.city?.toLowerCase()] || { lat: 49.0, lng: 32.0 };
-        map.flyTo([coords.lat, coords.lng], 8, {
-          duration: 1.5
-        });
+        const coords = p.coords || { lat: 49.0, lng: 32.0 };
+        map.flyTo([coords.lat, coords.lng], 8, { duration: 1.5 });
         
         setTimeout(() => {
           const marker = markers.find(m => {
@@ -999,7 +1149,7 @@
       }
     };
     
-    // Оновлення прогресу регіонів
+    // ============ ОНОВЛЕННЯ ПРОГРЕСУ РЕГІОНІВ ============
     function updateRegionProgress(regionCount) {
       const activeRegions = Object.keys(regionCount).length;
       document.getElementById('regionsActive').textContent = `${activeRegions}/14`;
@@ -1010,12 +1160,11 @@
       document.getElementById('celebrateBtn').style.display = activeRegions >= 14 ? 'flex' : 'none';
     }
     
-    // Показ сповіщення
+    // ============ ПОКАЗ СПОВІЩЕННЯ ============
     function showNewParticipantToast(participant) {
       showToast(`${participant.name} з міста ${participant.city} приєднався! 🌸`);
     }
     
-    // Універсальне сповіщення
     function showToast(message) {
       const toast = document.getElementById('toastMessage');
       const toastText = document.getElementById('toastText');
@@ -1030,13 +1179,13 @@
       }, 3000);
     }
     
-    // Оновлення карти
+    // ============ ОНОВЛЕННЯ КАРТИ ============
     function refreshMap() {
       loadParticipants();
       showToast('Карту оновлено! 🌈');
     }
     
-    // Приховати/показати статистику
+    // ============ ПРИХОВАТИ/ПОКАЗАТИ СТАТИСТИКУ ============
     function toggleStats() {
       const panel = document.getElementById('statsPanel');
       const content = document.getElementById('statsContent');
@@ -1059,7 +1208,7 @@
       }
     }
     
-    // Святкування
+    // ============ СВЯТКУВАННЯ ============
     function showCelebration() {
       document.getElementById('celebrationOverlay').classList.add('active');
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
@@ -1070,7 +1219,6 @@
     }
     
     // ============ АДМІН-ФУНКЦІЇ ============
-    
     function showAdminPanel() {
       document.getElementById('adminModal').style.display = 'flex';
       updateAdminStats();
@@ -1107,12 +1255,10 @@
       document.getElementById('emptyParticipantsList').innerHTML = emptyHtml;
     }
     
-    // Швидке очищення (для кнопки)
     function quickCleanEmpty() {
       cleanEmptyParticipants();
     }
     
-    // Очищення пустих учасників
     function cleanEmptyParticipants() {
       if (!confirm('Видалити всіх учасників без міста? Вони зникнуть з карти.')) return;
       
@@ -1136,7 +1282,6 @@
       }
     }
     
-    // Синхронізація з Google Sheets
     async function syncWithGoogleSheets() {
       if (!confirm('Завантажити дані з Google Sheets та оновити локальну карту?')) return;
       
@@ -1147,7 +1292,6 @@
         const data = await response.json();
         
         if (data && data.length > 0) {
-          // Фільтруємо тільки валідні записи
           const validData = data.filter(item => 
             item.city && 
             item.city.trim() !== '' && 
@@ -1168,7 +1312,6 @@
       }
     }
     
-    // Повне очищення локальних даних
     function resetLocalData() {
       if (confirm('❓ Очистити всі локальні маркери? Карта перезавантажиться з таблиці при наступному оновленні.')) {
         localStorage.removeItem('pysanka_participants');
@@ -1178,7 +1321,7 @@
       }
     }
     
-    // Експорт функцій
+    // ============ ЕКСПОРТ ФУНКЦІЙ ============
     window.refreshMap = refreshMap;
     window.showCelebration = showCelebration;
     window.hideCelebration = hideCelebration;
