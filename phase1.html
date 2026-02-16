@@ -100,14 +100,22 @@
       text-align: center;
     }
     
-    .pysanka-symbol {
-      width: 120px;
-      height: 120px;
-      margin-bottom: 20px;
+    /* ============ ПІДСВІЧУВАННЯ ПИСАНКИ ============ */
+    .pysanka-container {
       position: relative;
+      width: 140px;
+      height: 140px;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    
+    .pysanka-symbol {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      z-index: 5;
     }
     
     .pysanka-symbol img {
@@ -115,13 +123,98 @@
       height: 100%;
       object-fit: contain;
       filter: drop-shadow(0 0 15px var(--gold));
-      animation: pulse 2s infinite;
+      transition: all 0.3s ease;
     }
     
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.9; filter: drop-shadow(0 0 10px var(--gold)); }
-      50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 20px var(--gold)); }
-      100% { transform: scale(1); opacity: 0.9; filter: drop-shadow(0 0 10px var(--gold)); }
+    /* Ефект світіння з прозорістю */
+    .glow-effect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, 
+        rgba(229, 183, 59, 0.6) 0%,
+        rgba(229, 183, 59, 0.3) 40%,
+        rgba(229, 183, 59, 0.1) 70%,
+        transparent 100%);
+      border-radius: 50%;
+      filter: blur(15px);
+      animation: glowPulse 3s ease-in-out infinite;
+      z-index: 1;
+    }
+    
+    @keyframes glowPulse {
+      0%, 100% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(0.9);
+      }
+      50% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+    }
+    
+    /* Додаткове кільце світла */
+    .halo-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 130px;
+      height: 130px;
+      border: 2px solid rgba(229, 183, 59, 0.3);
+      border-radius: 50%;
+      animation: ringPulse 4s ease-in-out infinite;
+      z-index: 2;
+    }
+    
+    @keyframes ringPulse {
+      0%, 100% {
+        width: 130px;
+        height: 130px;
+        opacity: 0.3;
+        border-color: rgba(229, 183, 59, 0.3);
+      }
+      50% {
+        width: 150px;
+        height: 150px;
+        opacity: 0.8;
+        border-color: rgba(229, 183, 59, 0.8);
+      }
+    }
+    
+    /* Прозорі шари для ефекту глибини */
+    .depth-layer-1 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 70%);
+      border-radius: 50%;
+      z-index: 3;
+      pointer-events: none;
+    }
+    
+    .depth-layer-2 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, 
+        rgba(229, 183, 59, 0.2) 0%,
+        transparent 70%);
+      border-radius: 50%;
+      filter: blur(5px);
+      z-index: 4;
+      pointer-events: none;
     }
     
     /* ============ ЧЕРВОНИЙ СКАНЕР ============ */
@@ -139,7 +232,7 @@
         transparent 100%);
       box-shadow: 0 0 20px var(--red-scanner-glow);
       animation: scan 2s ease-in-out infinite;
-      z-index: 10;
+      z-index: 20;
     }
     
     .scanner-line::before {
@@ -189,7 +282,7 @@
       }
     }
     
-    /* Додатковий ефект сканування */
+    /* Додатковий ефект сканування з прозорістю */
     .scan-overlay {
       position: absolute;
       top: 0;
@@ -198,13 +291,13 @@
       height: 100%;
       background: linear-gradient(180deg,
         transparent 0%,
-        rgba(255, 51, 51, 0.1) 45%,
+        rgba(255, 51, 51, 0.15) 45%,
         rgba(255, 51, 51, 0.3) 50%,
-        rgba(255, 51, 51, 0.1) 55%,
+        rgba(255, 51, 51, 0.15) 55%,
         transparent 100%);
       pointer-events: none;
       animation: scanOverlay 2s ease-in-out infinite;
-      z-index: 5;
+      z-index: 15;
     }
     
     @keyframes scanOverlay {
@@ -221,6 +314,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      text-shadow: 0 0 10px rgba(229, 183, 59, 0.5);
     }
     
     .runes-container {
@@ -255,6 +349,7 @@
       color: var(--cream);
       max-width: 300px;
       margin: 20px auto;
+      text-shadow: 0 0 8px rgba(255, 51, 51, 0.5);
     }
     
     .progress-bar {
@@ -270,8 +365,9 @@
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: var(--gold);
+      background: linear-gradient(90deg, var(--gold-light), var(--gold));
       transition: width 4s linear;
+      box-shadow: 0 0 10px var(--gold);
     }
     
     .btn {
@@ -337,11 +433,28 @@
       border-radius: 50%;
       box-shadow: 0 0 15px var(--red-scanner-glow);
       animation: blink 1s infinite;
+      z-index: 25;
     }
     
     @keyframes blink {
       0%, 100% { opacity: 0.5; }
       50% { opacity: 1; }
+    }
+    
+    /* Анімація для писанки під час сканування */
+    .scanning-pulse {
+      animation: scanningPulse 0.5s ease-in-out infinite !important;
+    }
+    
+    @keyframes scanningPulse {
+      0%, 100% { 
+        opacity: 0.8;
+        filter: drop-shadow(0 0 10px var(--red-scanner));
+      }
+      50% { 
+        opacity: 1;
+        filter: drop-shadow(0 0 25px var(--red-scanner-glow));
+      }
     }
   </style>
 </head>
@@ -355,9 +468,16 @@
     
     <div class="magic-mirror" id="magicMirror" onclick="startRitual()">
       <div class="mirror-content">
-        <div class="pysanka-symbol" id="symbol">
-          <!-- ВАШЕ ЗОБРАЖЕННЯ hub.png -->
-          <img src="assets/hub.png" alt="Соборна Писанка" id="pysankaImage">
+        
+        <!-- Контейнер для писанки з ефектами -->
+        <div class="pysanka-container">
+          <div class="glow-effect" id="glowEffect"></div>
+          <div class="halo-ring" id="haloRing"></div>
+          <div class="depth-layer-1"></div>
+          <div class="depth-layer-2"></div>
+          <div class="pysanka-symbol" id="symbol">
+            <img src="assets/hub.png" alt="Соборна Писанка" id="pysankaImage">
+          </div>
         </div>
         
         <!-- Червона лінія сканера -->
@@ -389,7 +509,7 @@
     
     <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
       <button class="btn" onclick="resetRitual()" id="resetBtn" style="display: none;">Повторити</button>
-      <a href="phase2.html" class="btn btn-gold" id="continueBtn" style="display: none;">Знайти на карті</a>
+      <a href="phase2.html" class="btn btn-gold" id="continueBtn" style="display: none;">Торкнутися історії</a>
     </div>
     
     <input type="hidden" id="selectedRegion" value="">
@@ -418,10 +538,8 @@
     ];
     
     let currentRegion = null;
-    let scanInterval = null;
     
     function startRitual() {
-      const symbol = document.getElementById('symbol');
       const pysankaImage = document.getElementById('pysankaImage');
       const initialMsg = document.getElementById('initialMessage');
       const runes = document.querySelectorAll('.rune');
@@ -431,6 +549,8 @@
       const scannerLine = document.getElementById('scannerLine');
       const scanOverlay = document.getElementById('scanOverlay');
       const scanIndicator = document.getElementById('scanIndicator');
+      const glowEffect = document.getElementById('glowEffect');
+      const haloRing = document.getElementById('haloRing');
       
       magicMirror.style.pointerEvents = 'none';
       
@@ -439,8 +559,12 @@
       scanOverlay.style.display = 'block';
       scanIndicator.style.display = 'block';
       
+      // Посилюємо світіння під час сканування
+      glowEffect.style.background = 'radial-gradient(circle, rgba(255, 51, 51, 0.6) 0%, rgba(229, 183, 59, 0.3) 40%, transparent 100%)';
+      haloRing.style.borderColor = 'rgba(255, 51, 51, 0.6)';
+      
       // Змінюємо анімацію зображення
-      pysankaImage.style.animation = 'pulse 0.5s infinite';
+      pysankaImage.classList.add('scanning-pulse');
       initialMsg.innerHTML = '🔴 Сканування... Прислухаюсь до голосу предків...';
       
       runes.forEach(rune => { rune.style.opacity = '1'; });
@@ -472,14 +596,18 @@
         scanOverlay.style.display = 'none';
         scanIndicator.style.display = 'none';
         
+        // Повернути золоте світіння
+        glowEffect.style.background = 'radial-gradient(circle, rgba(229, 183, 59, 0.6) 0%, rgba(229, 183, 59, 0.3) 40%, transparent 100%)';
+        haloRing.style.borderColor = 'rgba(229, 183, 59, 0.3)';
+        
         initialMsg.innerHTML = `✅ Сканування завершено! Твій край — <strong style="color: var(--gold);">${currentRegion.name}</strong>`;
         progressBar.style.display = 'none';
         
         document.getElementById('result').innerHTML = `
-          <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px;">
+          <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px; box-shadow: 0 0 30px rgba(229, 183, 59, 0.3);">
             <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання,твій край- ${currentRegion.name}!</p>
             <p>Твоя енергія походить з цього благословенного краю.</p>
-            <p style="font-size: 48px; margin: 15px 0;">${currentRegion.ornament}</p>
+            <div style="font-size: 48px; margin: 15px 0; filter: drop-shadow(0 0 15px var(--gold));">${currentRegion.ornament}</div>
             <p>Запам'ятай цей образ — він знадобиться тобі на наступному етапі.</p>
           </div>
         `;
@@ -497,7 +625,7 @@
         
         if (navigator.vibrate) navigator.vibrate(200);
         
-        pysankaImage.style.animation = 'pulse 2s infinite';
+        pysankaImage.classList.remove('scanning-pulse');
         magicMirror.style.pointerEvents = 'auto';
       }, 4000);
     }
@@ -507,6 +635,8 @@
       const scannerLine = document.getElementById('scannerLine');
       const scanOverlay = document.getElementById('scanOverlay');
       const scanIndicator = document.getElementById('scanIndicator');
+      const glowEffect = document.getElementById('glowEffect');
+      const haloRing = document.getElementById('haloRing');
       
       document.getElementById('regionDisplay').innerHTML = '';
       document.getElementById('initialMessage').innerHTML = 'Торкнись, щоб пробудити пам\'ять роду...';
@@ -523,9 +653,13 @@
       scanOverlay.style.display = 'none';
       scanIndicator.style.display = 'none';
       
+      // Повернути стандартне світіння
+      glowEffect.style.background = 'radial-gradient(circle, rgba(229, 183, 59, 0.6) 0%, rgba(229, 183, 59, 0.3) 40%, transparent 100%)';
+      haloRing.style.borderColor = 'rgba(229, 183, 59, 0.3)';
+      
       document.querySelectorAll('.rune').forEach(rune => { rune.style.opacity = '0.2'; });
       
-      pysankaImage.style.animation = 'pulse 2s infinite';
+      pysankaImage.classList.remove('scanning-pulse');
       
       localStorage.removeItem('pysanka_region');
     }
@@ -546,10 +680,10 @@
             document.getElementById('selectedRegionId').value = region.id;
             
             document.getElementById('result').innerHTML = `
-              <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px;">
-                <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання ${region.name}!</p>
+              <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px; box-shadow: 0 0 30px rgba(229, 183, 59, 0.3);">
+                <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання,твій край- ${region.name}!</p>
                 <p>Твій край вже обрано</p>
-                <p style="font-size: 48px; margin: 15px 0;">${region.ornament || '🥚'}</p>
+                <div style="font-size: 48px; margin: 15px 0; filter: drop-shadow(0 0 15px var(--gold));">${region.ornament || '🥚'}</div>
               </div>
             `;
             
@@ -564,3 +698,4 @@
   </script>
 </body>
 </html>
+
