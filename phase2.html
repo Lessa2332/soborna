@@ -33,7 +33,7 @@
     #video {
       z-index: 1;
       display: none;
-      transform: scaleX(1); /* Задня камера — без дзеркала */
+      transform: scaleX(1);
     }
     #canvas { z-index: 2; display: block; }
    
@@ -113,6 +113,27 @@
       font-size: 36px;
     }
    
+    #gestureFeedback {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(106, 30, 42, 0.95);
+      color: #e5b73b;
+      padding: 12px 24px;
+      border-radius: 40px;
+      font-size: 28px;
+      font-weight: 700;
+      z-index: 90;
+      opacity: 0;
+      transition: opacity 0.3s;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(229, 183, 59, 0.6);
+      font-family: 'Cormorant Garamond', serif;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+   
     .btn-next {
       position: fixed;
       bottom: 30px;
@@ -162,6 +183,17 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    
+    @keyframes feedbackShow {
+      0% { opacity: 0; transform: translateX(-50%) scale(0.8); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    }
+    
+    @keyframes feedbackHide {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -176,6 +208,7 @@
  
   <div id="regionInfo"></div>
   <div id="handIndicator"><span>👋</span> Покажіть долоню</div>
+  <div id="gestureFeedback"></div>
  
   <button class="btn-next" id="nextBtn" onclick="goToNextPhase()">✨ ДАЛІ ✨</button>
   <div id="errorMessage"></div>
@@ -183,7 +216,7 @@
   <script type="module">
     import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
     import { FilesetResolver, HandLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm";
- 
+
     // ============ 14 РЕГІОНІВ ============
     const REGIONS = [
       { id: 1, name: 'Поділля', texture: 'assets/regions/1-podillya.png', symbol: '🌻' },
@@ -201,22 +234,23 @@
       { id: 13, name: 'Донеччина', texture: 'assets/regions/13-donetsk.png', symbol: '⛏️' },
       { id: 14, name: 'Луганщина', texture: 'assets/regions/14-luhansk.png', symbol: '🌻' }
     ];
- 
-    // ============ НАЛАШТУВАННЯ ПІД РІЗНІ ГАДЖЕТИ ============
+
+    // ============ НАЛАШТУВАННЯ ============
     const CONFIG = {
-      SMOOTHING_FACTOR: 0.75,           // Плавніше слідкування
-      HAND_NOT_DETECTED_THRESHOLD: 60, // Більше терпіння до зникнення руки
+      SMOOTHING_FACTOR: 0.6,
+      HAND_NOT_DETECTED_THRESHOLD: 60,
       EGG_SCALE: 0.8,
-      EGG_HEIGHT_OFFSET: 0.25,          // Трохи вище для задньої камери
-      MIN_SCALE: 0.4,
-      MAX_SCALE: 1.8,
-      ZOOM_SENSITIVITY: 0.04,           // Чутливість пінчу (збільшено для дітей)
-      ROTATION_SENSITIVITY: 0.03,       // Обертання двома пальцями
-      STABLE_FRAMES_FOR_NEXT: 90,       // ~3 секунди стабільного трекінгу для кнопки "ДАЛІ"
-      FPS_LIMIT: 30,                    // Обмеження FPS
-      PERFORMANCE_MODE: true            // Автоматичне зниження якості
+      EGG_HEIGHT_OFFSET: 0.25,
+      MIN_SCALE: 0.3,
+      MAX_SCALE: 2.0,
+      ZOOM_SENSITIVITY: 3.0,
+      ROTATION_SENSITIVITY: 2.5,
+      STABLE_FRAMES_FOR_NEXT: 90,
+      FPS_LIMIT: 30,
+      PERFORMANCE_MODE: true,
+      FEEDBACK_DURATION: 1000
     };
- 
+
     // Отримуємо регіон
     let currentRegion = null;
     try {
@@ -230,13 +264,13 @@
     } catch (e) {
       currentRegion = REGIONS[0];
     }
- 
+
     // Стан додатку
     const state = {
       landmarks: null,
       isHandVisible: false,
       handFrames: 0,
-      stableFrames: 0,                  // Лічильник стабільних кадрів
+      stableFrames: 0,
       animationId: null,
       regionTexture: null,
       egg: null,
@@ -244,11 +278,19 @@
       currentRegion: currentRegion,
       gesture: 'none',
       prevGesture: 'none',
-      pinchDistance: 0,
-      prevPinchDistance: 0,
-      lastFrameTime: 0
+      // Розводимо/зводимо пальці - масштабування
+      isSpreading: false,
+      startSpreadDistance: 0,
+      currentScale: CONFIG.EGG_SCALE,
+      baseScale: CONFIG.EGG_SCALE,
+      // Обертання
+      isRotating: false,
+      prevRotationAngle: 0,
+      currentRotationY: 0,
+      // Фідбек
+      feedbackTimeout: null
     };
- 
+
     // DOM елементи
     const elements = {
       video: document.getElementById('video'),
@@ -256,19 +298,31 @@
       loading: document.getElementById('loading'),
       regionInfo: document.getElementById('regionInfo'),
       handIndicator: document.getElementById('handIndicator'),
+      gestureFeedback: document.getElementById('gestureFeedback'),
       nextBtn: document.getElementById('nextBtn'),
       errorMessage: document.getElementById('errorMessage')
     };
- 
+
     let scene, camera, renderer;
     let handLandmarker;
- 
+
+    // Показати фідбек жесту
+    function showGestureFeedback(icon, text, duration = CONFIG.FEEDBACK_DURATION) {
+      elements.gestureFeedback.innerHTML = `<span style="font-size: 40px; margin-right: 10px;">${icon}</span>${text}`;
+      elements.gestureFeedback.style.animation = 'feedbackShow 0.3s forwards';
+      
+      if (state.feedbackTimeout) clearTimeout(state.feedbackTimeout);
+      state.feedbackTimeout = setTimeout(() => {
+        elements.gestureFeedback.style.animation = 'feedbackHide 0.3s forwards';
+      }, duration - 300);
+    }
+
     function showError(msg) {
       elements.errorMessage.style.display = 'block';
       elements.errorMessage.innerHTML = `❌ ${msg}<br><br><button onclick="location.reload()" style="background:#e5b73b; color:#6a1e2a; border:none; padding:10px 20px; border-radius:30px; margin-top:15px; font-size:18px;">Спробувати знову</button>`;
     }
- 
-    // Клас розпізнавання жестів (підлаштовані пороги)
+
+    // Покращений розпізнавач жестів
     class GestureRecognizer {
       static recognize(landmarks) {
         if (!landmarks) return 'none';
@@ -276,11 +330,14 @@
         const isFist = this.isFist(landmarks);
         if (isFist) return 'fist';
        
-        const isPinch = this.isPinch(landmarks);
-        if (isPinch) return 'pinch';
+        const isOpenPalm = this.isOpenPalm(landmarks);
+        if (isOpenPalm) return 'open_palm';
        
         const isTwoFingers = this.isTwoFingers(landmarks);
         if (isTwoFingers) return 'two_fingers';
+       
+        const isSpreading = this.isSpreadingFingers(landmarks);
+        if (isSpreading) return 'spreading';
        
         return 'open';
       }
@@ -289,45 +346,58 @@
         const fingers = [8, 12, 16, 20];
         let curledCount = 0;
         for (const tip of fingers) {
-          if (landmarks[tip].y > landmarks[tip - 2].y) curledCount++;
+          if (landmarks[tip].y > landmarks[tip - 2].y + 0.02) curledCount++;
         }
-        return curledCount >= 4; // Жорсткіший кулак
+        return curledCount >= 3;
       }
      
-      static isPinch(landmarks) {
-        const distance = Math.hypot(
-          landmarks[4].x - landmarks[8].x,
-          landmarks[4].y - landmarks[8].y
-        );
-        return distance < 0.15; // Збільшений поріг — легше для дітей
+      static isOpenPalm(landmarks) {
+        const fingers = [8, 12, 16, 20];
+        let straightCount = 0;
+        for (const tip of fingers) {
+          if (landmarks[tip].y < landmarks[tip - 2].y - 0.02) straightCount++;
+        }
+        return straightCount >= 3;
       }
      
       static isTwoFingers(landmarks) {
-        const indexStraight = landmarks[8].y < landmarks[6].y;
-        const middleStraight = landmarks[12].y < landmarks[10].y;
-        const othersCurled = landmarks[16].y > landmarks[14].y && landmarks[20].y > landmarks[18].y;
-        return indexStraight && middleStraight && othersCurled;
+        const indexStraight = landmarks[8].y < landmarks[6].y - 0.02;
+        const middleStraight = landmarks[12].y < landmarks[10].y - 0.02;
+        const ringCurled = landmarks[16].y > landmarks[14].y;
+        const pinkyCurled = landmarks[20].y > landmarks[18].y;
+        return indexStraight && middleStraight && ringCurled && pinkyCurled;
       }
      
-      static getPinchDistance(landmarks) {
+      static isSpreadingFingers(landmarks) {
+        const thumbStraight = landmarks[4].y < landmarks[3].y;
+        const indexStraight = landmarks[8].y < landmarks[6].y - 0.02;
+        const middleCurled = landmarks[12].y > landmarks[10].y;
+        const ringCurled = landmarks[16].y > landmarks[14].y;
+        const pinkyCurled = landmarks[20].y > landmarks[18].y;
+        return thumbStraight && indexStraight && middleCurled && ringCurled && pinkyCurled;
+      }
+     
+      static getThumbIndexDistance(landmarks) {
         return Math.hypot(
           landmarks[4].x - landmarks[8].x,
           landmarks[4].y - landmarks[8].y
         );
       }
      
-      static getTwoFingersDirection(landmarks) {
-        return landmarks[8].x - landmarks[12].x; // >0 — вправо, <0 — вліво
+      static getTwoFingersAngle(landmarks) {
+        const dx = landmarks[8].x - landmarks[12].x;
+        const dy = landmarks[8].y - landmarks[12].y;
+        return Math.atan2(dy, dx);
       }
     }
- 
+
     class PisankaARApp {
       constructor() {
         state.currentRegion = currentRegion;
         this.checkBrowserSupport();
         this.init();
       }
- 
+
       checkBrowserSupport() {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
           showError('Ваш браузер не підтримує камеру');
@@ -335,10 +405,10 @@
         }
         return true;
       }
- 
+
       async init() {
         try {
-          await this.setupCamera();          // Тільки задня камера
+          await this.setupCamera();
           await this.initThreeJS();
           await this.initHandTracking();
           this.hideLoading();
@@ -353,8 +423,7 @@
           showError('Не вдалося запустити задню камеру. Перевірте дозвіл і спробуйте ще раз.');
         }
       }
- 
-      // ============ ТІЛЬКИ ЗАДНЯ КАМЕРА ============
+
       async setupCamera() {
         let stream = null;
         const constraints = {
@@ -365,20 +434,18 @@
             frameRate: { ideal: 30 }
           }
         };
- 
+
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         } catch (err) {
-          // Якщо exact не спрацював — спроба без exact
           constraints.video.facingMode = 'environment';
-          delete constraints.video.facingMode.exact;
           try {
             stream = await navigator.mediaDevices.getUserMedia(constraints);
           } catch (err2) {
             throw new Error('Не вдалося отримати задню камеру');
           }
         }
- 
+
         elements.video.srcObject = stream;
         await new Promise(resolve => {
           elements.video.onloadedmetadata = () => {
@@ -387,7 +454,7 @@
           };
         });
       }
- 
+
       async initThreeJS() {
         scene = new THREE.Scene();
        
@@ -414,7 +481,7 @@
         await this.loadRegionTexture();
         this.createPisanka();
       }
- 
+
       async loadRegionTexture() {
         if (!state.currentRegion) return;
        
@@ -437,36 +504,51 @@
           state.regionTexture = new THREE.CanvasTexture(canvas);
         }
       }
+
+createPisanka() {
+  state.eggGroup = new THREE.Group();
+  state.eggGroup.visible = false;
+  scene.add(state.eggGroup);
  
-      createPisanka() {
-        state.eggGroup = new THREE.Group();
-        state.eggGroup.visible = false;
-        scene.add(state.eggGroup);
-       
-        const geometry = new THREE.SphereGeometry(1, 28, 28); // Трохи більше сегментів
-        const positions = geometry.attributes.position;
-       
-        for (let i = 0; i < positions.count; i++) {
-          const x = positions.getX(i);
-          const y = positions.getY(i);
-          const z = positions.getZ(i);
-          positions.setX(i, x * 0.7);
-          positions.setY(i, y * 1.4);
-          positions.setZ(i, z * 0.7);
-        }
-        geometry.computeVertexNormals();
-       
-        const material = new THREE.MeshStandardMaterial({
-          map: state.regionTexture,
-          roughness: 0.3,
-          metalness: 0.2
-        });
-       
-        state.egg = new THREE.Mesh(geometry, material);
-        state.egg.scale.set(CONFIG.EGG_SCALE, CONFIG.EGG_SCALE, CONFIG.EGG_SCALE);
-        state.eggGroup.add(state.egg);
-      }
+  // Створюємо сферу з більшою деталізацією для плавних форм
+  const geometry = new THREE.SphereGeometry(1, 40, 40);
+  const positions = geometry.attributes.position;
  
+  // 🔸 КЛЮЧОВА ЗМІНА: пропорції класичної писанки (ширина:висота ≈ 1:1.25)
+  for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i);
+    const y = positions.getY(i);
+    const z = positions.getZ(i);
+    
+    // Менше стиснення по горизонталі (0.85 замість 0.7)
+    // Менше розтягування по вертикалі (1.25 замість 1.4)
+    positions.setX(i, x * 0.85);
+    positions.setY(i, y * 1.25);
+    positions.setZ(i, z * 0.85);
+  }
+  geometry.computeVertexNormals();
+ 
+  // Додаємо легку закругленість знизу для більш природної форми
+  for (let i = 0; i < positions.count; i++) {
+    const y = positions.getY(i);
+    if (y < -0.8) { // Нижня частина
+      const factor = 1 - Math.abs(y + 1) * 0.3;
+      positions.setY(i, y * factor);
+    }
+  }
+  geometry.computeVertexNormals();
+ 
+  const material = new THREE.MeshStandardMaterial({
+    map: state.regionTexture,
+    roughness: 0.35,   // Трохи матовіша поверхня
+    metalness: 0.15,   // Менше блиску — більше схоже на справжню писанку
+    side: THREE.DoubleSide
+  });
+ 
+  state.egg = new THREE.Mesh(geometry, material);
+  state.egg.scale.set(state.currentScale, state.currentScale, state.currentScale);
+  state.eggGroup.add(state.egg);
+}
       async initHandTracking() {
         try {
           const vision = await FilesetResolver.forVisionTasks(
@@ -489,7 +571,7 @@
           showError('Не вдалося завантажити розпізнавання рук');
         }
       }
- 
+
       startAnimation() {
         const animate = (time) => {
           state.animationId = requestAnimationFrame(animate);
@@ -502,7 +584,7 @@
         };
         animate();
       }
- 
+
       update() {
         this.detectHand();
        
@@ -532,7 +614,7 @@
           }
         }
       }
- 
+
       detectHand() {
         if (!handLandmarker || elements.video.readyState < 2) return;
        
@@ -545,81 +627,114 @@
             state.isHandVisible = true;
             state.handFrames = 0;
             state.gesture = GestureRecognizer.recognize(state.landmarks);
-           
-            if (state.gesture === 'pinch') {
-              state.prevPinchDistance = state.pinchDistance;
-              state.pinchDistance = GestureRecognizer.getPinchDistance(state.landmarks);
-            }
           } else {
             state.landmarks = null;
             state.isHandVisible = false;
             state.handFrames++;
           }
-        } catch (error) {}
+        } catch (error) {
+          console.error('Помилка виявлення руки:', error);
+        }
       }
- 
+
       updatePosition() {
         if (!state.landmarks) return;
        
         const palmX = state.landmarks[0].x;
         const palmY = state.landmarks[0].y;
        
-        const x = (palmX - 0.5) * 7;
-        const y = (0.5 - palmY) * 5 + CONFIG.EGG_HEIGHT_OFFSET;
+        const targetX = (palmX - 0.5) * 5;
+        const targetY = (0.5 - palmY) * 3 + CONFIG.EGG_HEIGHT_OFFSET;
+       
+        const maxX = 2, maxY = 1.5;
+        const clampedX = THREE.MathUtils.clamp(targetX, -maxX, maxX);
+        const clampedY = THREE.MathUtils.clamp(targetY, -maxY, maxY);
        
         if (state.eggGroup) {
-          state.eggGroup.position.x += (x - state.eggGroup.position.x) * CONFIG.SMOOTHING_FACTOR;
-          state.eggGroup.position.y += (y - state.eggGroup.position.y) * CONFIG.SMOOTHING_FACTOR;
+          state.eggGroup.position.x += (clampedX - state.eggGroup.position.x) * CONFIG.SMOOTHING_FACTOR;
+          state.eggGroup.position.y += (clampedY - state.eggGroup.position.y) * CONFIG.SMOOTHING_FACTOR;
           state.eggGroup.position.z = 0.1;
         }
       }
- 
+
       applyGestures() {
         if (!state.eggGroup) return;
        
-        // Кулак — сховати/показати
-        if (state.gesture === 'fist' && state.prevGesture !== 'fist') {
-          state.eggGroup.visible = !state.eggGroup.visible;
+        // ============ КУЛАК: ЗНИКНЕННЯ ============
+        if (state.gesture === 'fist' && state.prevGesture !== 'fist' && state.eggGroup.visible) {
+          state.eggGroup.visible = false;
+          showGestureFeedback('✊', 'Писанка сховалася!', 1200);
+          if (navigator.vibrate) navigator.vibrate(80);
+        }
+       
+        // ============ ДОЛОНЯ: ПОЯВА ============
+        if (state.gesture === 'open_palm' && state.prevGesture !== 'open_palm' && !state.eggGroup.visible) {
+          state.eggGroup.visible = true;
+          showGestureFeedback('✋', 'Писанка з\'явилася!', 1200);
           if (navigator.vibrate) navigator.vibrate(50);
         }
        
-        // Пінч — масштаб
-        if (state.gesture === 'pinch' && state.prevPinchDistance > 0) {
-          const delta = state.pinchDistance - state.prevPinchDistance;
-          state.eggGroup.scale.x += delta * CONFIG.ZOOM_SENSITIVITY;
-          state.eggGroup.scale.y += delta * CONFIG.ZOOM_SENSITIVITY;
-          state.eggGroup.scale.z += delta * CONFIG.ZOOM_SENSITIVITY;
+        // ============ РОЗВОДИМО/ЗВОДИМО ВЕЛИКИЙ І ВКАЗІВНИЙ: МАСШТАБУВАННЯ ============
+        if (state.gesture === 'spreading') {
+          if (!state.isSpreading) {
+            state.isSpreading = true;
+            state.startSpreadDistance = GestureRecognizer.getThumbIndexDistance(state.landmarks);
+            state.baseScale = state.currentScale;
+            showGestureFeedback('🤏➡️🤌', 'Зміна розміру', 2000);
+          }
          
-          const scale = Math.max(CONFIG.MIN_SCALE, Math.min(CONFIG.MAX_SCALE, state.eggGroup.scale.x));
-          state.eggGroup.scale.set(scale, scale, scale);
+          const currentDistance = GestureRecognizer.getThumbIndexDistance(state.landmarks);
+          const deltaDistance = currentDistance - state.startSpreadDistance;
+         
+          let newScale = state.baseScale + (deltaDistance * CONFIG.ZOOM_SENSITIVITY);
+          newScale = THREE.MathUtils.clamp(newScale, CONFIG.MIN_SCALE, CONFIG.MAX_SCALE);
+         
+          state.currentScale = newScale;
+          state.eggGroup.scale.set(newScale, newScale, newScale);
+        } else if (state.isSpreading) {
+          state.isSpreading = false;
         }
        
-        // Два пальці — обертання в обидва боки
+        // ============ ДВА ПАЛЬЦІ (ВКАЗІВНИЙ + СЕРЕДНІЙ): ОБЕРТАННЯ ============
         if (state.gesture === 'two_fingers') {
-          const direction = GestureRecognizer.getTwoFingersDirection(state.landmarks);
-          state.eggGroup.rotation.y += direction * CONFIG.ROTATION_SENSITIVITY;
+          if (!state.isRotating) {
+            state.isRotating = true;
+            state.prevRotationAngle = GestureRecognizer.getTwoFingersAngle(state.landmarks);
+            state.currentRotationY = state.eggGroup.rotation.y;
+            showGestureFeedback('🔄', 'Обертання', 2000);
+          }
+         
+          const currentAngle = GestureRecognizer.getTwoFingersAngle(state.landmarks);
+          const deltaAngle = currentAngle - state.prevRotationAngle;
+         
+          state.currentRotationY += deltaAngle * CONFIG.ROTATION_SENSITIVITY;
+          state.eggGroup.rotation.y = state.currentRotationY;
+          state.prevRotationAngle = currentAngle;
+        } else if (state.isRotating) {
+          state.isRotating = false;
         }
       }
- 
+
       hideLoading() {
         elements.loading.style.display = 'none';
         elements.video.style.display = 'block';
         elements.handIndicator.style.display = 'flex';
       }
- 
+
       cleanup() {
         if (state.animationId) cancelAnimationFrame(state.animationId);
         if (elements.video.srcObject) {
           elements.video.srcObject.getTracks().forEach(track => track.stop());
         }
+        if (state.feedbackTimeout) clearTimeout(state.feedbackTimeout);
       }
     }
- 
+
     window.goToNextPhase = () => {
       localStorage.setItem('pysanka_region', JSON.stringify(state.currentRegion));
       window.location.href = 'phase3.html';
     };
- 
+
     window.addEventListener('resize', () => {
       if (camera && renderer) {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -627,7 +742,7 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
       }
     });
- 
+
     window.addEventListener('DOMContentLoaded', () => {
       const app = new PisankaARApp();
       window.addEventListener('beforeunload', () => app.cleanup());
