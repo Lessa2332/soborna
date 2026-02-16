@@ -420,10 +420,10 @@
     // ============ ПОКРАЩЕНІ НАЛАШТУВАННЯ ============
     const CONFIG = {
       // Основні параметри
-      SMOOTHING_FACTOR: 0.7,
+      SMOOTHING_FACTOR: 0.5,               // менше згладжування – швидше слідування
       HAND_NOT_DETECTED_THRESHOLD: 45,
       EGG_SCALE: 0.8,
-      EGG_HEIGHT_OFFSET: 0.25,
+      EGG_HEIGHT_OFFSET: 0.0,               // без зміщення – прямо на долоні
       MIN_SCALE: 0.3,
       MAX_SCALE: 2.2,
       ZOOM_SENSITIVITY: 3.5,
@@ -432,7 +432,6 @@
       // Продуктивність
       FPS_LIMIT: 30,
       PERFORMANCE_MODE: true,
-      USE_WEB_WORKER: true,
       
       // Таймінги
       STABLE_FRAMES_FOR_NEXT: 90,
@@ -491,7 +490,8 @@
       isLowLight: false,
       usingMediaPipe: true,
       usingFallback: false,
-      lastGestureTime: 0
+      lastGestureTime: 0,
+      hiddenByFist: false,                  // новий прапорець – чи схована через кулак
     };
 
     // DOM елементи
@@ -610,9 +610,10 @@
       showGestureFeedback('🔄', 'Обертання', 800);
     };
 
-    // ============ ЦЕНТР ДОЛОНІ ============
+    // ============ ЦЕНТР ДОЛОНІ (точніший) ============
     function getPalmCenter(landmarks) {
-      const points = [0, 5, 9, 13, 17];
+      // Беремо основні точки долоні: зап'ястя (0) та основи пальців (1,5,9,13,17)
+      const points = [0, 1, 5, 9, 13, 17];
       let sumX = 0, sumY = 0;
       points.forEach(idx => {
         sumX += landmarks[idx].x;
@@ -712,9 +713,7 @@
       
       async init() {
         try {
-          // Оновлюємо статус завантаження
           elements.loadingStatus.textContent = 'Запуск камери...';
-          
           await this.setupCamera();
           
           elements.loadingStatus.textContent = 'Ініціалізація 3D...';
@@ -723,7 +722,6 @@
           elements.loadingStatus.textContent = 'Завантаження розпізнавання рук...';
           await this.initHandTracking();
           
-          // Запускаємо перевірку освітлення
           brightnessCheckInterval = setInterval(() => {
             checkBrightness(elements.video);
           }, CONFIG.LIGHTING_CHECK_INTERVAL);
@@ -736,7 +734,6 @@
             elements.regionInfo.innerHTML = `${state.currentRegion.symbol} ${state.currentRegion.name}`;
           }
           
-          // Автоматичний показ кнопки
           setTimeout(() => {
             if (!state.buttonShown) {
               state.buttonShown = true;
@@ -745,7 +742,6 @@
             }
           }, CONFIG.SHOW_BUTTON_DELAY);
           
-          // Показуємо fallback кнопку через 10 секунд якщо немає руки
           setTimeout(() => {
             if (!state.isHandVisible && !state.buttonShown) {
               elements.fallbackBtn.style.display = 'block';
@@ -773,12 +769,10 @@
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         } catch (err) {
-          // Пробуємо без exact
           constraints.video.facingMode = 'environment';
           try {
             stream = await navigator.mediaDevices.getUserMedia(constraints);
           } catch (err2) {
-            // Пробуємо будь-яку камеру
             constraints.video.facingMode = 'user';
             stream = await navigator.mediaDevices.getUserMedia(constraints);
           }
@@ -813,7 +807,6 @@
       
         scene.add(new THREE.AmbientLight(0xffffff, 1.2));
         
-        // Додаємо додаткове світло для кращого вигляду
         const light1 = new THREE.DirectionalLight(0xffffff, 1);
         light1.position.set(1, 1, 1);
         scene.add(light1);
@@ -822,7 +815,6 @@
         light2.position.set(-1, -1, -1);
         scene.add(light2);
         
-        // Додаємо точкове світло для підсвічування
         const pointLight = new THREE.PointLight(0xffaa00, 0.5, 10);
         pointLight.position.set(0, 0, 3);
         scene.add(pointLight);
@@ -838,13 +830,11 @@
         try {
           state.regionTexture = await loader.loadAsync(state.currentRegion.texture);
         } catch {
-          // Створюємо canvas текстуру з символом регіону
           const canvas = document.createElement('canvas');
           canvas.width = 256;
           canvas.height = 256;
           const ctx = canvas.getContext('2d');
           
-          // Градієнт фону
           const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
           gradient.addColorStop(0, '#FFD966');
           gradient.addColorStop(0.5, '#FFB347');
@@ -853,7 +843,6 @@
           ctx.fillStyle = gradient;
           ctx.fillRect(0, 0, 256, 256);
           
-          // Додаємо орнамент
           ctx.strokeStyle = '#FFD966';
           ctx.lineWidth = 2;
           for (let i = 0; i < 8; i++) {
@@ -868,7 +857,6 @@
             ctx.stroke();
           }
           
-          // Додаємо символ регіону
           ctx.fillStyle = '#FFF9E6';
           ctx.font = 'bold 80px "Cormorant Garamond"';
           ctx.fillText(state.currentRegion.symbol, 90, 150);
@@ -883,7 +871,6 @@
         state.eggGroup.scale.set(0, 0, 0);
         scene.add(state.eggGroup);
       
-        // Створюємо форму яйця
         const geometry = new THREE.SphereGeometry(1, 40, 40);
         const positions = geometry.attributes.position;
       
@@ -968,19 +955,42 @@
         }
       
         if (state.usingFallback) {
-          // Touch mode - нічого не робимо
           return;
         }
         
         if (state.landmarks && state.isHandVisible && !state.isLowLight) {
-          if (!state.eggGroup.visible) {
-            state.eggGroup.visible = true;
-            elements.handIndicator.style.display = 'none';
-            this.animateAppear();
+          
+          // Якщо писанка була схована через кулак, але зараз жест не кулак – показуємо
+          if (state.hiddenByFist && state.gesture !== 'fist') {
+            state.hiddenByFist = false;
+            if (!state.eggGroup.visible) {
+              state.eggGroup.visible = true;
+              this.animateAppear();
+            }
           }
-         
-          this.updatePosition();
-          this.applyGestures();
+          
+          // Якщо зараз кулак – ховаємо і запам'ятовуємо, що сховано через кулак
+          if (state.gesture === 'fist') {
+            if (state.eggGroup.visible) {
+              state.eggGroup.visible = false;
+              state.hiddenByFist = true;
+              showGestureFeedback('✊', 'Писанка сховалась', 800);
+            }
+            // Не виконуємо позиціонування та інші жести, поки кулак
+            return;
+          }
+          
+          // Якщо писанка видима – оновлюємо позицію та жести
+          if (state.eggGroup.visible) {
+            this.updatePosition();
+            this.applyGestures();
+          } else {
+            // Якщо не видима і не через кулак – спробуємо показати
+            if (!state.hiddenByFist && !state.eggGroup.visible) {
+              state.eggGroup.visible = true;
+              this.animateAppear();
+            }
+          }
          
           if (!state.buttonShown) {
             state.stableFrames++;
@@ -991,8 +1001,11 @@
             }
           }
         } else {
+          // Рука не видима – ховаємо писанку через деякий час
           if (state.eggGroup.visible && !state.usingFallback) {
-            this.animateDisappear();
+            if (state.handFrames > 10) { // якщо руки немає > 10 кадрів
+              state.eggGroup.visible = false;
+            }
           }
         
           if (state.handFrames > CONFIG.HAND_NOT_DETECTED_THRESHOLD && !state.usingFallback) {
@@ -1019,32 +1032,6 @@
           
           if (progress < 1) {
             requestAnimationFrame(animate);
-          }
-        };
-        
-        animate();
-      }
-      
-      animateDisappear() {
-        const startScale = state.eggGroup.scale.x;
-        const duration = 200;
-        const startTime = Date.now();
-        
-        const animate = () => {
-          const elapsed = Date.now() - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          const easeProgress = Math.pow(1 - progress, 2);
-          
-          state.eggGroup.scale.set(
-            startScale * easeProgress,
-            startScale * easeProgress,
-            startScale * easeProgress
-          );
-          
-          if (progress < 1) {
-            requestAnimationFrame(animate);
-          } else {
-            state.eggGroup.visible = false;
           }
         };
         
@@ -1082,6 +1069,7 @@
       
         const center = getPalmCenter(state.landmarks);
       
+        // Пряме перетворення координат – писанка точно над долонею
         const targetX = (center.x - 0.5) * 5;
         const targetY = (0.5 - center.y) * 3 + CONFIG.EGG_HEIGHT_OFFSET;
       
@@ -1089,8 +1077,9 @@
         const clampedX = THREE.MathUtils.clamp(targetX, -maxX, maxX);
         const clampedY = THREE.MathUtils.clamp(targetY, -maxY, maxY);
       
-        state.eggGroup.position.x += (clampedX - state.eggGroup.position.x) * CONFIG.SMOOTHING_FACTOR;
-        state.eggGroup.position.y += (clampedY - state.eggGroup.position.y) * CONFIG.SMOOTHING_FACTOR;
+        // Менше згладжування – швидше слідування
+        state.eggGroup.position.x += (clampedX - state.eggGroup.position.x) * 0.8;
+        state.eggGroup.position.y += (clampedY - state.eggGroup.position.y) * 0.8;
         state.eggGroup.position.z = 0.1;
       }
       
@@ -1101,12 +1090,6 @@
           showGestureFeedback('✋', 'Чудово!', 1000);
         }
 
-        if (state.gesture === 'fist' && state.prevGesture !== 'fist') {
-          this.animateDisappear();
-          showGestureFeedback('✊', 'Писанка сховалась', 1200);
-          return;
-        }
-      
         if (state.gesture === 'spreading') {
           if (!state.isSpreading) {
             state.isSpreading = true;
