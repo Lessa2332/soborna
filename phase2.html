@@ -217,7 +217,7 @@
     import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
     import { FilesetResolver, HandLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm";
 
-    // ============ 14 РЕГІОНІВ ============
+    // ============ 14 РЕГІОНІВ (СИНХРОНІЗОВАНО З phase1.html) ============
     const REGIONS = [
       { id: 1, name: 'Поділля', texture: 'assets/regions/1-podillya.png', symbol: '🌻' },
       { id: 2, name: 'Полісся', texture: 'assets/regions/2-polissya.png', symbol: '🌲' },
@@ -278,17 +278,15 @@
       currentRegion: currentRegion,
       gesture: 'none',
       prevGesture: 'none',
-      // Розводимо/зводимо пальці - масштабування
       isSpreading: false,
       startSpreadDistance: 0,
       currentScale: CONFIG.EGG_SCALE,
       baseScale: CONFIG.EGG_SCALE,
-      // Обертання
       isRotating: false,
       prevRotationAngle: 0,
       currentRotationY: 0,
-      // Фідбек
-      feedbackTimeout: null
+      feedbackTimeout: null,
+      lastFrameTime: 0  // ← ДОДАНО!
     };
 
     // DOM елементи
@@ -505,50 +503,50 @@
         }
       }
 
-createPisanka() {
-  state.eggGroup = new THREE.Group();
-  state.eggGroup.visible = false;
-  scene.add(state.eggGroup);
- 
-  // Створюємо сферу з більшою деталізацією для плавних форм
-  const geometry = new THREE.SphereGeometry(1, 40, 40);
-  const positions = geometry.attributes.position;
- 
-  // 🔸 КЛЮЧОВА ЗМІНА: пропорції класичної писанки (ширина:висота ≈ 1:1.25)
-  for (let i = 0; i < positions.count; i++) {
-    const x = positions.getX(i);
-    const y = positions.getY(i);
-    const z = positions.getZ(i);
-    
-    // Менше стиснення по горизонталі (0.85 замість 0.7)
-    // Менше розтягування по вертикалі (1.25 замість 1.4)
-    positions.setX(i, x * 0.85);
-    positions.setY(i, y * 1.25);
-    positions.setZ(i, z * 0.85);
-  }
-  geometry.computeVertexNormals();
- 
-  // Додаємо легку закругленість знизу для більш природної форми
-  for (let i = 0; i < positions.count; i++) {
-    const y = positions.getY(i);
-    if (y < -0.8) { // Нижня частина
-      const factor = 1 - Math.abs(y + 1) * 0.3;
-      positions.setY(i, y * factor);
-    }
-  }
-  geometry.computeVertexNormals();
- 
-  const material = new THREE.MeshStandardMaterial({
-    map: state.regionTexture,
-    roughness: 0.35,   // Трохи матовіша поверхня
-    metalness: 0.15,   // Менше блиску — більше схоже на справжню писанку
-    side: THREE.DoubleSide
-  });
- 
-  state.egg = new THREE.Mesh(geometry, material);
-  state.egg.scale.set(state.currentScale, state.currentScale, state.currentScale);
-  state.eggGroup.add(state.egg);
-}
+      createPisanka() {
+        state.eggGroup = new THREE.Group();
+        state.eggGroup.visible = false;
+        scene.add(state.eggGroup);
+       
+        // Створюємо сферу з більшою деталізацією для плавних форм
+        const geometry = new THREE.SphereGeometry(1, 40, 40);
+        const positions = geometry.attributes.position;
+       
+        // 🔸 КЛЮЧОВА ЗМІНА: пропорції класичної писанки (ширина:висота ≈ 1:1.25)
+        for (let i = 0; i < positions.count; i++) {
+          const x = positions.getX(i);
+          const y = positions.getY(i);
+          const z = positions.getZ(i);
+          
+          // Менше стиснення по горизонталі (0.85 замість 0.7)
+          // Менше розтягування по вертикалі (1.25 замість 1.4)
+          positions.setX(i, x * 0.85);
+          positions.setY(i, y * 1.25);
+          positions.setZ(i, z * 0.85);
+        }
+        
+        // Додаємо легку закругленість знизу для більш природної форми
+        for (let i = 0; i < positions.count; i++) {
+          const y = positions.getY(i);
+          if (y < -0.8) { // Нижня частина
+            const factor = 1 - Math.abs(y + 1) * 0.3;
+            positions.setY(i, y * factor);
+          }
+        }
+        geometry.computeVertexNormals();
+       
+        const material = new THREE.MeshStandardMaterial({
+          map: state.regionTexture,
+          roughness: 0.35,
+          metalness: 0.15,
+          side: THREE.DoubleSide
+        });
+       
+        state.egg = new THREE.Mesh(geometry, material);
+        state.egg.scale.set(state.currentScale, state.currentScale, state.currentScale);
+        state.eggGroup.add(state.egg);
+      }
+
       async initHandTracking() {
         try {
           const vision = await FilesetResolver.forVisionTasks(
@@ -750,3 +748,4 @@ createPisanka() {
   </script>
 </body>
 </html>
+
