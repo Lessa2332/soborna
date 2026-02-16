@@ -23,18 +23,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
   <style>
+    /* ============ СПІЛЬНІ ЗМІННІ ============ */
     :root {
-      --bordo: #6a1e2a;
-      --bordo-light: #8b2f3c;
-      --gold: #c9a03d;
-      --gold-light: #e5b73b;
-      --cream: #f5eee6;
-      --brown: #4a2c1a;
-      --beige: #e8d9c0;
-      --dark: #1a1a1a;
+      --bordo: #8B2C2C;
+      --bordo-light: #B23B3B;
+      --gold: #FFB347;
+      --gold-light: #FFD966;
+      --cream: #FFF9E6;
+      --brown: #5A1E1E;
+      --beige: #FFE4B5;
+      --dark: #1A0F0F;
       --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
       --font-body: 'Open Sans', 'Helvetica', sans-serif;
-      --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
+      --shadow-lg: 0 8px 32px rgba(139, 44, 44, 0.3);
       --transition: all 0.3s ease;
     }
     
@@ -49,53 +50,68 @@
       background-color: var(--cream);
       color: var(--dark);
       min-height: 100vh;
-      background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23c9a03d" stroke-width="0.5" opacity="0.1"/></svg>');
+      position: relative;
     }
     
+    /* ============ ФОН З ТЕКСТУРОЮ ============ */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        repeating-linear-gradient(
+          45deg,
+          rgba(255, 179, 71, 0.03) 0px,
+          rgba(255, 179, 71, 0.03) 20px,
+          rgba(139, 44, 44, 0.02) 20px,
+          rgba(139, 44, 44, 0.02) 40px
+        );
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* ============ СТИЛІ ДЛЯ МОБІЛЬНИХ (ЗА ЗАМОВЧУВАННЯМ) ============ */
     .hero {
       text-align: center;
-      padding: 60px 20px;
+      padding: 40px 15px;
       background: linear-gradient(135deg, var(--bordo), var(--brown));
       color: white;
-      margin-bottom: 40px;
-      border-radius: 0 0 50px 50px;
+      margin-bottom: 30px;
+      border-radius: 0 0 30px 30px;
       position: relative;
       overflow: hidden;
     }
     
-    .hero:before {
+    .hero::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23e5b73b" stroke-width="1" opacity="0.1"/></svg>');
+      background: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23FFD966" stroke-width="1" opacity="0.1"/></svg>');
       opacity: 0.2;
     }
     
     .hero h1 {
-      font-size: 48px;
-      color: var(--gold);
-      margin-bottom: 20px;
+      font-size: 36px;
+      color: var(--gold-light);
+      margin-bottom: 15px;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
       position: relative;
     }
     
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 32px;
-      }
-    }
-    
     .egg-animation {
-      width: 150px;
-      height: 210px;
-      margin: 30px auto;
+      width: 120px;
+      height: 168px;
+      margin: 20px auto;
       background: radial-gradient(circle at 30% 30%, var(--gold), var(--bordo));
       border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
       animation: float 3s ease-in-out infinite;
-      box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 15px 25px rgba(0,0,0,0.3);
       position: relative;
       border: 2px solid var(--gold);
     }
@@ -106,128 +122,127 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 60px;
+      font-size: 50px;
       opacity: 0.3;
     }
     
     @keyframes float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
+      50% { transform: translateY(-15px); }
     }
     
     .steps {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 20px;
-    }
-    
-    @media (max-width: 768px) {
-      .steps {
-        grid-template-columns: 1fr;
-        gap: 15px;
-      }
+      grid-template-columns: 1fr;
+      gap: 15px;
+      max-width: 500px;
+      margin: 30px auto;
+      padding: 0 15px;
     }
     
     .step-card {
       background: white;
-      padding: 30px;
+      padding: 20px;
       text-align: center;
       border: 1px solid var(--gold);
-      border-radius: 16px;
+      border-radius: 20px;
       transition: var(--transition);
       cursor: pointer;
       box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
     
     .step-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 12px 40px rgba(106, 30, 42, 0.3);
+      transform: translateX(5px);
+      box-shadow: 0 12px 30px rgba(139, 44, 44, 0.3);
       border-color: var(--bordo);
     }
     
     .step-number {
-      width: 50px;
-      height: 50px;
+      width: 45px;
+      height: 45px;
       background: var(--bordo);
       color: var(--gold);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
-      margin: 0 auto 20px;
       border: 2px solid var(--gold);
+      flex-shrink: 0;
     }
     
     .step-icon {
-      font-size: 48px;
-      margin-bottom: 20px;
+      font-size: 40px;
+      margin-right: 5px;
+    }
+    
+    .step-content {
+      flex: 1;
+      text-align: left;
     }
     
     .step-card h3 {
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       color: var(--bordo);
+      font-size: 20px;
+    }
+    
+    .step-card p {
+      font-size: 14px;
+      opacity: 0.8;
     }
     
     .qr-section {
       text-align: center;
-      padding: 40px;
+      padding: 30px 20px;
       background: var(--beige);
-      border-radius: 30px;
-      margin: 40px auto;
-      max-width: 500px;
+      border-radius: 25px;
+      margin: 30px 15px;
       border: 2px solid var(--gold);
       box-shadow: var(--shadow-lg);
     }
     
     .qr-code {
-      width: 200px;
-      height: 200px;
+      width: 180px;
+      height: 180px;
       background: white;
-      margin: 20px auto;
+      margin: 15px auto;
       padding: 10px;
-      border-radius: 20px;
+      border-radius: 15px;
       border: 2px solid var(--bordo);
       display: flex;
       align-items: center;
       justify-content: center;
     }
     
-    .qr-placeholder {
+    .qr-code img {
       width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, var(--bordo) 25%, var(--gold) 25%, var(--gold) 50%, var(--bordo) 50%, var(--bordo) 75%, var(--gold) 75%);
-      background-size: 20px 20px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 14px;
-      text-align: center;
+      max-width: 160px;
+      height: auto;
+      border-radius: 8px;
     }
     
     .stats-banner {
       background: var(--bordo);
       color: var(--gold);
-      padding: 15px;
+      padding: 12px;
       text-align: center;
-      font-size: 18px;
-      margin: 20px 0;
+      font-size: 16px;
+      margin: 15px 0;
       border-top: 2px solid var(--gold);
       border-bottom: 2px solid var(--gold);
     }
     
     .footer {
       text-align: center;
-      padding: 40px;
+      padding: 30px 20px;
       background: var(--bordo);
       color: white;
-      margin-top: 60px;
+      margin-top: 40px;
       position: relative;
     }
     
@@ -237,18 +252,19 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 5px;
+      height: 3px;
       background: linear-gradient(90deg, transparent, var(--gold), transparent);
     }
     
     .footer-logo {
-      font-size: 48px;
-      margin-bottom: 20px;
+      font-size: 40px;
+      margin-bottom: 15px;
     }
     
     .footer p {
-      margin: 10px 0;
+      margin: 8px 0;
       opacity: 0.9;
+      font-size: 14px;
     }
     
     .region-count {
@@ -256,9 +272,217 @@
       background: var(--gold);
       color: var(--bordo);
       padding: 5px 15px;
-      border-radius: 20px;
+      border-radius: 30px;
       font-weight: bold;
       margin-top: 10px;
+      font-size: 14px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 30px;
+      background: var(--gold);
+      color: var(--bordo);
+      border: none;
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(255, 179, 71, 0.3);
+    }
+    
+    .btn:active {
+      transform: scale(0.95);
+    }
+    
+    /* ============ СТИЛІ ДЛЯ ПЛАНШЕТІВ (ВІД 768px) ============ */
+    @media (min-width: 768px) {
+      .hero {
+        padding: 60px 20px;
+        border-radius: 0 0 50px 50px;
+      }
+      
+      .hero h1 {
+        font-size: 48px;
+      }
+      
+      .egg-animation {
+        width: 150px;
+        height: 210px;
+      }
+      
+      .egg-animation:after {
+        font-size: 60px;
+      }
+      
+      .steps {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 900px;
+        gap: 20px;
+      }
+      
+      .step-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 25px;
+      }
+      
+      .step-content {
+        text-align: center;
+      }
+      
+      .step-number {
+        margin: 0 auto 15px;
+      }
+      
+      .step-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+      }
+      
+      .step-card h3 {
+        font-size: 22px;
+      }
+      
+      .qr-section {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 40px;
+      }
+      
+      .qr-code {
+        width: 220px;
+        height: 220px;
+      }
+      
+      .footer p {
+        font-size: 16px;
+      }
+    }
+    
+    /* ============ СТИЛІ ДЛЯ НОУТБУКІВ (ВІД 1024px) ============ */
+    @media (min-width: 1024px) {
+      .hero {
+        padding: 80px 30px;
+      }
+      
+      .hero h1 {
+        font-size: 64px;
+        letter-spacing: 4px;
+      }
+      
+      .hero p {
+        font-size: 24px !important;
+        max-width: 800px;
+      }
+      
+      .egg-animation {
+        width: 180px;
+        height: 252px;
+        margin: 40px auto;
+      }
+      
+      .steps {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 1200px;
+        gap: 30px;
+        padding: 30px;
+      }
+      
+      .step-card {
+        padding: 35px 25px;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      
+      .step-card:hover {
+        transform: translateY(-15px);
+      }
+      
+      .step-number {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+        margin: 0 auto 20px;
+      }
+      
+      .step-icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+      }
+      
+      .step-card h3 {
+        font-size: 26px;
+        margin-bottom: 12px;
+      }
+      
+      .step-card p {
+        font-size: 18px;
+      }
+      
+      .qr-section {
+        max-width: 700px;
+        margin: 60px auto;
+        padding: 50px;
+      }
+      
+      .qr-section h2 {
+        font-size: 36px !important;
+      }
+      
+      .qr-code {
+        width: 250px;
+        height: 250px;
+      }
+      
+      .stats-banner {
+        font-size: 22px;
+        padding: 18px;
+      }
+      
+      .region-count {
+        font-size: 18px;
+        padding: 8px 25px;
+      }
+      
+      .footer {
+        padding: 50px;
+      }
+      
+      .footer-logo {
+        font-size: 56px;
+      }
+      
+      .footer p {
+        font-size: 18px;
+      }
+      
+      .btn {
+        padding: 15px 40px;
+        font-size: 22px;
+      }
+      
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 179, 71, 0.5);
+      }
+    }
+    
+    /* ============ СТИЛІ ДЛЯ ВЕЛИКИХ ЕКРАНІВ (ВІД 1440px) ============ */
+    @media (min-width: 1440px) {
+      .hero h1 {
+        font-size: 72px;
+      }
+      
+      .steps {
+        max-width: 1400px;
+      }
+      
+      .qr-section {
+        max-width: 800px;
+      }
     }
   </style>
 </head>
@@ -269,36 +493,44 @@
     <p style="font-size: 20px; max-width: 600px; margin: 20px auto;">
       Інтерактивна AR-подорож у світ духовних координат
     </p>
-    <div class="region-count"> Україна</div>
+    <div class="region-count">🇺🇦 Україна</div>
   </div>
   
   <div class="steps">
     <div class="step-card" onclick="location.href='phase1.html'">
       <div class="step-number">1</div>
       <div class="step-icon">🔮</div>
-      <h3>Поклик предків</h3>
-      <p>Дізнайся свій ДНК-код</p>
+      <div class="step-content">
+        <h3>Поклик предків</h3>
+        <p>Дізнайся свій ДНК-код</p>
+      </div>
     </div>
     
     <div class="step-card" onclick="location.href='phase2.html'">
       <div class="step-number">2</div>
       <div class="step-icon">👆</div>
-      <h3>На долоні</h3>
-      <p>Керуй жестами </p>
+      <div class="step-content">
+        <h3>На долоні</h3>
+        <p>Керуй жестами</p>
+      </div>
     </div>
     
     <div class="step-card" onclick="location.href='phase3.html'">
       <div class="step-number">3</div>
       <div class="step-icon">⚡</div>
-      <h3>Передай енергію</h3>
-      <p>Залиш своє ім'я на карті</p>
+      <div class="step-content">
+        <h3>Передай енергію</h3>
+        <p>Залиш своє ім'я на карті</p>
+      </div>
     </div>
     
     <div class="step-card" onclick="location.href='dashboard.html'">
       <div class="step-number">4</div>
       <div class="step-icon">🥚</div>
-      <h3>Соборність</h3>
-      <p>Побач єднання всіх регіонів</p>
+      <div class="step-content">
+        <h3>Соборність</h3>
+        <p>Побач єднання всіх регіонів</p>
+      </div>
     </div>
   </div>
   
@@ -307,54 +539,28 @@
     <span id="participantsCount">0</span> учасників уже долучилися до Соборної Писанки!
   </div>
   
-<div class="qr-section" style="
-    background: linear-gradient(135deg, #f5eee6 0%, #e8d9c0 100%);
-    padding: 30px;
-    border-radius: 30px;
-    text-align: center;
-    max-width: 400px;
-    margin: 0 auto;
-    box-shadow: var(--shadow-lg);
-    border: 2px solid var(--gold);
-">
+  <div class="qr-section">
     <h2 style="color: var(--bordo); font-family: 'Cormorant Garamond', serif; margin-bottom: 20px; font-size: 28px;">
-        🥚 Скануй для участі
+      🥚 Скануй для участі
     </h2>
-    <div class="qr-code" id="qrCode" style="
-        background: white;
-        padding: 15px;
-        border-radius: 20px;
-        display: inline-block;
-        box-shadow: 0 10px 30px rgba(106, 30, 42, 0.2);
-    ">
-        <img src="qr-code.png" 
-             alt="QR-код" 
-             style="width: 100%; max-width: 250px; height: auto; display: block; border-radius: 10px;">
+    <div class="qr-code">
+      <img src="qr-code.png" alt="QR-код">
     </div>
     <p style="margin: 20px 0; color: var(--brown); font-size: 18px;">
-        Наведи камеру смартфона, щоб розпочати подорож
+      Наведи камеру смартфона, щоб розпочати подорож
     </p>
-    <button class="btn" onclick="window.location.href='phase1.html'" style="
-        background: var(--gold);
-        color: var(--bordo);
-        border: none;
-        padding: 12px 30px;
-        font-size: 18px;
-        border-radius: 50px;
-        cursor: pointer;
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 600;
-        transition: all 0.3s;
-    ">
-        🥚 Почати подорож
+    <button class="btn" onclick="window.location.href='phase1.html'">
+      🥚 Почати подорож
     </button>
-</div>
+  </div>
   
   <div class="footer">
-    <img src="assets/logo-museum.png" alt="Хаб Писанкарство" style="height: 50px; margin-bottom: 20px; filter: brightness(0) invert(1);">
+    <div class="footer-logo">🥚</div>
+    <img src="assets/logo-museum.png" alt="Хаб Писанкарство" style="height: 40px; margin-bottom: 15px; filter: brightness(0) invert(1);">
     <p>Проєкт створено для ХАБ Писанкарство</p>
     <p>© 2025 | SmartLessa | Олеся Бохонок</p>
   </div>
+  
   <script>
     // ============ СТАТИСТИКА ============
     function updateStats() {
@@ -371,22 +577,6 @@
       }
     }
     
-    // ============ QR-КОД ============
-    function generateQR() {
-      const qrPlaceholder = document.getElementById('qrPlaceholder');
-      const currentUrl = window.location.href;
-      
-      // Простий варіант - текстове посилання
-      qrPlaceholder.innerHTML = '🔗<br>' + currentUrl.replace('https://', '').substring(0, 20) + '...';
-      qrPlaceholder.style.background = 'linear-gradient(45deg, #6a1e2a, #c9a03d)';
-      qrPlaceholder.style.fontSize = '12px';
-      
-      // Тут можна підключити реальну бібліотеку QR-коду
-      // Наприклад: https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js
-      
-      alert('👉 Відскануй QR-код камерою смартфона, щоб розпочати!');
-    }
-    
     // ============ ПЕРЕВІРКА РЕГІОНІВ ============
     function checkRegion() {
       const savedRegion = localStorage.getItem('pysanka_region');
@@ -398,13 +588,27 @@
       }
     }
     
-    // ============ ОЧИЩЕННЯ ДАНИХ (опціонально) ============
+    // ============ ОЧИЩЕННЯ ДАНИХ ============
     function resetAllData() {
       if (confirm('Очистити всі дані про учасників?')) {
         localStorage.removeItem('pysanka_participants');
-        localStorage.removeItem('pysanka_stats');
         localStorage.removeItem('pysanka_region');
         location.reload();
+      }
+    }
+    
+    // ============ ВИЗНАЧЕННЯ ТИПУ ПРИСТРОЮ ============
+    function detectDevice() {
+      const width = window.innerWidth;
+      if (width < 768) {
+        console.log('📱 Мобільний пристрій');
+        document.body.classList.add('mobile-device');
+      } else if (width < 1024) {
+        console.log('📟 Планшет');
+        document.body.classList.add('tablet-device');
+      } else {
+        console.log('💻 Ноутбук/ПК');
+        document.body.classList.add('desktop-device');
       }
     }
     
@@ -412,42 +616,22 @@
     document.addEventListener('DOMContentLoaded', function() {
       updateStats();
       checkRegion();
+      detectDevice();
       
-      // Додаємо кнопку скидання (приховану, для розробника)
-      // можна активувати подвійним кліком на лого
+      // Додаємо кнопку скидання (подвійний клік на лого)
       document.querySelector('.footer-logo').addEventListener('dblclick', function() {
         resetAllData();
       });
+      
+      // Додаємо обробник зміни розміру вікна
+      let resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+          detectDevice();
+        }, 250);
+      });
     });
   </script>
-  
-  <style>
-    /* Додаткові стилі для кнопок */
-    .btn {
-      display: inline-block;
-      padding: 8px 20px;
-      background: transparent;
-      border: 2px solid var(--bordo);
-      color: var(--bordo);
-      font-family: var(--font-heading);
-      font-size: 14px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: var(--transition);
-      text-decoration: none;
-      border-radius: 30px;
-    }
-    
-    .btn:hover {
-      background: var(--bordo);
-      color: white;
-    }
-  </style>
 </body>
 </html>
-
-
-
-
