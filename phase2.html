@@ -179,14 +179,16 @@
       { id: 14, name: 'Луганщина', texture: 'assets/regions/14-luhansk.png', symbol: '🌻' }
     ];
 
+    // ============ ЗМІНЕНО РОЗМІРИ ============
     const CONFIG = {
       SMOOTHING_FACTOR: 0.6,
       HAND_NOT_DETECTED_THRESHOLD: 30,
-      EGG_SCALE: 0.15,
-      EGG_HEIGHT_OFFSET: 0.3,
-      MIN_SCALE: 0.05,
-      MAX_SCALE: 0.5,
-      ZOOM_SENSITIVITY: 0.02,
+      // ⬇⬇⬇ ЗБІЛЬШЕНО РОЗМІР ПИСАНКИ ⬇⬇⬇
+      EGG_SCALE: 0.8,           // Було 0.15, тепер 0.8 (в 5 разів більше!)
+      EGG_HEIGHT_OFFSET: 0.2,   // Трохи зміщено, щоб краще сиділо на руці
+      MIN_SCALE: 0.3,           // Мінімальний розмір тепер більший
+      MAX_SCALE: 1.5,           // Максимальний - ще більше
+      ZOOM_SENSITIVITY: 0.05,
       ROTATION_SENSITIVITY: 2.0
     };
 
@@ -376,6 +378,7 @@
         const geometry = new THREE.SphereGeometry(1, 32, 32);
         const positions = geometry.attributes.position;
         
+        // Робимо форму яйця
         for (let i = 0; i < positions.count; i++) {
           const x = positions.getX(i);
           const y = positions.getY(i);
@@ -390,15 +393,28 @@
         const material = new THREE.MeshStandardMaterial({
           map: state.regionTexture,
           color: 0xffffff,
-          roughness: 0.5,
-          metalness: 0,
+          roughness: 0.3,        // Зменшив шорсткість - більш глянсова
+          metalness: 0.1,
           emissive: 0x000000,
           emissiveIntensity: 0
         });
         
         state.egg = new THREE.Mesh(geometry, material);
+        // Встановлюємо початковий розмір
         state.egg.scale.set(CONFIG.EGG_SCALE, CONFIG.EGG_SCALE, CONFIG.EGG_SCALE);
         state.eggGroup.add(state.egg);
+        
+        // Додаємо легке світіння
+        const glowMaterial = new THREE.MeshStandardMaterial({
+          color: 0xe5b73b,
+          emissive: 0xe5b73b,
+          emissiveIntensity: 0.2,
+          transparent: true,
+          opacity: 0.3
+        });
+        const glowEgg = new THREE.Mesh(geometry, glowMaterial);
+        glowEgg.scale.set(CONFIG.EGG_SCALE * 1.05, CONFIG.EGG_SCALE * 1.05, CONFIG.EGG_SCALE * 1.05);
+        state.eggGroup.add(glowEgg);
       }
 
       async initHandTracking() {
@@ -477,22 +493,20 @@
       updatePosition() {
         if (!state.landmarks) return;
         
-        // Центр долоні - використовуємо середнє між основою пальців
-        const baseIndices = [0, 5, 9, 13, 17];
-        let centerX = 0, centerY = 0;
-        for (const idx of baseIndices) {
-          centerX += state.landmarks[idx].x;
-          centerY += state.landmarks[idx].y;
-        }
-        centerX /= baseIndices.length;
-        centerY /= baseIndices.length;
+        // Використовуємо центр долоні (точка 0 - основа долоні)
+        const palmX = state.landmarks[0].x;
+        const palmY = state.landmarks[0].y;
         
-        const x = (centerX - 0.5) * 8;
-        const y = (0.5 - centerY) * 6 + CONFIG.EGG_HEIGHT_OFFSET;
+        // Перетворюємо координати в простір Three.js
+        const x = (palmX - 0.5) * 8;
+        const y = (0.5 - palmY) * 6 + CONFIG.EGG_HEIGHT_OFFSET;
         
         if (state.eggGroup) {
           state.eggGroup.position.x += (x - state.eggGroup.position.x) * CONFIG.SMOOTHING_FACTOR;
           state.eggGroup.position.y += (y - state.eggGroup.position.y) * CONFIG.SMOOTHING_FACTOR;
+          
+          // Трохи відсуваємо від камери, щоб краще виглядало
+          state.eggGroup.position.z = 0.2;
           
           if (!elements.nextBtn.style.display || elements.nextBtn.style.display === 'none') {
             setTimeout(() => {
