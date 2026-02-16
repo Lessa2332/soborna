@@ -10,19 +10,22 @@
   
   <style>
     :root {
-      --bordo: #6a1e2a;
-      --bordo-light: #8b2f3c;
-      --gold: #c9a03d;
-      --gold-light: #e5b73b;
-      --cream: #f5eee6;
-      --brown: #4a2c1a;
-      --beige: #e8d9c0;
-      --dark: #1a1a1a;
-      --red-scanner: #ff3333;
-      --red-scanner-glow: #ff0000;
+      --bordo: #8B2C2C;
+      --bordo-light: #B23B3B;
+      --gold: #FFB347;
+      --gold-light: #FFD966;
+      --cream: #FFF9E6;
+      --brown: #5A1E1E;
+      --beige: #FFE4B5;
+      --dark: #1A0F0F;
+      --dna-green: #4CAF50;
+      --dna-blue: #2196F3;
+      --dna-red: #F44336;
+      --dna-yellow: #FFC107;
+      --scanner-glow: #00FFFF;
       --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
       --font-body: 'Open Sans', 'Helvetica', sans-serif;
-      --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
+      --shadow-lg: 0 8px 32px rgba(139, 44, 44, 0.3);
       --transition: all 0.3s ease;
     }
     
@@ -37,7 +40,7 @@
       background-color: var(--cream);
       color: var(--dark);
       min-height: 100vh;
-      background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23c9a03d" stroke-width="0.5" opacity="0.1"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23FFB347" stroke-width="0.5" opacity="0.1"/></svg>');
     }
     
     .container {
@@ -52,10 +55,11 @@
       text-align: center;
       font-size: 36px;
       margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
     
     .ornament {
-      background-image: url('data:image/svg+xml;utf8,<svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg"><path d="M10 15 L30 5 L50 15 L70 5 L90 15 L110 5" stroke="%23c9a03d" fill="none" stroke-width="1.5"/><circle cx="20" cy="15" r="2" fill="%236a1e2a"/><circle cx="50" cy="15" r="2" fill="%236a1e2a"/><circle cx="80" cy="15" r="2" fill="%236a1e2a"/><circle cx="110" cy="15" r="2" fill="%236a1e2a"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg"><path d="M10 15 L30 5 L50 15 L70 5 L90 15 L110 5" stroke="%23FFB347" fill="none" stroke-width="1.5"/><circle cx="20" cy="15" r="2" fill="%238B2C2C"/><circle cx="50" cy="15" r="2" fill="%238B2C2C"/><circle cx="80" cy="15" r="2" fill="%238B2C2C"/><circle cx="110" cy="15" r="2" fill="%238B2C2C"/></svg>');
       height: 30px;
       width: 100%;
       background-repeat: repeat-x;
@@ -66,80 +70,130 @@
     /* ============ ОСНОВА ДЛЯ ПИСАНКИ ============ */
     .pysanka-base {
       position: relative;
-      width: 200px;
-      height: 260px;
+      width: 240px;
+      height: 320px;
       margin: 0 auto 20px;
       background: linear-gradient(145deg, var(--bordo), var(--brown));
       border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
       border: 4px solid var(--gold);
-      box-shadow: var(--shadow-lg), inset 0 0 30px rgba(201, 160, 61, 0.3);
+      box-shadow: var(--shadow-lg), inset 0 0 50px rgba(255, 179, 71, 0.5);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-    }
-    
-    /* Контейнер для hub.png всередині писанки */
-    .hub-container {
       position: relative;
-      width: 160px;
-      height: 160px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
     }
     
-    .hub-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: drop-shadow(0 0 15px var(--gold));
-      transition: all 0.3s ease;
-      animation: hubPulse 3s ease-in-out infinite;
-    }
-    
-    @keyframes hubPulse {
-      0%, 100% {
-        transform: scale(1);
-        filter: drop-shadow(0 0 15px var(--gold));
-      }
-      50% {
-        transform: scale(1.05);
-        filter: drop-shadow(0 0 25px var(--gold-light));
-      }
-    }
-    
-    /* Декоративні елементи навколо hub.png */
-    .hub-ornament {
+    /* ДНК-спіраль навколо писанки */
+    .dna-helix {
       position: absolute;
       top: -10px;
       left: -10px;
       right: -10px;
       bottom: -10px;
-      border: 2px solid rgba(229, 183, 59, 0.3);
-      border-radius: 50%;
-      animation: ornamentRotate 20s linear infinite;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 15px,
+        rgba(76, 175, 80, 0.1) 15px,
+        rgba(33, 150, 243, 0.1) 30px
+      );
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: dnaRotate 20s linear infinite;
       pointer-events: none;
+      z-index: 1;
     }
     
-    @keyframes ornamentRotate {
+    @keyframes dnaRotate {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
     
-    .hub-ornament::before {
-      content: '';
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      right: 20px;
-      bottom: 20px;
-      border: 2px dashed rgba(229, 183, 59, 0.2);
-      border-radius: 50%;
+    /* Контейнер для відбитка пальця */
+    .fingerprint-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
     }
     
-    /* ============ ЧЕРВОНИЙ СКАНЕР ============ */
+    /* Відбиток пальця (SVG) */
+    .fingerprint-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 20px rgba(255, 179, 71, 0.8));
+      animation: fingerprintPulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes fingerprintPulse {
+      0%, 100% { 
+        filter: drop-shadow(0 0 20px var(--gold)) brightness(1);
+        transform: scale(1);
+      }
+      50% { 
+        filter: drop-shadow(0 0 40px var(--gold-light)) brightness(1.2);
+        transform: scale(1.05);
+      }
+    }
+    
+    /* Лінії ДНК всередині писанки */
+    .dna-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 10px,
+          rgba(255, 255, 255, 0.05) 10px,
+          rgba(255, 255, 255, 0.05) 20px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 10px,
+          rgba(255, 215, 0, 0.05) 10px,
+          rgba(255, 215, 0, 0.05) 20px
+        );
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      pointer-events: none;
+      z-index: 2;
+    }
+    
+    /* Скануючі промені */
+    .scanning-rays {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(
+        from 0deg,
+        transparent,
+        rgba(0, 255, 255, 0.2),
+        rgba(76, 175, 80, 0.2),
+        rgba(255, 193, 7, 0.2),
+        transparent
+      );
+      transform: translate(-50%, -50%);
+      animation: raysRotate 8s linear infinite;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0.5;
+    }
+    
+    @keyframes raysRotate {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    /* ============ ПОКРАЩЕНИЙ СКАНЕР ============ */
     .scanner-container {
       position: absolute;
       top: 0;
@@ -147,137 +201,184 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 10;
+      z-index: 20;
     }
     
-    .scanner-line {
+    /* Горизонтальна лінія сканування */
+    .scanner-line-horizontal {
       position: absolute;
-      bottom: 0;
       left: 0;
       width: 100%;
-      height: 4px;
+      height: 3px;
       background: linear-gradient(90deg, 
-        transparent 0%, 
-        var(--red-scanner) 20%, 
-        var(--red-scanner-glow) 50%, 
-        var(--red-scanner) 80%, 
+        transparent 0%,
+        var(--scanner-glow) 20%,
+        #fff 50%,
+        var(--scanner-glow) 80%,
         transparent 100%);
-      box-shadow: 0 0 20px var(--red-scanner-glow);
-      animation: scan 2s ease-in-out infinite;
+      box-shadow: 0 0 30px var(--scanner-glow), 0 0 60px #00ffff;
+      animation: scanHorizontal 3s ease-in-out infinite;
+      z-index: 25;
     }
     
-    .scanner-line::before {
-      content: '';
+    @keyframes scanHorizontal {
+      0% { top: 0; opacity: 0.3; }
+      25% { top: 25%; opacity: 1; }
+      50% { top: 50%; opacity: 0.8; }
+      75% { top: 75%; opacity: 1; }
+      100% { top: 100%; opacity: 0.3; }
+    }
+    
+    /* Вертикальна лінія сканування */
+    .scanner-line-vertical {
       position: absolute;
-      top: -10px;
-      left: 0;
-      width: 100%;
-      height: 10px;
+      top: 0;
+      width: 3px;
+      height: 100%;
       background: linear-gradient(180deg, 
-        rgba(255, 51, 51, 0.3) 0%,
+        transparent 0%,
+        var(--scanner-glow) 20%,
+        #fff 50%,
+        var(--scanner-glow) 80%,
         transparent 100%);
+      box-shadow: 0 0 30px var(--scanner-glow), 0 0 60px #00ffff;
+      animation: scanVertical 3s ease-in-out infinite;
+      z-index: 25;
     }
     
-    .scanner-line::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 0;
-      width: 100%;
-      height: 10px;
-      background: linear-gradient(0deg, 
-        rgba(255, 51, 51, 0.3) 0%,
-        transparent 100%);
+    @keyframes scanVertical {
+      0% { left: 0; opacity: 0.3; }
+      25% { left: 25%; opacity: 1; }
+      50% { left: 50%; opacity: 0.8; }
+      75% { left: 75%; opacity: 1; }
+      100% { left: 100%; opacity: 0.3; }
     }
     
-    @keyframes scan {
-      0% {
-        opacity: 0.5;
-        transform: translateY(0);
-      }
-      25% {
-        opacity: 1;
-        transform: translateY(-10px);
-      }
-      50% {
-        opacity: 0.8;
-        transform: translateY(-20px);
-      }
-      75% {
-        opacity: 1;
-        transform: translateY(-10px);
-      }
-      100% {
-        opacity: 0.5;
-        transform: translateY(0);
-      }
-    }
-    
-    .scan-overlay {
+    /* Сітка сканування */
+    .scan-grid {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(180deg,
-        transparent 0%,
-        rgba(255, 51, 51, 0.15) 45%,
-        rgba(255, 51, 51, 0.3) 50%,
-        rgba(255, 51, 51, 0.15) 55%,
-        transparent 100%);
-      pointer-events: none;
-      animation: scanOverlay 2s ease-in-out infinite;
+      background-image: 
+        linear-gradient(to right, rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      animation: gridPulse 2s ease-in-out infinite;
+      z-index: 21;
     }
     
-    @keyframes scanOverlay {
-      0% { transform: translateY(-100%); }
-      50% { transform: translateY(0); }
-      100% { transform: translateY(100%); }
+    @keyframes gridPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
     }
     
-    .scanning-indicator {
+    /* Точки сканування */
+    .scan-dots {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 12px;
-      height: 12px;
-      background: var(--red-scanner);
-      border-radius: 50%;
-      box-shadow: 0 0 15px var(--red-scanner-glow);
-      animation: blink 1s infinite;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle at center, 
+        rgba(0, 255, 255, 0.3) 1px, 
+        transparent 1px);
+      background-size: 30px 30px;
+      animation: dotsMove 10s linear infinite;
+      z-index: 22;
     }
     
-    @keyframes blink {
-      0%, 100% { opacity: 0.5; }
+    @keyframes dotsMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 30px 30px; }
+    }
+    
+    /* ДНК-ланцюжки, що рухаються */
+    .dna-chains {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(76, 175, 80, 0.2) 20px,
+        rgba(33, 150, 243, 0.2) 40px
+      );
+      animation: chainsMove 5s linear infinite;
+      z-index: 23;
+      opacity: 0.5;
+    }
+    
+    @keyframes chainsMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 40px; }
+    }
+    
+    /* Лічильник ДНК */
+    .dna-counter {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: var(--scanner-glow);
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: monospace;
+      border: 1px solid var(--scanner-glow);
+      box-shadow: 0 0 10px var(--scanner-glow);
+      z-index: 30;
+      animation: counterGlow 1s infinite;
+    }
+    
+    @keyframes counterGlow {
+      0%, 100% { opacity: 0.7; }
       50% { opacity: 1; }
     }
     
-    /* Анімація для hub.png під час сканування */
-    .scanning-hub {
-      animation: scanningHub 0.5s ease-in-out infinite !important;
+    /* Декоративні елементи */
+    .hub-ornament {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 2px solid rgba(255, 179, 71, 0.3);
+      border-radius: 50%;
+      animation: ornamentRotate 20s linear infinite;
+      pointer-events: none;
+      z-index: 4;
     }
     
-    @keyframes scanningHub {
-      0%, 100% { 
-        opacity: 0.8;
-        filter: drop-shadow(0 0 10px var(--red-scanner));
-      }
-      50% { 
-        opacity: 1;
-        filter: drop-shadow(0 0 25px var(--red-scanner-glow));
-      }
+    @keyframes ornamentRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
     
-    /* Інші елементи */
+    /* Анімація сканування */
+    .scanning-active .scanner-line-horizontal,
+    .scanning-active .scanner-line-vertical {
+      animation-play-state: running;
+    }
+    
+    .scanning-active .scan-grid {
+      animation: gridPulse 0.5s ease-in-out infinite;
+    }
+    
+    /* ============ ІНШІ ЕЛЕМЕНТИ ============ */
     .magic-mirror {
       position: relative;
-      width: 280px;
-      height: 380px;
+      width: 300px;
+      height: 400px;
       margin: 30px auto;
       background: linear-gradient(145deg, var(--bordo), var(--brown));
       border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
       border: 8px solid var(--gold);
-      box-shadow: var(--shadow-lg), inset 0 0 30px rgba(201, 160, 61, 0.3);
+      box-shadow: var(--shadow-lg), inset 0 0 60px rgba(255, 179, 71, 0.5);
       cursor: pointer;
       overflow: hidden;
       transition: var(--transition);
@@ -285,7 +386,7 @@
     
     .magic-mirror:hover {
       transform: scale(1.02);
-      box-shadow: 0 0 40px var(--gold);
+      box-shadow: 0 0 50px var(--gold);
     }
     
     .mirror-content {
@@ -294,7 +395,7 @@
       left: 10px;
       right: 10px;
       bottom: 10px;
-      background: rgba(26, 26, 26, 0.7);
+      background: rgba(26, 26, 26, 0.8);
       border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
       display: flex;
       flex-direction: column;
@@ -304,6 +405,7 @@
       color: var(--gold);
       font-family: var(--font-heading);
       text-align: center;
+      backdrop-filter: blur(5px);
     }
     
     .region-display {
@@ -314,7 +416,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      text-shadow: 0 0 10px rgba(229, 183, 59, 0.5);
+      text-shadow: 0 0 15px var(--gold);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px 20px;
+      border-radius: 50px;
+      border: 1px solid var(--gold);
     }
     
     .runes-container {
@@ -332,12 +438,6 @@
       animation: runeGlow 3s infinite;
     }
     
-    .rune:nth-child(1) { animation-delay: 0s; }
-    .rune:nth-child(2) { animation-delay: 0.5s; }
-    .rune:nth-child(3) { animation-delay: 1s; }
-    .rune:nth-child(4) { animation-delay: 1.5s; }
-    .rune:nth-child(5) { animation-delay: 2s; }
-    
     @keyframes runeGlow {
       0%, 100% { opacity: 0.2; }
       50% { opacity: 0.8; background: var(--gold-light); }
@@ -349,25 +449,29 @@
       color: var(--cream);
       max-width: 300px;
       margin: 20px auto;
-      text-shadow: 0 0 8px rgba(255, 51, 51, 0.5);
+      text-shadow: 0 0 8px var(--scanner-glow);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      border-radius: 30px;
     }
     
     .progress-bar {
       width: 80%;
-      height: 4px;
-      background: rgba(201, 160, 61, 0.3);
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
       margin: 20px auto;
-      border-radius: 2px;
+      border-radius: 3px;
       overflow: hidden;
       display: none;
+      border: 1px solid var(--gold);
     }
     
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--gold-light), var(--gold));
+      background: linear-gradient(90deg, var(--scanner-glow), var(--gold));
       transition: width 4s linear;
-      box-shadow: 0 0 10px var(--gold);
+      box-shadow: 0 0 20px var(--scanner-glow);
     }
     
     .btn {
@@ -387,6 +491,7 @@
       position: relative;
       overflow: hidden;
       z-index: 1;
+      border-radius: 50px;
     }
     
     .btn:before {
@@ -421,6 +526,28 @@
     .btn-gold:hover {
       color: var(--bordo);
     }
+    
+    /* Адаптивність */
+    @media (max-width: 768px) {
+      .magic-mirror {
+        width: 280px;
+        height: 360px;
+      }
+      
+      .pysanka-base {
+        width: 200px;
+        height: 260px;
+      }
+      
+      .fingerprint-container {
+        width: 100px;
+        height: 100px;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -428,29 +555,82 @@
     
     <div class="ornament"></div>
     
-    <h1>Поклик предків</h1>
-    <p style="text-align: center; color: var(--bordo); margin-bottom: 40px;">Доторкнись до чарівної писанки, щоб дізнатись свій край</p>
+    <h1>🧬 ПОКЛИК ПРЕДКІВ 🧬</h1>
+    <p style="text-align: center; color: var(--bordo); margin-bottom: 30px;">Сканування генетичного коду...</p>
     
     <div class="magic-mirror" id="magicMirror" onclick="startRitual()">
       <div class="mirror-content">
         
-        <!-- Писанка з hub.png всередині -->
-        <div class="pysanka-base">
-          <div class="hub-container">
-            <img src="assets/hub.png" alt="Соборна Писанка" id="hubImage">
-            <div class="hub-ornament"></div>
+        <!-- Писанка з ДНК-сканером -->
+        <div class="pysanka-base" id="pysankaBase">
+          <!-- ДНК-спіраль навколо -->
+          <div class="dna-helix"></div>
+          
+          <!-- Лінії ДНК всередині -->
+          <div class="dna-lines"></div>
+          
+          <!-- Контейнер з відбитком пальця -->
+          <div class="fingerprint-container">
+            <!-- Відбиток пальця (SVG) -->
+            <svg class="fingerprint-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <!-- Основні лінії відбитка -->
+              <path d="M50 20 Q60 30 55 40 Q50 50 45 40 Q40 30 50 20" 
+                    stroke="#FFD966" stroke-width="1.5" fill="none" opacity="0.8"/>
+              <path d="M45 30 Q50 35 55 30" 
+                    stroke="#FFD966" stroke-width="1" fill="none" opacity="0.6"/>
+              <path d="M40 45 Q45 50 50 45 Q55 40 60 45" 
+                    stroke="#FFD966" stroke-width="1.5" fill="none" opacity="0.8"/>
+              <path d="M35 55 Q40 60 45 55 Q50 50 55 55 Q60 60 65 55" 
+                    stroke="#FFD966" stroke-width="2" fill="none" opacity="0.9"/>
+              <path d="M30 65 Q35 70 40 65 Q45 60 50 65 Q55 70 60 65 Q65 70 70 65" 
+                    stroke="#FFD966" stroke-width="2" fill="none" opacity="0.9"/>
+              <path d="M42 70 Q45 75 48 70 Q50 65 52 70 Q55 75 58 70" 
+                    stroke="#FFD966" stroke-width="1.5" fill="none" opacity="0.7"/>
+              <path d="M55 75 Q58 80 61 75" 
+                    stroke="#FFD966" stroke-width="1" fill="none" opacity="0.5"/>
+              
+              <!-- Центральна точка -->
+              <circle cx="50" cy="50" r="3" fill="#FFD966" filter="url(#glow)"/>
+              
+              <!-- Додаткові лінії для реалістичності -->
+              <path d="M48 25 Q52 28 48 31" stroke="#FFB347" stroke-width="1" fill="none" opacity="0.4"/>
+              <path d="M52 35 Q48 38 52 41" stroke="#FFB347" stroke-width="1" fill="none" opacity="0.4"/>
+              <path d="M38 48 Q42 52 38 56" stroke="#FFB347" stroke-width="1" fill="none" opacity="0.4"/>
+              <path d="M62 48 Q58 52 62 56" stroke="#FFB347" stroke-width="1" fill="none" opacity="0.4"/>
+              
+              <!-- Фільтр для сяйва -->
+              <defs>
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="2" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+            </svg>
           </div>
           
-          <!-- Сканер накладається поверх писанки -->
+          <!-- Скануючі промені -->
+          <div class="scanning-rays"></div>
+          
+          <!-- ДНК-ланцюжки -->
+          <div class="dna-chains"></div>
+          
+          <!-- Сканер -->
           <div class="scanner-container" id="scannerContainer" style="display: none;">
-            <div class="scanner-line" id="scannerLine"></div>
-            <div class="scan-overlay" id="scanOverlay"></div>
-            <div class="scanning-indicator" id="scanIndicator"></div>
+            <div class="scan-grid"></div>
+            <div class="scan-dots"></div>
+            <div class="scanner-line-horizontal" id="scannerLineH"></div>
+            <div class="scanner-line-vertical" id="scannerLineV"></div>
+            
+            <!-- Лічильник ДНК -->
+            <div class="dna-counter" id="dnaCounter">00.00%</div>
           </div>
         </div>
         
         <div id="initialMessage" class="oracle-text">
-          Торкнись, щоб пробудити пам'ять роду...
+          Торкнись для сканування ДНК...
         </div>
         
         <div id="regionDisplay" class="region-display"></div>
@@ -473,7 +653,7 @@
     
     <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
       <button class="btn" onclick="resetRitual()" id="resetBtn" style="display: none;">Повторити</button>
-      <a href="phase2.html" class="btn btn-gold" id="continueBtn" style="display: none;">Торкнутися історії</a>
+      <a href="phase2.html" class="btn btn-gold" id="continueBtn" style="display: none;">Далі →</a>
     </div>
     
     <input type="hidden" id="selectedRegion" value="">
@@ -502,24 +682,35 @@
     ];
     
     let currentRegion = null;
+    let scanInterval = null;
     
     function startRitual() {
-      const hubImage = document.getElementById('hubImage');
+      const magicMirror = document.getElementById('magicMirror');
+      const scannerContainer = document.getElementById('scannerContainer');
       const initialMsg = document.getElementById('initialMessage');
       const runes = document.querySelectorAll('.rune');
       const progressBar = document.getElementById('progressBar');
       const progressFill = document.getElementById('progressFill');
-      const magicMirror = document.getElementById('magicMirror');
-      const scannerContainer = document.getElementById('scannerContainer');
+      const dnaCounter = document.getElementById('dnaCounter');
       
       magicMirror.style.pointerEvents = 'none';
       
       // Активуємо сканер
       scannerContainer.style.display = 'block';
+      magicMirror.classList.add('scanning-active');
       
-      // Додаємо анімацію сканування до hub.png
-      hubImage.classList.add('scanning-hub');
-      initialMsg.innerHTML = '🔴 Сканування... Прислухаюсь до голосу предків...';
+      // Анімація лічильника ДНК
+      let percent = 0;
+      if (scanInterval) clearInterval(scanInterval);
+      scanInterval = setInterval(() => {
+        percent = Math.min(percent + Math.random() * 5, 100);
+        dnaCounter.textContent = percent.toFixed(2) + '%';
+        if (percent >= 100) {
+          clearInterval(scanInterval);
+        }
+      }, 100);
+      
+      initialMsg.innerHTML = '🧬 Сканування ДНК... Аналіз генетичного коду...';
       
       runes.forEach(rune => { rune.style.opacity = '1'; });
       
@@ -529,11 +720,11 @@
       setTimeout(() => { progressFill.style.width = '25%'; }, 100);
       setTimeout(() => { 
         progressFill.style.width = '50%'; 
-        initialMsg.innerHTML = '🔴 Сканування... Візерунки оживають...'; 
+        initialMsg.innerHTML = '🧬 Розшифровка ДНК предків...'; 
       }, 1000);
       setTimeout(() => { 
         progressFill.style.width = '75%'; 
-        initialMsg.innerHTML = '🔴 Сканування... Пам\'ять роду прокидається...'; 
+        initialMsg.innerHTML = '🧬 Зчитування генетичної пам\'яті...'; 
       }, 2000);
       setTimeout(() => { progressFill.style.width = '100%'; }, 3000);
       
@@ -547,16 +738,19 @@
         
         // Вимкнути сканер
         scannerContainer.style.display = 'none';
+        magicMirror.classList.remove('scanning-active');
+        clearInterval(scanInterval);
         
-        initialMsg.innerHTML = `✅ Сканування завершено! Твій край — <strong style="color: var(--gold);">${currentRegion.name}</strong>`;
+        initialMsg.innerHTML = `✅ ДНК ідентифіковано! Твій генетичний код — <strong style="color: var(--gold);">${currentRegion.name}</strong>`;
         progressBar.style.display = 'none';
         
         document.getElementById('result').innerHTML = `
-          <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px; box-shadow: 0 0 30px rgba(229, 183, 59, 0.3);">
-            <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання,твій край- ${currentRegion.name}!</p>
-            <p>Твоя енергія походить з цього благословенного краю.</p>
-            <div style="font-size: 48px; margin: 15px 0; filter: drop-shadow(0 0 15px var(--gold));">${currentRegion.ornament}</div>
-            <p>Запам'ятай цей образ — він знадобиться тобі на наступному етапі.</p>
+          <div style="background: linear-gradient(135deg, var(--bordo), var(--brown)); color: var(--gold); padding: 25px; border-radius: 20px; box-shadow: 0 0 40px rgba(255, 179, 71, 0.4); border: 2px solid var(--gold);">
+            <p style="font-size: 28px; margin-bottom: 15px; font-family: var(--font-heading);">🧬 Збіг ДНК! 🧬</p>
+            <p style="font-size: 24px; margin-bottom: 10px;">✨ ${currentRegion.name} ✨</p>
+            <p>Твій генетичний код походить з цього благословенного краю.</p>
+            <div style="font-size: 64px; margin: 20px 0; filter: drop-shadow(0 0 20px var(--gold));">${currentRegion.ornament}</div>
+            <p style="font-size: 14px; opacity: 0.8;">Збіг: 99.97%</p>
           </div>
         `;
         
@@ -571,39 +765,39 @@
         document.getElementById('resetBtn').style.display = 'inline-block';
         document.getElementById('continueBtn').style.display = 'inline-block';
         
-        if (navigator.vibrate) navigator.vibrate(200);
+        if (navigator.vibrate) navigator.vibrate([100, 50, 200]);
         
-        hubImage.classList.remove('scanning-hub');
         magicMirror.style.pointerEvents = 'auto';
       }, 4000);
     }
     
     function resetRitual() {
-      const hubImage = document.getElementById('hubImage');
       const scannerContainer = document.getElementById('scannerContainer');
+      const magicMirror = document.getElementById('magicMirror');
       
       document.getElementById('regionDisplay').innerHTML = '';
-      document.getElementById('initialMessage').innerHTML = 'Торкнись, щоб пробудити пам\'ять роду...';
+      document.getElementById('initialMessage').innerHTML = 'Торкнись для сканування ДНК...';
       document.getElementById('progressBar').style.display = 'none';
       document.getElementById('result').innerHTML = '';
       document.getElementById('resetBtn').style.display = 'none';
       document.getElementById('continueBtn').style.display = 'none';
       document.getElementById('selectedRegion').value = '';
       document.getElementById('selectedRegionId').value = '';
-      document.getElementById('magicMirror').style.pointerEvents = 'auto';
       
-      // Вимкнути сканер
       scannerContainer.style.display = 'none';
+      magicMirror.classList.remove('scanning-active');
+      
+      if (scanInterval) {
+        clearInterval(scanInterval);
+        scanInterval = null;
+      }
       
       document.querySelectorAll('.rune').forEach(rune => { rune.style.opacity = '0.2'; });
-      
-      hubImage.classList.remove('scanning-hub');
       
       localStorage.removeItem('pysanka_region');
     }
     
     window.addEventListener('load', function() {
-      // Сховати сканер при завантаженні
       document.getElementById('scannerContainer').style.display = 'none';
       
       const savedRegion = localStorage.getItem('pysanka_region');
@@ -616,19 +810,17 @@
             document.getElementById('selectedRegionId').value = region.id;
             
             document.getElementById('result').innerHTML = `
-              <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px; box-shadow: 0 0 30px rgba(229, 183, 59, 0.3);">
-                <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання,твій край- ${region.name}!</p>
-                <p>Твій край вже обрано</p>
-                <div style="font-size: 48px; margin: 15px 0; filter: drop-shadow(0 0 15px var(--gold));">${region.ornament || '🥚'}</div>
+              <div style="background: linear-gradient(135deg, var(--bordo), var(--brown)); color: var(--gold); padding: 25px; border-radius: 20px; box-shadow: 0 0 40px rgba(255, 179, 71, 0.4); border: 2px solid var(--gold);">
+                <p style="font-size: 28px;">🧬 ${region.name} 🧬</p>
+                <div style="font-size: 64px; margin: 15px;">${region.ornament || '🥚'}</div>
+                <p>Генетичний код збережено</p>
               </div>
             `;
             
             document.getElementById('resetBtn').style.display = 'inline-block';
             document.getElementById('continueBtn').style.display = 'inline-block';
           }
-        } catch (e) {
-          console.log('Немає збереженого регіону');
-        }
+        } catch (e) {}
       }
     });
   </script>
