@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Етап 3: Передай енергію | Соборна Писанка</title>
   
-  <!-- Шрифти -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
   <!-- Підключаємо regions.js -->
@@ -93,7 +92,6 @@
       border-radius: 30px;
       padding: 30px 25px;
       box-shadow: var(--shadow-lg), 0 0 30px rgba(201, 160, 61, 0.2);
-      border: 2px solid var(--gold);
     }
     
     .magic-frame:before {
@@ -148,6 +146,7 @@
     
     .form-group {
       margin-bottom: 25px;
+      position: relative;
     }
     
     .form-label {
@@ -456,8 +455,6 @@
     let userRegion = null;
     
     document.addEventListener('DOMContentLoaded', function() {
-      displayRegionsGrid();
-      
       try {
         const savedRegion = localStorage.getItem('pysanka_region');
         if (savedRegion) {
@@ -485,15 +482,6 @@
       
       setupCityAutocomplete();
     });
-    
-    function displayRegionsGrid() {
-      const grid = document.getElementById('regionsGrid');
-      if (grid) grid.innerHTML = REGIONS.map(r => `
-        <div class="region-badge-small" data-region-id="${r.id}">
-          ${r.symbol} ${r.name}
-        </div>
-      `).join('');
-    }
     
     function setupCityAutocomplete() {
       const input = document.getElementById('userCity');
@@ -556,20 +544,33 @@
       showStatus('Енергія передається...', 'loading');
       animateEnergyTransfer();
       
-      // Відправка в Google Sheets
-      const formData = new URLSearchParams();
-      formData.append('regionId', regionId);
-      formData.append('regionName', regionName);
-      formData.append('userName', name);
-      formData.append('city', city);
+      // ============ ВІДПРАВКА В GOOGLE SHEETS (ВИПРАВЛЕНО) ============
+      const postData = {
+        regionId: regionId,
+        regionName: regionName,
+        userName: name,
+        city: city
+      };
       
+      // Використовуємо fetch правильно
       fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        body: formData
-      }).catch(e => console.log('Помилка (ігноруємо):', e));
+        mode: 'cors', // Змінюємо на cors
+        redirect: 'follow',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Успішно відправлено в Google Sheets:', data);
+      })
+      .catch(error => {
+        console.log('Помилка відправки (але дані збережено локально):', error);
+      });
       
-      // Збереження локально
+      // ============ ЗБЕРЕЖЕННЯ ЛОКАЛЬНО ============
       setTimeout(() => {
         const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
         participants.push({
@@ -625,4 +626,3 @@
   </script>
 </body>
 </html>
-
