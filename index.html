@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title> Писанка | Код предків </title>
+  <!-- Open Graph / Facebook / Telegram / etc. -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://lessa232.github.io/pysanka/" /> <!-- заміни на свою точну URL -->
+<meta property="og:title" content="🥚 СОБОРНА ПИСАНКА 🥚" />
+<meta property="og:description" content="Інтерактивна AR-подорож у світ духовних координат України. Оживи писанку на долоні, дізнайся свій ДНК-код предків і долучися до соборності." />
+<meta property="og:image" content="https://lessa232.github.io/pysanka/preview.jpg" /> <!-- повна URL до зображення -->
+<meta property="og:image:alt" content="Соборна писанка — AR-подорож" />
+<meta property="og:image:width" content="1200" /> <!-- рекомендовані розміри -->
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="uk_UA" />
+
+<!-- Twitter (додатково, багато платформ теж читають) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="🥚 СОБОРНА ПИСАНКА 🥚">
+<meta name="twitter:description" content="Інтерактивна AR-подорож у світ духовних координат України. Оживи писанку на долоні, дізнайся свій ДНК-код предків і долучися до соборності.">
+<meta name="twitter:image" content="https://lessa232.github.io/pysanka/preview.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bordo: #6a1e2a;
+      --bordo-light: #8b2f3c;
+      --gold: #c9a03d;
+      --gold-light: #e5b73b;
+      --cream: #f5eee6;
+      --brown: #4a2c1a;
+      --beige: #e8d9c0;
+      --dark: #1a1a1a;
+      --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
+      --font-body: 'Open Sans', 'Helvetica', sans-serif;
+      --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background-color: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+      background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23c9a03d" stroke-width="0.5" opacity="0.1"/></svg>');
+    }
+    
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(135deg, var(--bordo), var(--brown));
+      color: white;
+      margin-bottom: 40px;
+      border-radius: 0 0 50px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23e5b73b" stroke-width="1" opacity="0.1"/></svg>');
+      opacity: 0.2;
+    }
+    
+    .hero h1 {
+      font-size: 48px;
+      color: var(--gold);
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+    }
+    
+    .egg-animation {
+      width: 150px;
+      height: 210px;
+      margin: 30px auto;
+      background: radial-gradient(circle at 30% 30%, var(--gold), var(--bordo));
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: float 3s ease-in-out infinite;
+      box-shadow: 0 20px 30px rgba(0,0,0,0.3);
+      position: relative;
+      border: 2px solid var(--gold);
+    }
+    
+    .egg-animation:after {
+      content: '🥚';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 60px;
+      opacity: 0.3;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+    }
+    
+    .step-card {
+      background: white;
+      padding: 30px;
+      text-align: center;
+      border: 1px solid var(--gold);
+      border-radius: 16px;
+      transition: var(--transition);
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .step-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 40px rgba(106, 30, 42, 0.3);
+      border-color: var(--bordo);
+    }
+    
+    .step-number {
+      width: 50px;
+      height: 50px;
+      background: var(--bordo);
+      color: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0 auto 20px;
+      border: 2px solid var(--gold);
+    }
+    
+    .step-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .step-card h3 {
+      margin-bottom: 10px;
+      color: var(--bordo);
+    }
+    
+    .qr-section {
+      text-align: center;
+      padding: 40px;
+      background: var(--beige);
+      border-radius: 30px;
+      margin: 40px auto;
+      max-width: 500px;
+      border: 2px solid var(--gold);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .qr-code {
+      width: 200px;
+      height: 200px;
+      background: white;
+      margin: 20px auto;
+      padding: 10px;
+      border-radius: 20px;
+      border: 2px solid var(--bordo);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .qr-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, var(--bordo) 25%, var(--gold) 25%, var(--gold) 50%, var(--bordo) 50%, var(--bordo) 75%, var(--gold) 75%);
+      background-size: 20px 20px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      text-align: center;
+    }
+    
+    .stats-banner {
+      background: var(--bordo);
+      color: var(--gold);
+      padding: 15px;
+      text-align: center;
+      font-size: 18px;
+      margin: 20px 0;
+      border-top: 2px solid var(--gold);
+      border-bottom: 2px solid var(--gold);
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 40px;
+      background: var(--bordo);
+      color: white;
+      margin-top: 60px;
+      position: relative;
+    }
+    
+    .footer:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    
+    .footer-logo {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .footer p {
+      margin: 10px 0;
+      opacity: 0.9;
+    }
+    
+    .region-count {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--bordo);
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="egg-animation"></div>
+    <h1>🥚 СОБОРНА ПИСАНКА 🥚</h1>
+    <p style="font-size: 20px; max-width: 600px; margin: 20px auto;">
+      Інтерактивна AR-подорож у світ духовних координат
+    </p>
+    <div class="region-count"> Україна</div>
+  </div>
+  
+  <div class="steps">
+    <div class="step-card" onclick="location.href='phase1.html'">
+      <div class="step-number">1</div>
+      <div class="step-icon">🔮</div>
+      <h3>Поклик предків</h3>
+      <p>Дізнайся свій ДНК-код</p>
+    </div>
+    
+    <div class="step-card" onclick="location.href='phase2.html'">
+      <div class="step-number">2</div>
+      <div class="step-icon">👆</div>
+      <h3>На долоні</h3>
+      <p>Керуй жестами </p>
+    </div>
+    
+    <div class="step-card" onclick="location.href='phase3.html'">
+      <div class="step-number">3</div>
+      <div class="step-icon">⚡</div>
+      <h3>Передай енергію</h3>
+      <p>Залиш своє ім'я на карті</p>
+    </div>
+    
+    <div class="step-card" onclick="location.href='dashboard.html'">
+      <div class="step-number">4</div>
+      <div class="step-icon">🥚</div>
+      <h3>Соборність</h3>
+      <p>Побач єднання всіх регіонів</p>
+    </div>
+  </div>
+  
+  <!-- Статистика з localStorage -->
+  <div class="stats-banner" id="statsBanner" style="display: none;">
+    <span id="participantsCount">0</span> учасників уже долучилися до Соборної Писанки!
+  </div>
+  
+<div class="qr-section" style="
+    background: linear-gradient(135deg, #f5eee6 0%, #e8d9c0 100%);
+    padding: 30px;
+    border-radius: 30px;
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--gold);
+">
+    <h2 style="color: var(--bordo); font-family: 'Cormorant Garamond', serif; margin-bottom: 20px; font-size: 28px;">
+        🥚 Скануй для участі
+    </h2>
+    <div class="qr-code" id="qrCode" style="
+        background: white;
+        padding: 15px;
+        border-radius: 20px;
+        display: inline-block;
+        box-shadow: 0 10px 30px rgba(106, 30, 42, 0.2);
+    ">
+        <img src="qr-code.png" 
+             alt="QR-код" 
+             style="width: 100%; max-width: 250px; height: auto; display: block; border-radius: 10px;">
+    </div>
+    <p style="margin: 20px 0; color: var(--brown); font-size: 18px;">
+        Наведи камеру смартфона, щоб розпочати подорож
+    </p>
+    <button class="btn" onclick="window.location.href='phase1.html'" style="
+        background: var(--gold);
+        color: var(--bordo);
+        border: none;
+        padding: 12px 30px;
+        font-size: 18px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 600;
+        transition: all 0.3s;
+    ">
+        🥚 Почати подорож
+    </button>
+</div>
+  
+  <div class="footer">
+    <img src="assets/logo-museum.png" alt="Хаб Писанкарство" style="height: 50px; margin-bottom: 20px; filter: brightness(0) invert(1);">
+    <p>Проєкт створено для ХАБ Писанкарство</p>
+    <p>© 2025 | SmartLessa | Олеся Бохонок</p>
+  </div>
+  <script>
+    // ============ СТАТИСТИКА ============
+    function updateStats() {
+      try {
+        const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
+        const count = participants.length;
+        
+        if (count > 0) {
+          document.getElementById('statsBanner').style.display = 'block';
+          document.getElementById('participantsCount').textContent = count;
+        }
+      } catch (e) {
+        console.log('Статистика не завантажена');
+      }
+    }
+    
+    // ============ QR-КОД ============
+    function generateQR() {
+      const qrPlaceholder = document.getElementById('qrPlaceholder');
+      const currentUrl = window.location.href;
+      
+      // Простий варіант - текстове посилання
+      qrPlaceholder.innerHTML = '🔗<br>' + currentUrl.replace('https://', '').substring(0, 20) + '...';
+      qrPlaceholder.style.background = 'linear-gradient(45deg, #6a1e2a, #c9a03d)';
+      qrPlaceholder.style.fontSize = '12px';
+      
+      // Тут можна підключити реальну бібліотеку QR-коду
+      // Наприклад: https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js
+      
+      alert('👉 Відскануй QR-код камерою смартфона, щоб розпочати!');
+    }
+    
+    // ============ ПЕРЕВІРКА РЕГІОНІВ ============
+    function checkRegion() {
+      const savedRegion = localStorage.getItem('pysanka_region');
+      if (savedRegion) {
+        try {
+          const region = JSON.parse(savedRegion);
+          console.log('Активний регіон:', region.name);
+        } catch (e) {}
+      }
+    }
+    
+    // ============ ОЧИЩЕННЯ ДАНИХ (опціонально) ============
+    function resetAllData() {
+      if (confirm('Очистити всі дані про учасників?')) {
+        localStorage.removeItem('pysanka_participants');
+        localStorage.removeItem('pysanka_stats');
+        localStorage.removeItem('pysanka_region');
+        location.reload();
+      }
+    }
+    
+    // ============ ЗАПУСК ============
+    document.addEventListener('DOMContentLoaded', function() {
+      updateStats();
+      checkRegion();
+      
+      // Додаємо кнопку скидання (приховану, для розробника)
+      // можна активувати подвійним кліком на лого
+      document.querySelector('.footer-logo').addEventListener('dblclick', function() {
+        resetAllData();
+      });
+    });
+  </script>
+  
+  <style>
+    /* Додаткові стилі для кнопок */
+    .btn {
+      display: inline-block;
+      padding: 8px 20px;
+      background: transparent;
+      border: 2px solid var(--bordo);
+      color: var(--bordo);
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      border-radius: 30px;
+    }
+    
+    .btn:hover {
+      background: var(--bordo);
+      color: white;
+    }
+  </style>
+</body>
+</html>
+
+
+
+

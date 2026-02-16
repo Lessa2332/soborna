@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Етап 1: Поклик предків | Соборна Писанка</title>
+  
+  <!-- Шрифти -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bordo: #6a1e2a;
+      --bordo-light: #8b2f3c;
+      --gold: #c9a03d;
+      --gold-light: #e5b73b;
+      --cream: #f5eee6;
+      --brown: #4a2c1a;
+      --beige: #e8d9c0;
+      --dark: #1a1a1a;
+      --red-scanner: #ff3333;
+      --red-scanner-glow: #ff0000;
+      --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
+      --font-body: 'Open Sans', 'Helvetica', sans-serif;
+      --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background-color: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+      background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23c9a03d" stroke-width="0.5" opacity="0.1"/></svg>');
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      font-family: var(--font-heading);
+      color: var(--bordo);
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+    
+    .ornament {
+      background-image: url('data:image/svg+xml;utf8,<svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg"><path d="M10 15 L30 5 L50 15 L70 5 L90 15 L110 5" stroke="%23c9a03d" fill="none" stroke-width="1.5"/><circle cx="20" cy="15" r="2" fill="%236a1e2a"/><circle cx="50" cy="15" r="2" fill="%236a1e2a"/><circle cx="80" cy="15" r="2" fill="%236a1e2a"/><circle cx="110" cy="15" r="2" fill="%236a1e2a"/></svg>');
+      height: 30px;
+      width: 100%;
+      background-repeat: repeat-x;
+      margin: 20px 0;
+      opacity: 0.5;
+    }
+    
+    /* ============ ОСНОВА ДЛЯ ПИСАНКИ ============ */
+    .pysanka-base {
+      position: relative;
+      width: 200px;
+      height: 260px;
+      margin: 0 auto 20px;
+      background: linear-gradient(145deg, var(--bordo), var(--brown));
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      border: 4px solid var(--gold);
+      box-shadow: var(--shadow-lg), inset 0 0 30px rgba(201, 160, 61, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    /* Контейнер для hub.png всередині писанки */
+    .hub-container {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    
+    .hub-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 15px var(--gold));
+      transition: all 0.3s ease;
+      animation: hubPulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes hubPulse {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 15px var(--gold));
+      }
+      50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 25px var(--gold-light));
+      }
+    }
+    
+    /* Декоративні елементи навколо hub.png */
+    .hub-ornament {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 2px solid rgba(229, 183, 59, 0.3);
+      border-radius: 50%;
+      animation: ornamentRotate 20s linear infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes ornamentRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    .hub-ornament::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      border: 2px dashed rgba(229, 183, 59, 0.2);
+      border-radius: 50%;
+    }
+    
+    /* ============ ЧЕРВОНИЙ СКАНЕР ============ */
+    .scanner-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+    
+    .scanner-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--red-scanner) 20%, 
+        var(--red-scanner-glow) 50%, 
+        var(--red-scanner) 80%, 
+        transparent 100%);
+      box-shadow: 0 0 20px var(--red-scanner-glow);
+      animation: scan 2s ease-in-out infinite;
+    }
+    
+    .scanner-line::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(180deg, 
+        rgba(255, 51, 51, 0.3) 0%,
+        transparent 100%);
+    }
+    
+    .scanner-line::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(0deg, 
+        rgba(255, 51, 51, 0.3) 0%,
+        transparent 100%);
+    }
+    
+    @keyframes scan {
+      0% {
+        opacity: 0.5;
+        transform: translateY(0);
+      }
+      25% {
+        opacity: 1;
+        transform: translateY(-10px);
+      }
+      50% {
+        opacity: 0.8;
+        transform: translateY(-20px);
+      }
+      75% {
+        opacity: 1;
+        transform: translateY(-10px);
+      }
+      100% {
+        opacity: 0.5;
+        transform: translateY(0);
+      }
+    }
+    
+    .scan-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(255, 51, 51, 0.15) 45%,
+        rgba(255, 51, 51, 0.3) 50%,
+        rgba(255, 51, 51, 0.15) 55%,
+        transparent 100%);
+      pointer-events: none;
+      animation: scanOverlay 2s ease-in-out infinite;
+    }
+    
+    @keyframes scanOverlay {
+      0% { transform: translateY(-100%); }
+      50% { transform: translateY(0); }
+      100% { transform: translateY(100%); }
+    }
+    
+    .scanning-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 12px;
+      height: 12px;
+      background: var(--red-scanner);
+      border-radius: 50%;
+      box-shadow: 0 0 15px var(--red-scanner-glow);
+      animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+    
+    /* Анімація для hub.png під час сканування */
+    .scanning-hub {
+      animation: scanningHub 0.5s ease-in-out infinite !important;
+    }
+    
+    @keyframes scanningHub {
+      0%, 100% { 
+        opacity: 0.8;
+        filter: drop-shadow(0 0 10px var(--red-scanner));
+      }
+      50% { 
+        opacity: 1;
+        filter: drop-shadow(0 0 25px var(--red-scanner-glow));
+      }
+    }
+    
+    /* Інші елементи */
+    .magic-mirror {
+      position: relative;
+      width: 280px;
+      height: 380px;
+      margin: 30px auto;
+      background: linear-gradient(145deg, var(--bordo), var(--brown));
+      border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+      border: 8px solid var(--gold);
+      box-shadow: var(--shadow-lg), inset 0 0 30px rgba(201, 160, 61, 0.3);
+      cursor: pointer;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    
+    .magic-mirror:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 40px var(--gold);
+    }
+    
+    .mirror-content {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      background: rgba(26, 26, 26, 0.7);
+      border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: var(--gold);
+      font-family: var(--font-heading);
+      text-align: center;
+    }
+    
+    .region-display {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 20px 0;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-shadow: 0 0 10px rgba(229, 183, 59, 0.5);
+    }
+    
+    .runes-container {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    
+    .rune {
+      width: 30px;
+      height: 40px;
+      background: var(--gold);
+      opacity: 0.2;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      animation: runeGlow 3s infinite;
+    }
+    
+    .rune:nth-child(1) { animation-delay: 0s; }
+    .rune:nth-child(2) { animation-delay: 0.5s; }
+    .rune:nth-child(3) { animation-delay: 1s; }
+    .rune:nth-child(4) { animation-delay: 1.5s; }
+    .rune:nth-child(5) { animation-delay: 2s; }
+    
+    @keyframes runeGlow {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.8; background: var(--gold-light); }
+    }
+    
+    .oracle-text {
+      font-size: 18px;
+      font-style: italic;
+      color: var(--cream);
+      max-width: 300px;
+      margin: 20px auto;
+      text-shadow: 0 0 8px rgba(255, 51, 51, 0.5);
+    }
+    
+    .progress-bar {
+      width: 80%;
+      height: 4px;
+      background: rgba(201, 160, 61, 0.3);
+      margin: 20px auto;
+      border-radius: 2px;
+      overflow: hidden;
+      display: none;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold-light), var(--gold));
+      transition: width 4s linear;
+      box-shadow: 0 0 10px var(--gold);
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: transparent;
+      border: 2px solid var(--bordo);
+      color: var(--bordo);
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .btn:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--bordo);
+      transition: var(--transition);
+      z-index: -1;
+    }
+    
+    .btn:hover {
+      color: var(--cream);
+    }
+    
+    .btn:hover:before {
+      left: 0;
+    }
+    
+    .btn-gold {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    
+    .btn-gold:before {
+      background: var(--gold);
+    }
+    
+    .btn-gold:hover {
+      color: var(--bordo);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <div class="ornament"></div>
+    
+    <h1>Поклик предків</h1>
+    <p style="text-align: center; color: var(--bordo); margin-bottom: 40px;">Доторкнись до чарівної писанки, щоб дізнатись свій край</p>
+    
+    <div class="magic-mirror" id="magicMirror" onclick="startRitual()">
+      <div class="mirror-content">
+        
+        <!-- Писанка з hub.png всередині -->
+        <div class="pysanka-base">
+          <div class="hub-container">
+            <img src="assets/hub.png" alt="Соборна Писанка" id="hubImage">
+            <div class="hub-ornament"></div>
+          </div>
+          
+          <!-- Сканер накладається поверх писанки -->
+          <div class="scanner-container" id="scannerContainer" style="display: none;">
+            <div class="scanner-line" id="scannerLine"></div>
+            <div class="scan-overlay" id="scanOverlay"></div>
+            <div class="scanning-indicator" id="scanIndicator"></div>
+          </div>
+        </div>
+        
+        <div id="initialMessage" class="oracle-text">
+          Торкнись, щоб пробудити пам'ять роду...
+        </div>
+        
+        <div id="regionDisplay" class="region-display"></div>
+        
+        <div class="runes-container" id="runes">
+          <div class="rune"></div>
+          <div class="rune"></div>
+          <div class="rune"></div>
+          <div class="rune"></div>
+          <div class="rune"></div>
+        </div>
+        
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="result" style="text-align: center; margin: 30px 0;"></div>
+    
+    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+      <button class="btn" onclick="resetRitual()" id="resetBtn" style="display: none;">Повторити</button>
+      <a href="phase2.html" class="btn btn-gold" id="continueBtn" style="display: none;">Торкнутися історії</a>
+    </div>
+    
+    <input type="hidden" id="selectedRegion" value="">
+    <input type="hidden" id="selectedRegionId" value="">
+    
+    <div class="ornament" style="margin-top: 50px;"></div>
+  </div>
+  
+  <script>
+    // ============ 14 РЕГІОНІВ ============
+    const REGIONS = [
+      { id: 1, name: 'Поділля', ornament: '🌻', symbol: '🌻', texture: 'assets/regions/1-podillya.png' },
+      { id: 2, name: 'Полісся', ornament: '🌲', symbol: '🌲', texture: 'assets/regions/2-polissya.png' },
+      { id: 3, name: 'Карпати', ornament: '🏔️', symbol: '🏔️', texture: 'assets/regions/3-carpathians.png' },
+      { id: 4, name: 'Київщина', ornament: '🏛️', symbol: '🏛️', texture: 'assets/regions/4-kyiv.png' },
+      { id: 5, name: 'Львівщина', ornament: '🦁', symbol: '🦁', texture: 'assets/regions/5-lviv.png' },
+      { id: 6, name: 'Одещина', ornament: '⚓', symbol: '⚓', texture: 'assets/regions/6-odesa.png' },
+      { id: 7, name: 'Харківщина', ornament: '⚙️', symbol: '⚙️', texture: 'assets/regions/7-kharkiv.png' },
+      { id: 8, name: 'Дніпропетровщина', ornament: '🌊', symbol: '🌊', texture: 'assets/regions/8-dnipro.png' },
+      { id: 9, name: 'Полтавщина', ornament: '🌻', symbol: '🌻', texture: 'assets/regions/9-poltava.png' },
+      { id: 10, name: 'Чернігівщина', ornament: '📚', symbol: '📚', texture: 'assets/regions/10-chernihiv.png' },
+      { id: 11, name: 'Черкащина', ornament: '🎭', symbol: '🎭', texture: 'assets/regions/11-cherkasy.png' },
+      { id: 12, name: 'Крим', ornament: '🏖️', symbol: '🏖️', texture: 'assets/regions/12-crimea.png' },
+      { id: 13, name: 'Донеччина', ornament: '⛏️', symbol: '⛏️', texture: 'assets/regions/13-donetsk.png' },
+      { id: 14, name: 'Луганщина', ornament: '🌻', symbol: '🌻', texture: 'assets/regions/14-luhansk.png' }
+    ];
+    
+    let currentRegion = null;
+    
+    function startRitual() {
+      const hubImage = document.getElementById('hubImage');
+      const initialMsg = document.getElementById('initialMessage');
+      const runes = document.querySelectorAll('.rune');
+      const progressBar = document.getElementById('progressBar');
+      const progressFill = document.getElementById('progressFill');
+      const magicMirror = document.getElementById('magicMirror');
+      const scannerContainer = document.getElementById('scannerContainer');
+      
+      magicMirror.style.pointerEvents = 'none';
+      
+      // Активуємо сканер
+      scannerContainer.style.display = 'block';
+      
+      // Додаємо анімацію сканування до hub.png
+      hubImage.classList.add('scanning-hub');
+      initialMsg.innerHTML = '🔴 Сканування... Прислухаюсь до голосу предків...';
+      
+      runes.forEach(rune => { rune.style.opacity = '1'; });
+      
+      progressBar.style.display = 'block';
+      progressFill.style.width = '0%';
+      
+      setTimeout(() => { progressFill.style.width = '25%'; }, 100);
+      setTimeout(() => { 
+        progressFill.style.width = '50%'; 
+        initialMsg.innerHTML = '🔴 Сканування... Візерунки оживають...'; 
+      }, 1000);
+      setTimeout(() => { 
+        progressFill.style.width = '75%'; 
+        initialMsg.innerHTML = '🔴 Сканування... Пам\'ять роду прокидається...'; 
+      }, 2000);
+      setTimeout(() => { progressFill.style.width = '100%'; }, 3000);
+      
+      setTimeout(() => {
+        const randomIndex = Math.floor(Math.random() * REGIONS.length);
+        currentRegion = REGIONS[randomIndex];
+        
+        document.getElementById('regionDisplay').innerHTML = currentRegion.name;
+        document.getElementById('selectedRegion').value = currentRegion.name;
+        document.getElementById('selectedRegionId').value = currentRegion.id;
+        
+        // Вимкнути сканер
+        scannerContainer.style.display = 'none';
+        
+        initialMsg.innerHTML = `✅ Сканування завершено! Твій край — <strong style="color: var(--gold);">${currentRegion.name}</strong>`;
+        progressBar.style.display = 'none';
+        
+        document.getElementById('result').innerHTML = `
+          <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px; box-shadow: 0 0 30px rgba(229, 183, 59, 0.3);">
+            <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання,твій край- ${currentRegion.name}!</p>
+            <p>Твоя енергія походить з цього благословенного краю.</p>
+            <div style="font-size: 48px; margin: 15px 0; filter: drop-shadow(0 0 15px var(--gold));">${currentRegion.ornament}</div>
+            <p>Запам'ятай цей образ — він знадобиться тобі на наступному етапі.</p>
+          </div>
+        `;
+        
+        localStorage.setItem('pysanka_region', JSON.stringify({
+          id: currentRegion.id,
+          name: currentRegion.name,
+          symbol: currentRegion.symbol,
+          ornament: currentRegion.ornament,
+          texture: currentRegion.texture
+        }));
+        
+        document.getElementById('resetBtn').style.display = 'inline-block';
+        document.getElementById('continueBtn').style.display = 'inline-block';
+        
+        if (navigator.vibrate) navigator.vibrate(200);
+        
+        hubImage.classList.remove('scanning-hub');
+        magicMirror.style.pointerEvents = 'auto';
+      }, 4000);
+    }
+    
+    function resetRitual() {
+      const hubImage = document.getElementById('hubImage');
+      const scannerContainer = document.getElementById('scannerContainer');
+      
+      document.getElementById('regionDisplay').innerHTML = '';
+      document.getElementById('initialMessage').innerHTML = 'Торкнись, щоб пробудити пам\'ять роду...';
+      document.getElementById('progressBar').style.display = 'none';
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('resetBtn').style.display = 'none';
+      document.getElementById('continueBtn').style.display = 'none';
+      document.getElementById('selectedRegion').value = '';
+      document.getElementById('selectedRegionId').value = '';
+      document.getElementById('magicMirror').style.pointerEvents = 'auto';
+      
+      // Вимкнути сканер
+      scannerContainer.style.display = 'none';
+      
+      document.querySelectorAll('.rune').forEach(rune => { rune.style.opacity = '0.2'; });
+      
+      hubImage.classList.remove('scanning-hub');
+      
+      localStorage.removeItem('pysanka_region');
+    }
+    
+    window.addEventListener('load', function() {
+      // Сховати сканер при завантаженні
+      document.getElementById('scannerContainer').style.display = 'none';
+      
+      const savedRegion = localStorage.getItem('pysanka_region');
+      if (savedRegion) {
+        try {
+          const region = JSON.parse(savedRegion);
+          if (region && region.id) {
+            document.getElementById('regionDisplay').innerHTML = region.name;
+            document.getElementById('selectedRegion').value = region.name;
+            document.getElementById('selectedRegionId').value = region.id;
+            
+            document.getElementById('result').innerHTML = `
+              <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px; box-shadow: 0 0 30px rgba(229, 183, 59, 0.3);">
+                <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання,твій край- ${region.name}!</p>
+                <p>Твій край вже обрано</p>
+                <div style="font-size: 48px; margin: 15px 0; filter: drop-shadow(0 0 15px var(--gold));">${region.ornament || '🥚'}</div>
+              </div>
+            `;
+            
+            document.getElementById('resetBtn').style.display = 'inline-block';
+            document.getElementById('continueBtn').style.display = 'inline-block';
+          }
+        } catch (e) {
+          console.log('Немає збереженого регіону');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
