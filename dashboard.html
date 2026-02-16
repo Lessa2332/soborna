@@ -10,14 +10,16 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   
   <style>
-    /* ============ СТИЛІ (ті самі) ============ */
+    /* ============ АВТЕНТИЧНІ УКРАЇНСЬКІ КОЛЬОРИ ============ */
     :root {
-      --bordo: #8B2C2C;
-      --gold: #FFB347;
-      --gold-light: #FFD966;
-      --cream: #FFF9E6;
-      --font-heading: 'Cormorant Garamond', serif;
-      --font-body: 'Open Sans', sans-serif;
+      --bordo: #8B0000;        /* Глибокий червоний, як на писанках */
+      --bordo-dark: #660000;
+      --gold: #D4AF37;          /* Золото воску */
+      --gold-light: #E8C66E;
+      --cream: #FFF8E7;         /* Колір шкаралупи */
+      --black: #1A0F0F;
+      --font-heading: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Open Sans', Arial, sans-serif;
       --safe-area-top: env(safe-area-inset-top, 0px);
       --safe-area-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -38,6 +40,31 @@
       height: 100%;
     }
     
+    /* 🥚 Текстура шкаралупи з орнаментом (безконечник, солярні знаки) */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        /* Безконечник (символ нескінченності) – діагональні лінії */
+        repeating-linear-gradient(45deg, 
+          rgba(212, 175, 55, 0.03) 0px, 
+          rgba(212, 175, 55, 0.03) 20px,
+          transparent 20px, 
+          transparent 40px),
+        /* Солярні знаки – ледь помітні кола */
+        radial-gradient(circle at 10% 20%, rgba(139, 0, 0, 0.02) 0%, transparent 15%),
+        radial-gradient(circle at 90% 80%, rgba(139, 0, 0, 0.02) 0%, transparent 20%),
+        radial-gradient(circle at 30% 70%, rgba(212, 175, 55, 0.02) 0%, transparent 25%),
+        /* Тріщинки шкаралупи */
+        repeating-linear-gradient(0deg, 
+          transparent 0px, 
+          transparent 49px, 
+          rgba(26, 15, 15, 0.02) 50px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
     #map-container {
       position: fixed;
       top: 0;
@@ -50,10 +77,10 @@
     #ukraine-map {
       width: 100%;
       height: 100%;
-      background: #e8d9c0;
+      background: #f5ede0; /* Світлий фон для контрасту */
     }
     
-    /* Маркери */
+    /* ============ МАРКЕРИ-ПИСАНКИ ============ */
     .pysanka-marker {
       background: transparent;
       border: none;
@@ -66,12 +93,15 @@
       width: 44px;
       height: 62px;
       border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      border: 2px solid white;
+      border: 2px solid var(--gold);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 24px;
       animation: gentleFloat 3s ease-in-out infinite;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      color: var(--gold-light);
+      text-shadow: 0 1px 2px var(--black);
     }
     
     @keyframes gentleFloat {
@@ -79,26 +109,39 @@
       50% { transform: translateY(-5px); }
     }
     
-    .pysanka-egg.rainbow-1 { background: linear-gradient(135deg, #FF6B6B, #FF8E8E); }
-    .pysanka-egg.rainbow-2 { background: linear-gradient(135deg, #FFB347, #FFA07A); }
-    .pysanka-egg.rainbow-3 { background: linear-gradient(135deg, #FFD93D, #FFE55C); }
-    .pysanka-egg.rainbow-4 { background: linear-gradient(135deg, #6BCB77, #8FDC89); }
-    .pysanka-egg.rainbow-5 { background: linear-gradient(135deg, #4D96FF, #6DABFF); }
+    /* Традиційні кольори регіонів (бордові, золоті, зелені) */
+    .pysanka-egg.region-1 { background: linear-gradient(135deg, #8B0000, #A52A2A); } /* Поділля */
+    .pysanka-egg.region-2 { background: linear-gradient(135deg, #006400, #228B22); } /* Полісся */
+    .pysanka-egg.region-3 { background: linear-gradient(135deg, #4A7023, #6B8E23); } /* Карпати */
+    .pysanka-egg.region-4 { background: linear-gradient(135deg, #8B0000, #B22222); } /* Київщина */
+    .pysanka-egg.region-5 { background: linear-gradient(135deg, #DAA520, #B8860B); } /* Львівщина */
+    .pysanka-egg.region-6 { background: linear-gradient(135deg, #1E90FF, #4682B4); } /* Одещина */
+    .pysanka-egg.region-7 { background: linear-gradient(135deg, #B22222, #CD5C5C); } /* Харківщина */
+    .pysanka-egg.region-8 { background: linear-gradient(135deg, #2E8B57, #3CB371); } /* Дніпропетровщина */
+    .pysanka-egg.region-9 { background: linear-gradient(135deg, #DAA520, #F4A460); } /* Полтавщина */
+    .pysanka-egg.region-10 { background: linear-gradient(135deg, #8B4513, #A0522D); } /* Чернігівщина */
+    .pysanka-egg.region-11 { background: linear-gradient(135deg, #CD5C5C, #B22222); } /* Черкащина */
+    .pysanka-egg.region-12 { background: linear-gradient(135deg, #F4A460, #DEB887); } /* Крим */
+    .pysanka-egg.region-13 { background: linear-gradient(135deg, #696969, #808080); } /* Донеччина */
+    .pysanka-egg.region-14 { background: linear-gradient(135deg, #9ACD32, #6B8E23); } /* Луганщина */
+    .pysanka-egg.diaspora { background: linear-gradient(135deg, #D4AF37, #FFD700); border-color: #8B0000; }
     
-    /* Панель статистики */
+    /* ============ ПАНЕЛЬ СТАТИСТИКИ (стилізована під вишитий рушник) ============ */
     .stats-panel {
       position: fixed;
       top: calc(10px + var(--safe-area-top));
       right: 10px;
       background: rgba(139, 44, 44, 0.95);
       backdrop-filter: blur(10px);
-      border: 2px solid var(--gold);
-      border-radius: 24px;
-      padding: 16px;
+      border: 3px solid var(--gold);
+      border-radius: 30px 30px 30px 30px;
+      padding: 18px;
       color: white;
       z-index: 100;
       min-width: 260px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      background-image: linear-gradient(45deg, rgba(212, 175, 55, 0.1) 25%, transparent 25%);
+      background-size: 20px 20px;
     }
     
     .stats-header {
@@ -106,12 +149,15 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 8px;
     }
     
     .stats-title {
       font-family: var(--font-heading);
-      font-size: 22px;
+      font-size: 24px;
       color: var(--gold);
+      letter-spacing: 2px;
     }
     
     .toggle-stats-btn {
@@ -122,39 +168,89 @@
       height: 40px;
       border-radius: 50%;
       cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     
     .stats-number {
-      font-size: 44px;
+      font-size: 48px;
       font-weight: 700;
       color: var(--gold);
       text-align: center;
+      line-height: 1.2;
+    }
+    
+    .stats-label {
+      text-align: center;
+      font-size: 16px;
+      color: var(--gold-light);
+      margin-bottom: 12px;
+    }
+    
+    .progress-container {
+      margin: 16px 0;
+    }
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+    }
+    
+    .progress-bar-bg {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transition: width 0.3s ease;
     }
     
     .participants-list {
       max-height: 250px;
       overflow-y: auto;
       margin-top: 12px;
+      border-top: 1px solid rgba(212, 175, 55, 0.3);
+      padding-top: 8px;
     }
     
     .participant-item {
-      padding: 10px;
-      border-bottom: 1px solid rgba(255, 179, 71, 0.3);
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255, 179, 71, 0.2);
       display: flex;
       align-items: center;
       gap: 10px;
       cursor: pointer;
+      transition: background 0.2s;
+      border-radius: 20px;
+    }
+    
+    .participant-item:hover {
+      background: rgba(212, 175, 55, 0.2);
     }
     
     .participant-symbol {
-      font-size: 22px;
+      font-size: 24px;
       min-width: 36px;
+      text-align: center;
     }
     
     .participant-name {
       color: var(--gold);
       font-weight: 600;
       flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     
     .participant-wish {
@@ -167,7 +263,7 @@
       white-space: nowrap;
     }
     
-    /* Панель керування */
+    /* ============ ПАНЕЛЬ КЕРУВАННЯ ============ */
     .control-panel {
       position: fixed;
       bottom: calc(20px + var(--safe-area-bottom));
@@ -185,11 +281,14 @@
       border: 2px solid var(--gold);
       border-radius: 40px;
       font-family: var(--font-heading);
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       min-width: 140px;
       text-align: center;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: all 0.2s;
     }
     
     .control-btn:active {
@@ -198,7 +297,7 @@
       transform: scale(0.97);
     }
     
-    /* Повідомлення */
+    /* ============ ПОВІДОМЛЕННЯ ============ */
     .toast-message {
       position: fixed;
       top: calc(20px + var(--safe-area-top));
@@ -212,6 +311,8 @@
       z-index: 1000;
       display: none;
       animation: slideDown 0.3s ease;
+      font-size: 18px;
+      white-space: nowrap;
     }
     
     @keyframes slideDown {
@@ -225,6 +326,8 @@
       }
       .control-btn {
         min-width: 120px;
+        font-size: 14px;
+        padding: 10px 16px;
       }
     }
   </style>
@@ -237,7 +340,7 @@
   <!-- Статистика -->
   <div class="stats-panel" id="statsPanel">
     <div class="stats-header">
-      <div class="stats-title">🌸 ПИСАНКА 🌸</div>
+      <div class="stats-title">СОБОРНА ПИСАНКА</div>
       <button class="toggle-stats-btn" onclick="toggleStats()" id="toggleStatsBtn">👁️</button>
     </div>
     
@@ -256,7 +359,7 @@
       </div>
       
       <div class="participants-list" id="participantsList">
-        <div style="text-align: center; opacity: 0.5; padding: 20px;">Завантаження...</div>
+        <div style="text-align: center; opacity: 0.7; padding: 20px;">Завантаження...</div>
       </div>
     </div>
   </div>
@@ -264,7 +367,7 @@
   <!-- Панель керування -->
   <div class="control-panel">
     <button class="control-btn" onclick="refreshMap()">🔄 Оновити</button>
-    <button class="control-btn small" onclick="window.location.href='phase1.html'">🥚 Почати</button>
+    <button class="control-btn" onclick="window.location.href='phase1.html'">🥚 Почати</button>
   </div>
   
   <!-- Повідомлення -->
@@ -277,16 +380,12 @@
     // ============ КОНФІГ ============
     const DASHBOARD_CONFIG = {
       SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbx5K0BYRggtszTnZh0-Hfw_JI7aoHqJBanzfs9x6bkvBpo5QMdJHJ2RzjnYbNsAJm1d/exec',
-      TOKEN: '1680max',                     // <--- ВИПРАВЛЕНО
+      TOKEN: '1680max',
       UPDATE_INTERVAL: 30000,               // 30 секунд
       CACHE_KEY: 'pysanka_participants'
     };
     
-    // ============ КОЛЬОРИ ТА СИМВОЛИ ============
-    const RAINBOW_CLASSES = [
-      'rainbow-1', 'rainbow-2', 'rainbow-3', 'rainbow-4', 'rainbow-5'
-    ];
-    
+    // ============ СИМВОЛИ РЕГІОНІВ ============
     const REGION_SYMBOLS = {
       1: '🌻', 2: '🌲', 3: '🏔️', 4: '🏛️', 5: '🦁', 6: '⚓', 7: '⚙️',
       8: '🌊', 9: '🌾', 10: '📚', 11: '🎭', 12: '🏖️', 13: '⛏️', 14: '🌻'
@@ -295,14 +394,14 @@
     // ============ ГЛОБАЛЬНІ ЗМІННІ ============
     let map;
     let markers = [];
-    let participants = [];           // завжди містить актуальні дані (серверні або локальні)
+    let participants = [];
     let statsVisible = true;
     let updateTimer = null;
     
     // ============ ІНІЦІАЛІЗАЦІЯ ============
     document.addEventListener('DOMContentLoaded', function() {
       initMap();
-      loadInitialData();             // спочатку локальні (швидко), потім серверні
+      loadInitialData();
       startAutoUpdate();
     });
     
@@ -324,9 +423,7 @@
     
     // ============ ЗАВАНТАЖЕННЯ ДАНИХ ============
     async function loadInitialData() {
-      // Спочатку показуємо локальні (якщо є)
       loadLocalParticipants();
-      // Потім пробуємо завантажити з сервера і оновити карту
       await fetchServerParticipants();
     }
     
@@ -350,14 +447,11 @@
         const data = await response.json();
         
         if (data.success && data.data && data.data.participants) {
-          // Серверні дані
           const serverParticipants = data.data.participants;
           
-          // Якщо participants ще не має даних, просто присвоюємо
           if (!participants.length) {
             participants = serverParticipants;
           } else {
-            // Об'єднуємо: додаємо тих, кого немає в поточному масиві (за ID)
             const existingIds = new Set(participants.map(p => p.id));
             const newFromServer = serverParticipants.filter(p => !existingIds.has(p.id));
             participants = [...participants, ...newFromServer];
@@ -371,7 +465,8 @@
           showToast('⚠️ Не вдалося завантажити дані з сервера', 2000);
         }
       } catch (error) {
-        console.error('Помилка з'єднання з сервером:', error);
+        // ВИПРАВЛЕНО: використовуємо подвійні лапки, щоб уникнути проблем з апострофом
+        console.error("Помилка з'єднання з сервером:", error);
         showToast('⚠️ Сервер недоступний, показую локальні дані', 2000);
       }
     }
@@ -386,7 +481,6 @@
     
     // ============ ОНОВЛЕННЯ КАРТИ ============
     function updateMap() {
-      // Видалити старі маркери
       markers.forEach(m => map.removeLayer(m));
       markers = [];
       
@@ -394,14 +488,19 @@
       
       const regionCount = {};
       
-      participants.forEach((p, index) => {
+      participants.forEach((p) => {
         const coords = p.coords || { lat: 49.0, lng: 32.0 };
         const regionId = p.regionId;
         
         if (regionId) regionCount[regionId] = (regionCount[regionId] || 0) + 1;
         
-        const colorClass = RAINBOW_CLASSES[index % RAINBOW_CLASSES.length];
-        const marker = createMarker(p, coords.lat, coords.lng, colorClass);
+        // Визначаємо клас для маркера (за регіоном або діаспора)
+        let regionClass = 'diaspora';
+        if (regionId && regionId >= 1 && regionId <= 14) {
+          regionClass = `region-${regionId}`;
+        }
+        
+        const marker = createMarker(p, coords.lat, coords.lng, regionClass);
         marker.addTo(map);
         markers.push(marker);
       });
@@ -409,13 +508,13 @@
       updateRegionProgress(regionCount);
     }
     
-    function createMarker(participant, lat, lng, colorClass) {
-      const symbol = participant.symbol || '🥚';
+    function createMarker(participant, lat, lng, regionClass) {
+      const symbol = participant.symbol || (participant.regionId ? REGION_SYMBOLS[participant.regionId] : '🥚');
       const wish = participant.wish || 'Христос Воскрес!';
       
       const markerHtml = `
         <div class="pysanka-marker" title="${participant.name}">
-          <div class="pysanka-egg ${colorClass}">${symbol}</div>
+          <div class="pysanka-egg ${regionClass}">${symbol}</div>
         </div>
       `;
       
@@ -431,10 +530,10 @@
       const diasporaText = participant.isDiaspora ? '<br><small>🇺🇦 Серце з Україною</small>' : '';
       
       marker.bindPopup(`
-        <div style="text-align: center; min-width: 160px;">
+        <div style="text-align: center; min-width: 160px; font-family: 'Open Sans', sans-serif;">
           <div style="font-size: 28px;">${symbol}</div>
-          <b style="color: #8B2C2C;">${participant.name}</b><br>
-          <i style="color: #FFB347;">${participant.city}</i><br>
+          <b style="color: #8B0000;">${participant.name}</b><br>
+          <i style="color: #D4AF37;">${participant.city}</i><br>
           <small style="color: #666; font-style: italic;">"${wish}"</small>
           ${diasporaText}
         </div>
@@ -451,19 +550,23 @@
       const listEl = document.getElementById('participantsList');
       
       if (count === 0) {
-        listEl.innerHTML = '<div style="text-align: center; padding: 20px;">Чекаємо...</div>';
+        listEl.innerHTML = '<div style="text-align: center; padding: 20px; opacity:0.7;">Чекаємо на перших учасників...</div>';
         return;
       }
       
       const recent = [...participants].reverse().slice(0, 8);
       
-      listEl.innerHTML = recent.map((p, i) => {
+      listEl.innerHTML = recent.map(p => {
         const wish = p.wish || 'Христос Воскрес!';
-        const shortWish = wish.length > 30 ? wish.substr(0, 27) + '...' : wish;
+        const shortWish = wish.length > 30 ? wish.substr(0, 27) + '…' : wish;
+        const symbol = p.symbol || (p.regionId ? REGION_SYMBOLS[p.regionId] : '🥚');
+        
+        // Екрануємо апострофи в імені для onclick
+        const escapedName = p.name.replace(/'/g, "\\'");
         
         return `
-          <div class="participant-item" onclick="flyToParticipant('${p.name.replace(/'/g, "\\'")}')">
-            <span class="participant-symbol">${p.symbol || '🥚'}</span>
+          <div class="participant-item" onclick="flyToParticipant('${escapedName}')">
+            <span class="participant-symbol">${symbol}</span>
             <span class="participant-name">${p.name}</span>
             <span class="participant-wish" title="${wish}">"${shortWish}"</span>
           </div>
