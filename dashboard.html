@@ -5,57 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Соборна Писанка | Карта єднання</title>
   
-  <!-- Шрифти -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-  
-  <!-- Leaflet для карти -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   
   <style>
-    /* ============ СКИДАННЯ СТИЛІВ ============ */
+    /* ============ СТИЛІ (ті самі, що були) ============ */
+    :root {
+      --bordo: #8B2C2C;
+      --gold: #FFB347;
+      --gold-light: #FFD966;
+      --cream: #FFF9E6;
+      --font-heading: 'Cormorant Garamond', serif;
+      --font-body: 'Open Sans', sans-serif;
+      --safe-area-top: env(safe-area-inset-top, 0px);
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-    
-    /* ============ ЗМІННІ ============ */
-    :root {
-      --bordo: #6a1e2a;
-      --bordo-light: #8b2f3c;
-      --gold: #c9a03d;
-      --gold-light: #e5b73b;
-      --cream: #f5eee6;
-      --brown: #4a2c1a;
-      --beige: #e8d9c0;
-      --dark: #1a1a1a;
-      --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
-      --font-body: 'Open Sans', 'Helvetica', sans-serif;
-      --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
-      --shadow-gold: 0 4px 20px rgba(201, 160, 61, 0.3);
-      --transition: all 0.3s ease;
-      --safe-area-top: env(safe-area-inset-top, 0px);
-      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
     }
     
     body {
       font-family: var(--font-body);
       background-color: var(--cream);
-      color: var(--dark);
-      min-height: 100vh;
-      min-height: -webkit-fill-available;
       overflow: hidden;
       position: fixed;
       width: 100%;
       height: 100%;
     }
     
-    /* ============ КАРТА ============ */
     #map-container {
       position: fixed;
       top: 0;
@@ -68,27 +50,18 @@
     #ukraine-map {
       width: 100%;
       height: 100%;
-      background: var(--beige);
-      z-index: 1;
+      background: #e8d9c0;
     }
     
-    /* ============ МАРКЕРИ ПИСАНОК ============ */
+    /* Маркери */
     .pysanka-marker {
       background: transparent;
       border: none;
       filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
       transition: transform 0.2s ease;
       cursor: pointer;
-      z-index: 10;
     }
     
-    .pysanka-marker:active {
-      transform: scale(1.3) rotate(10deg);
-      filter: drop-shadow(0 12px 24px rgba(255, 215, 0, 0.6));
-      z-index: 1000;
-    }
-    
-    /* Різнокольорові писанки */
     .pysanka-egg {
       width: 44px;
       height: 62px;
@@ -98,48 +71,26 @@
       align-items: center;
       justify-content: center;
       font-size: 22px;
-      transform: rotate(-5deg);
-      position: relative;
       animation: gentleFloat 3s ease-in-out infinite;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      -webkit-backdrop-filter: blur(2px);
-      backdrop-filter: blur(2px);
     }
     
     @keyframes gentleFloat {
-      0%, 100% { transform: rotate(-5deg) translateY(0); }
-      50% { transform: rotate(-5deg) translateY(-5px); }
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
     }
     
-    /* Кольори писанок */
     .pysanka-egg.rainbow-1 { background: linear-gradient(135deg, #FF6B6B, #FF8E8E); }
     .pysanka-egg.rainbow-2 { background: linear-gradient(135deg, #FFB347, #FFA07A); }
     .pysanka-egg.rainbow-3 { background: linear-gradient(135deg, #FFD93D, #FFE55C); }
     .pysanka-egg.rainbow-4 { background: linear-gradient(135deg, #6BCB77, #8FDC89); }
     .pysanka-egg.rainbow-5 { background: linear-gradient(135deg, #4D96FF, #6DABFF); }
-    .pysanka-egg.rainbow-6 { background: linear-gradient(135deg, #9D65C9, #B47AE8); }
-    .pysanka-egg.rainbow-7 { background: linear-gradient(135deg, #FF8A9C, #FFB6C1); }
-    .pysanka-egg.rainbow-8 { background: linear-gradient(135deg, #A9D6E5, #C7E9F0); }
     
-    .pysanka-egg:after {
-      content: '';
-      position: absolute;
-      top: 4px;
-      left: 4px;
-      right: 4px;
-      bottom: 4px;
-      border: 1px solid rgba(255,255,255,0.7);
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      pointer-events: none;
-    }
-    
-    /* ============ ПАНЕЛЬ СТАТИСТИКИ ============ */
+    /* Панель статистики */
     .stats-panel {
       position: fixed;
       top: calc(10px + var(--safe-area-top));
       right: 10px;
-      background: rgba(106, 30, 42, 0.95);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(139, 44, 44, 0.95);
       backdrop-filter: blur(10px);
       border: 2px solid var(--gold);
       border-radius: 24px;
@@ -147,10 +98,7 @@
       color: white;
       z-index: 100;
       min-width: 260px;
-      max-width: 280px;
-      box-shadow: var(--shadow-lg), 0 0 30px rgba(201, 160, 61, 0.2);
-      transition: all 0.3s ease;
-      touch-action: pan-y;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     }
     
     .stats-header {
@@ -164,10 +112,6 @@
       font-family: var(--font-heading);
       font-size: 22px;
       color: var(--gold);
-      text-align: center;
-      border-bottom: 1px solid var(--gold);
-      padding-bottom: 8px;
-      flex: 1;
     }
     
     .toggle-stats-btn {
@@ -178,20 +122,6 @@
       height: 40px;
       border-radius: 50%;
       cursor: pointer;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-      margin-left: 8px;
-      flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    .toggle-stats-btn:active {
-      background: var(--gold);
-      color: var(--bordo);
-      transform: scale(0.95);
     }
     
     .stats-number {
@@ -199,102 +129,45 @@
       font-weight: 700;
       color: var(--gold);
       text-align: center;
-      margin: 8px 0;
-      line-height: 1;
-      text-shadow: 0 0 20px var(--gold);
-    }
-    
-    .stats-label {
-      text-align: center;
-      font-size: 14px;
-      opacity: 0.9;
-      margin-bottom: 12px;
-    }
-    
-    .progress-container {
-      margin-bottom: 16px;
-    }
-    
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      margin-bottom: 6px;
-      opacity: 0.9;
-    }
-    
-    .progress-bar-bg {
-      width: 100%;
-      height: 8px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    
-    .progress-bar-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #FF6B6B, #FFD93D, #6BCB77, #4D96FF);
-      transition: width 0.5s;
-      border-radius: 4px;
     }
     
     .participants-list {
       max-height: 250px;
       overflow-y: auto;
       margin-top: 12px;
-      border-top: 1px solid rgba(201, 160, 61, 0.3);
-      padding-top: 10px;
-      -webkit-overflow-scrolling: touch;
     }
     
     .participant-item {
-      padding: 10px 12px;
-      border-bottom: 1px solid rgba(201, 160, 61, 0.15);
-      font-size: 14px;
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 179, 71, 0.3);
       display: flex;
       align-items: center;
       gap: 10px;
-      transition: background 0.2s;
       cursor: pointer;
-      border-radius: 12px;
-      margin-bottom: 2px;
-    }
-    
-    .participant-item:active {
-      background: rgba(201, 160, 61, 0.25);
-      transform: translateX(5px);
     }
     
     .participant-symbol {
       font-size: 22px;
       min-width: 36px;
-      text-align: center;
-      filter: drop-shadow(0 2px 4px var(--gold));
     }
     
     .participant-name {
       color: var(--gold);
       font-weight: 600;
       flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
     
-    .participant-city {
-      color: var(--cream);
+    .participant-wish {
       font-size: 11px;
-      background: rgba(255,255,255,0.15);
-      padding: 3px 8px;
-      border-radius: 20px;
-      white-space: nowrap;
+      color: var(--gold-light);
+      font-style: italic;
       max-width: 100px;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
     
-    /* ============ ПАНЕЛЬ КЕРУВАННЯ ============ */
+    /* Панель керування */
     .control-panel {
       position: fixed;
       bottom: calc(20px + var(--safe-area-bottom));
@@ -315,18 +188,8 @@
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
-      -webkit-backdrop-filter: blur(5px);
-      backdrop-filter: blur(5px);
-      box-shadow: var(--shadow-lg);
       min-width: 140px;
       text-align: center;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
     }
     
     .control-btn:active {
@@ -335,41 +198,20 @@
       transform: scale(0.97);
     }
     
-    .control-btn.small {
-      padding: 8px 16px;
-      min-width: 120px;
-      font-size: 14px;
-    }
-    
-    .control-btn.admin {
-      background: #8B0000;
-      border-color: #ff9800;
-      color: #ff9800;
-    }
-    
-    /* ============ ПОВІДОМЛЕННЯ ============ */
+    /* Повідомлення */
     .toast-message {
       position: fixed;
       top: calc(20px + var(--safe-area-top));
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(106, 30, 42, 0.98);
+      background: rgba(139, 44, 44, 0.98);
       border: 2px solid var(--gold);
       border-radius: 40px;
       padding: 14px 28px;
       color: white;
-      font-size: 16px;
       z-index: 1000;
       display: none;
-      align-items: center;
-      gap: 10px;
-      box-shadow: var(--shadow-lg), 0 0 30px var(--gold);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
       animation: slideDown 0.3s ease;
-      max-width: 90%;
-      text-align: center;
-      pointer-events: none;
     }
     
     @keyframes slideDown {
@@ -377,228 +219,12 @@
       to { transform: translate(-50%, 0); opacity: 1; }
     }
     
-    /* ============ СВЯТКУВАННЯ ============ */
-    .celebration-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(255, 215, 0, 0.4), rgba(106, 30, 42, 0.9));
-      z-index: 2000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s;
-      -webkit-backdrop-filter: blur(8px);
-      backdrop-filter: blur(8px);
-    }
-    
-    .celebration-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    
-    .celebration-content {
-      text-align: center;
-      color: gold;
-      animation: celebrationZoom 0.5s ease;
-      padding: 20px;
-    }
-    
-    .celebration-egg {
-      font-size: 100px;
-      filter: drop-shadow(0 0 30px gold);
-      animation: eggSpin 10s linear infinite;
-      margin-bottom: 20px;
-    }
-    
-    @keyframes eggSpin {
-      from { transform: rotateY(0deg); }
-      to { transform: rotateY(360deg); }
-    }
-    
-    .celebration-title {
-      font-family: var(--font-heading);
-      font-size: 42px;
-      margin: 20px 0;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-    
-    .celebration-text {
-      font-size: 20px;
-      margin-bottom: 30px;
-    }
-    
-    /* ============ АДМІН-ПАНЕЛЬ ============ */
-    .admin-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      z-index: 3000;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(5px);
-    }
-    
-    .admin-content {
-      background: var(--bordo);
-      border: 3px solid var(--gold);
-      border-radius: 30px;
-      padding: 30px;
-      max-width: 500px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      color: white;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    }
-    
-    .admin-title {
-      color: var(--gold);
-      font-family: var(--font-heading);
-      font-size: 28px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    
-    .admin-btn {
-      width: 100%;
-      padding: 15px;
-      margin-bottom: 10px;
-      border: none;
-      border-radius: 30px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    
-    .admin-btn:active {
-      transform: scale(0.98);
-    }
-    
-    .admin-btn.primary {
-      background: var(--gold);
-      color: var(--bordo);
-    }
-    
-    .admin-btn.warning {
-      background: #ff9800;
-      color: white;
-    }
-    
-    .admin-btn.danger {
-      background: #f44336;
-      color: white;
-    }
-    
-    .admin-stats {
-      background: rgba(0,0,0,0.3);
-      border-radius: 20px;
-      padding: 15px;
-      margin: 15px 0;
-    }
-    
-    .admin-close {
-      width: 100%;
-      padding: 15px;
-      margin-top: 20px;
-      background: transparent;
-      border: 2px solid var(--gold);
-      color: var(--gold);
-      border-radius: 30px;
-      cursor: pointer;
-    }
-    
-    /* ============ КНОПКА АДМІНА ============ */
-    .admin-trigger {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 150;
-      background: rgba(106, 30, 42, 0.9);
-      backdrop-filter: blur(10px);
-      padding: 10px 20px;
-      border-radius: 50px;
-      border: 2px solid var(--gold);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-      display: flex;
-      gap: 10px;
-    }
-    
-    .admin-trigger-btn {
-      background: var(--gold);
-      color: var(--bordo);
-      border: none;
-      padding: 8px 15px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-    }
-    
-    /* ============ АДАПТАЦІЯ ============ */
-    @media (max-width: 380px) {
+    @media (max-width: 768px) {
       .stats-panel {
         min-width: 220px;
-        padding: 12px;
       }
-      
-      .stats-title {
-        font-size: 20px;
-      }
-      
-      .stats-number {
-        font-size: 38px;
-      }
-      
       .control-btn {
         min-width: 120px;
-        padding: 10px 16px;
-        font-size: 14px;
-      }
-      
-      .pysanka-egg {
-        width: 38px;
-        height: 54px;
-        font-size: 20px;
-      }
-      
-      .admin-trigger {
-        padding: 8px 12px;
-      }
-      
-      .admin-trigger-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-      }
-    }
-    
-    @supports (padding: max(0px)) {
-      .stats-panel {
-        top: max(10px, env(safe-area-inset-top));
-        right: max(10px, env(safe-area-inset-right));
-      }
-      
-      .control-panel {
-        bottom: max(20px, env(safe-area-inset-bottom));
-        right: max(10px, env(safe-area-inset-right));
-      }
-      
-      .toast-message {
-        top: max(20px, env(safe-area-inset-top));
-      }
-      
-      .admin-trigger {
-        bottom: max(20px, env(safe-area-inset-bottom));
       }
     }
   </style>
@@ -612,9 +238,7 @@
   <div class="stats-panel" id="statsPanel">
     <div class="stats-header">
       <div class="stats-title">🌸 ПИСАНКА 🌸</div>
-      <button class="toggle-stats-btn" onclick="toggleStats()" id="toggleStatsBtn" title="Приховати статистику">
-        👁️
-      </button>
+      <button class="toggle-stats-btn" onclick="toggleStats()" id="toggleStatsBtn">👁️</button>
     </div>
     
     <div id="statsContent">
@@ -639,52 +263,8 @@
   
   <!-- Панель керування -->
   <div class="control-panel">
-    <button class="control-btn" onclick="refreshMap()" id="refreshBtn">
-      🔄 Оновити
-    </button>
-    <button class="control-btn" onclick="showCelebration()" id="celebrateBtn" style="display: none;">
-      🎉 Святкувати
-    </button>
-    <button class="control-btn small" onclick="window.location.href='phase1.html'">
-      🥚 Почати
-    </button>
-  </div>
-  
-  <!-- Кнопка адміна -->
-  <div class="admin-trigger">
-    <button class="admin-trigger-btn" onclick="showAdminPanel()">
-      🔧 Адмін
-    </button>
-    <button class="admin-trigger-btn" onclick="quickCleanEmpty()" title="Швидке очищення пустих">
-      🧹
-    </button>
-  </div>
-  
-  <!-- Адмін-панель -->
-  <div class="admin-modal" id="adminModal">
-    <div class="admin-content">
-      <h2 class="admin-title">🔧 Адмін-панель</h2>
-      
-      <button class="admin-btn primary" onclick="syncWithGoogleSheets()">
-        🔄 Примусова синхронізація з Google Sheets
-      </button>
-      
-      <button class="admin-btn warning" onclick="cleanEmptyParticipants()">
-        🧹 Очистити пустих учасників (без міста)
-      </button>
-      
-      <button class="admin-btn danger" onclick="resetLocalData()">
-        🗑️ Повне очищення локальних даних
-      </button>
-      
-      <div class="admin-stats" id="adminStats">
-        Завантаження статистики...
-      </div>
-      
-      <div id="emptyParticipantsList" style="max-height:200px; overflow-y:auto; margin-top:10px;"></div>
-      
-      <button class="admin-close" onclick="closeAdminPanel()">Закрити</button>
-    </div>
+    <button class="control-btn" onclick="refreshMap()">🔄 Оновити</button>
+    <button class="control-btn small" onclick="window.location.href='phase1.html'">🥚 Почати</button>
   </div>
   
   <!-- Повідомлення -->
@@ -693,259 +273,123 @@
     <span id="toastText">Новий учасник!</span>
   </div>
   
-  <!-- Святкування -->
-  <div class="celebration-overlay" id="celebrationOverlay" onclick="hideCelebration()">
-    <div class="celebration-content">
-      <div class="celebration-egg">🥚</div>
-      <div class="celebration-title">ВЕСНА ПЕРЕМОГИ!</div>
-      <div class="celebration-text">Ми соборні!</div>
-      <button class="control-btn" onclick="event.stopPropagation(); hideCelebration()" style="background: var(--gold); color: var(--bordo); margin: 0 auto;">
-        До карти
-      </button>
-    </div>
-  </div>
-  
   <script>
-    // ============ КОНФІГУРАЦІЯ ============
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEnTeoAdgYv_4DTh3P9g8BPILmXPi4B7FTrHz-54q7nZxpPBEvejaWsIP_jWjZQtdM/exec';
-    
-    // ============ РОЗШИРЕНИЙ СПИСОК КООРДИНАТ МІСТ ============
-    const CITY_COORDS = {
-      // Обласні центри
-      'вінниця': { lat: 49.23, lng: 28.47, regionId: 1, region: 'Поділля' },
-      'хмельницький': { lat: 49.42, lng: 26.98, regionId: 1, region: 'Поділля' },
-      'тернопіль': { lat: 49.55, lng: 25.59, regionId: 1, region: 'Поділля' },
-      'житомир': { lat: 50.25, lng: 28.66, regionId: 2, region: 'Полісся' },
-      'чернігів': { lat: 51.50, lng: 31.29, regionId: 2, region: 'Полісся' },
-      'рівне': { lat: 50.62, lng: 26.25, regionId: 2, region: 'Полісся' },
-      'луцьк': { lat: 50.75, lng: 25.34, regionId: 2, region: 'Полісся' },
-      'івано-франківськ': { lat: 48.92, lng: 24.71, regionId: 3, region: 'Карпати' },
-      'ужгород': { lat: 48.62, lng: 22.30, regionId: 3, region: 'Карпати' },
-      'чернівці': { lat: 48.29, lng: 25.94, regionId: 3, region: 'Карпати' },
-      'київ': { lat: 50.45, lng: 30.52, regionId: 4, region: 'Київщина' },
-      'львів': { lat: 49.84, lng: 24.03, regionId: 5, region: 'Львівщина' },
-      'одеса': { lat: 46.48, lng: 30.72, regionId: 6, region: 'Одещина' },
-      'харків': { lat: 49.99, lng: 36.23, regionId: 7, region: 'Харківщина' },
-      'дніпро': { lat: 48.46, lng: 35.04, regionId: 8, region: 'Дніпропетровщина' },
-      'полтава': { lat: 49.59, lng: 34.55, regionId: 9, region: 'Полтавщина' },
-      'черкаси': { lat: 49.44, lng: 32.06, regionId: 11, region: 'Черкащина' },
-      'сімферополь': { lat: 44.95, lng: 34.10, regionId: 12, region: 'Крим' },
-      'донецьк': { lat: 48.02, lng: 37.80, regionId: 13, region: 'Донеччина' },
-      'луганськ': { lat: 48.57, lng: 39.31, regionId: 14, region: 'Луганщина' },
-      
-      // Одеська область
-      'чорноморськ': { lat: 46.30, lng: 30.66, regionId: 6, region: 'Одещина' },
-      'ізмаїл': { lat: 45.35, lng: 28.84, regionId: 6, region: 'Одещина' },
-      'білгород-дністровський': { lat: 46.18, lng: 30.34, regionId: 6, region: 'Одещина' },
-      'подільськ': { lat: 47.74, lng: 29.53, regionId: 6, region: 'Одещина' },
-      'южне': { lat: 46.62, lng: 31.10, regionId: 6, region: 'Одещина' },
-      
-      // Черкаська область
-      'умань': { lat: 48.75, lng: 30.22, regionId: 11, region: 'Черкащина' },
-      'смола': { lat: 49.22, lng: 31.87, regionId: 11, region: 'Черкащина' },
-      'золотоноша': { lat: 49.67, lng: 32.04, regionId: 11, region: 'Черкащина' },
-      'канів': { lat: 49.75, lng: 31.47, regionId: 11, region: 'Черкащина' },
-      'корсунь-шевченківський': { lat: 49.42, lng: 31.26, regionId: 11, region: 'Черкащина' },
-      
-      // Київська область
-      'біла церква': { lat: 49.80, lng: 30.12, regionId: 4, region: 'Київщина' },
-      'бровари': { lat: 50.51, lng: 30.79, regionId: 4, region: 'Київщина' },
-      'бориспіль': { lat: 50.35, lng: 30.95, regionId: 4, region: 'Київщина' },
-      'фастів': { lat: 50.07, lng: 29.92, regionId: 4, region: 'Київщина' },
-      'ірпінь': { lat: 50.52, lng: 30.25, regionId: 4, region: 'Київщина' },
-      'вишгород': { lat: 50.58, lng: 30.49, regionId: 4, region: 'Київщина' },
-      'обухів': { lat: 50.11, lng: 30.63, regionId: 4, region: 'Київщина' },
-      
-      // Львівська область
-      'дрогобич': { lat: 49.35, lng: 23.51, regionId: 5, region: 'Львівщина' },
-      'стрий': { lat: 49.25, lng: 23.85, regionId: 5, region: 'Львівщина' },
-      'самбір': { lat: 49.52, lng: 23.20, regionId: 5, region: 'Львівщина' },
-      'трускавець': { lat: 49.28, lng: 23.51, regionId: 5, region: 'Львівщина' },
-      'новояворівськ': { lat: 49.93, lng: 23.57, regionId: 5, region: 'Львівщина' },
-      'червоноград': { lat: 50.39, lng: 24.23, regionId: 5, region: 'Львівщина' },
-      
-      // Дніпропетровська область
-      'кривий ріг': { lat: 47.91, lng: 33.39, regionId: 8, region: 'Дніпропетровщина' },
-      'каміньське': { lat: 48.52, lng: 34.61, regionId: 8, region: 'Дніпропетровщина' },
-      'нікополь': { lat: 47.57, lng: 34.39, regionId: 8, region: 'Дніпропетровщина' },
-      'павлоград': { lat: 48.52, lng: 35.87, regionId: 8, region: 'Дніпропетровщина' },
-      'новомосковськ': { lat: 48.63, lng: 35.22, regionId: 8, region: 'Дніпропетровщина' },
-      'жовті води': { lat: 48.35, lng: 33.50, regionId: 8, region: 'Дніпропетровщина' },
-      'марганець': { lat: 47.65, lng: 34.62, regionId: 8, region: 'Дніпропетровщина' },
-      
-      // Донецька область
-      'маріуполь': { lat: 47.10, lng: 37.55, regionId: 13, region: 'Донеччина' },
-      'краматорськ': { lat: 48.72, lng: 37.53, regionId: 13, region: 'Донеччина' },
-      'словянськ': { lat: 48.85, lng: 37.61, regionId: 13, region: 'Донеччина' },
-      'бахмут': { lat: 48.60, lng: 38.00, regionId: 13, region: 'Донеччина' },
-      'покровськ': { lat: 48.28, lng: 37.18, regionId: 13, region: 'Донеччина' },
-      'горлівка': { lat: 48.33, lng: 38.09, regionId: 13, region: 'Донеччина' },
-      'макіївка': { lat: 48.05, lng: 37.97, regionId: 13, region: 'Донеччина' },
-      
-      // Харківська область
-      'суми': { lat: 50.91, lng: 34.80, regionId: 7, region: 'Харківщина' },
-      'ізюм': { lat: 49.19, lng: 37.27, regionId: 7, region: 'Харківщина' },
-      'лозова': { lat: 48.89, lng: 36.31, regionId: 7, region: 'Харківщина' },
-      'чугуїв': { lat: 49.84, lng: 36.68, regionId: 7, region: 'Харківщина' },
-      'первомайський': { lat: 49.39, lng: 36.21, regionId: 7, region: 'Харківщина' },
-      
-      // Запорізька область
-      'запоріжжя': { lat: 47.84, lng: 35.14, regionId: 15, region: 'Запорізька область' },
-      'мелітополь': { lat: 46.84, lng: 35.36, regionId: 15, region: 'Запорізька область' },
-      'бердянськ': { lat: 46.75, lng: 36.79, regionId: 15, region: 'Запорізька область' },
-      'енергодар': { lat: 47.50, lng: 34.66, regionId: 15, region: 'Запорізька область' },
-      'токмак': { lat: 47.25, lng: 35.71, regionId: 15, region: 'Запорізька область' },
-      'пологи': { lat: 47.48, lng: 36.25, regionId: 15, region: 'Запорізька область' },
-      
-      // Полтавська область
-      'кременчук': { lat: 49.06, lng: 33.40, regionId: 9, region: 'Полтавщина' },
-      'лубни': { lat: 50.02, lng: 33.00, regionId: 9, region: 'Полтавщина' },
-      'миргород': { lat: 49.97, lng: 33.61, regionId: 9, region: 'Полтавщина' },
-      'гадяч': { lat: 50.37, lng: 34.00, regionId: 9, region: 'Полтавщина' },
-      
-      // Волинська область
-      'володимир': { lat: 50.85, lng: 24.32, regionId: 2, region: 'Полісся' },
-      'ковель': { lat: 51.22, lng: 24.71, regionId: 2, region: 'Полісся' },
-      'нововолинськ': { lat: 50.74, lng: 24.16, regionId: 2, region: 'Полісся' },
-      
-      // Закарпатська область
-      'мукачево': { lat: 48.44, lng: 22.71, regionId: 3, region: 'Карпати' },
-      'хуст': { lat: 48.18, lng: 23.30, regionId: 3, region: 'Карпати' },
-      'берегово': { lat: 48.20, lng: 22.64, regionId: 3, region: 'Карпати' },
-      'чоп': { lat: 48.43, lng: 22.21, regionId: 3, region: 'Карпати' },
-      'рахів': { lat: 48.06, lng: 24.21, regionId: 3, region: 'Карпати' },
-      
-      // Івано-Франківська область
-      'калуш': { lat: 49.01, lng: 24.37, regionId: 3, region: 'Карпати' },
-      'коломия': { lat: 48.53, lng: 25.04, regionId: 3, region: 'Карпати' },
-      'надвірна': { lat: 48.63, lng: 24.57, regionId: 3, region: 'Карпати' },
-      'долина': { lat: 48.97, lng: 24.01, regionId: 3, region: 'Карпати' },
-      
-      // Крим
-      'ялта': { lat: 44.50, lng: 34.17, regionId: 12, region: 'Крим' },
-      'феодосія': { lat: 45.03, lng: 35.38, regionId: 12, region: 'Крим' },
-      'євпаторія': { lat: 45.20, lng: 33.36, regionId: 12, region: 'Крим' },
-      'керч': { lat: 45.36, lng: 36.47, regionId: 12, region: 'Крим' },
-      'саки': { lat: 45.13, lng: 33.60, regionId: 12, region: 'Крим' },
-      'джанкой': { lat: 45.71, lng: 34.39, regionId: 12, region: 'Крим' },
-      'алушта': { lat: 44.67, lng: 34.41, regionId: 12, region: 'Крим' },
-      'судак': { lat: 44.85, lng: 34.98, regionId: 12, region: 'Крим' },
-      
-      // ============ МІСТА ДІАСПОРИ ============
-      'торонто': { lat: 43.65, lng: -79.38, country: 'Канада', isDiaspora: true },
-      'чикаго': { lat: 41.88, lng: -87.63, country: 'США', isDiaspora: true },
-      'нью-йорк': { lat: 40.71, lng: -74.01, country: 'США', isDiaspora: true },
-      'варшава': { lat: 52.23, lng: 21.01, country: 'Польща', isDiaspora: true },
-      'берлін': { lat: 52.52, lng: 13.40, country: 'Німеччина', isDiaspora: true },
-      'лондон': { lat: 51.51, lng: -0.13, country: 'Велика Британія', isDiaspora: true },
-      'париж': { lat: 48.86, lng: 2.35, country: 'Франція', isDiaspora: true },
-      'рим': { lat: 41.90, lng: 12.50, country: 'Італія', isDiaspora: true },
-      'мадрид': { lat: 40.42, lng: -3.70, country: 'Іспанія', isDiaspora: true },
-      'лісабон': { lat: 38.72, lng: -9.14, country: 'Португалія', isDiaspora: true },
-      'прага': { lat: 50.08, lng: 14.42, country: 'Чехія', isDiaspora: true },
-      'відень': { lat: 48.21, lng: 16.37, country: 'Австрія', isDiaspora: true },
-      'будапешт': { lat: 47.50, lng: 19.04, country: 'Угорщина', isDiaspora: true }
+    // ============ БЕЗПЕЧНИЙ КОНФІГ ============
+    const DASHBOARD_CONFIG = {
+      SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbx5K0BYRggtszTnZh0-Hfw_JI7aoHqJBanzfs9x6bkvBpo5QMdJHJ2RzjnYbNsAJm1d/exec',
+      TOKEN: 'Soborna2024!@#$%^&*()_+Pysanka',
+      UPDATE_INTERVAL: 30000, // 30 секунд
+      CACHE_KEY: 'pysanka_cache'
     };
-
-    // ============ ФУНКЦІЯ ДЛЯ ЗНАХОДЖЕННЯ КООРДИНАТ МІСТА ============
-    function findCityCoords(cityInput) {
-      if (!cityInput) return { lat: 49.0, lng: 32.0, region: 'Україна' };
-      
-      const cityLower = cityInput.toLowerCase().trim();
-      
-      // 1. Точний збіг
-      if (CITY_COORDS[cityLower]) {
-        return CITY_COORDS[cityLower];
-      }
-      
-      // 2. Частковий збіг
-      for (let [key, value] of Object.entries(CITY_COORDS)) {
-        if (cityLower.includes(key) || key.includes(cityLower)) {
-          console.log(`✅ Знайдено місто: ${key}`);
-          return value;
-        }
-      }
-      
-      // 3. Спеціальні випадки
-      if (cityLower.includes('крим') || cityLower.includes('crimea')) {
-        return { lat: 45.0, lng: 34.0, regionId: 12, region: 'Крим' };
-      }
-      
-      if (cityLower.includes('донбас') || cityLower.includes('donbas')) {
-        return { lat: 48.0, lng: 37.8, regionId: 13, region: 'Донбас' };
-      }
-      
-      // 4. Центр України за замовчуванням
-      console.log(`❌ Місто не знайдено: ${cityInput}, використовуємо центр`);
-      return { lat: 49.0, lng: 32.0, region: 'Україна' };
-    }
     
-    // ============ МАСИВ КОЛЬОРІВ ============
+    // ============ КОЛЬОРИ ============
     const RAINBOW_CLASSES = [
-      'rainbow-1', 'rainbow-2', 'rainbow-3', 'rainbow-4',
-      'rainbow-5', 'rainbow-6', 'rainbow-7', 'rainbow-8'
+      'rainbow-1', 'rainbow-2', 'rainbow-3', 'rainbow-4', 'rainbow-5'
     ];
     
-    // ============ СИМВОЛИ РЕГІОНІВ ============
     const REGION_SYMBOLS = {
       1: '🌻', 2: '🌲', 3: '🏔️', 4: '🏛️', 5: '🦁', 6: '⚓', 7: '⚙️',
-      8: '🌊', 9: '🌾', 10: '📚', 11: '🎭', 12: '🏖️', 13: '⛏️', 14: '🌻',
-      15: '🌾'  // Запорізька область
+      8: '🌊', 9: '🌾', 10: '📚', 11: '🎭', 12: '🏖️', 13: '⛏️', 14: '🌻'
     };
     
     // ============ ЗМІННІ ============
     let map;
     let markers = [];
     let participants = [];
-    let previousCount = 0;
     let statsVisible = true;
+    let lastUpdate = 0;
+    let updateTimer = null;
     
-    // ============ АВТОМАТИЧНЕ ОЧИЩЕННЯ ПРИ ЗАВАНТАЖЕННІ ============
-    function autoCleanOnLoad() {
-      try {
-        const saved = localStorage.getItem('pysanka_participants');
-        if (saved) {
-          const data = JSON.parse(saved);
-          const validData = data.filter(p => 
-            p.city && 
-            p.city.trim() !== '' && 
-            p.city !== 'undefined' && 
-            p.city !== 'null' &&
-            p.name && 
-            p.name.trim() !== ''
-          );
-          
-          if (data.length !== validData.length) {
-            console.log(`🧹 Автоматично очищено ${data.length - validData.length} пустих записів`);
-            localStorage.setItem('pysanka_participants', JSON.stringify(validData));
+    // ============ SMART UPDATER ============
+    class SmartUpdater {
+      constructor() {
+        this.lastCheck = 0;
+        this.participantsCount = 0;
+        this.isUpdating = false;
+      }
+      
+      start() {
+        if (updateTimer) clearInterval(updateTimer);
+        
+        updateTimer = setInterval(() => this.checkForUpdates(), DASHBOARD_CONFIG.UPDATE_INTERVAL);
+        console.log('🟢 Smart updater запущено');
+      }
+      
+      async checkForUpdates() {
+        if (document.hidden) return;
+        
+        const now = Date.now();
+        if (now - this.lastCheck < 10000) return; // Не частіше 10 секунд
+        
+        this.lastCheck = now;
+        
+        try {
+          const hasChanges = await this.hasNewParticipants();
+          if (hasChanges) {
+            console.log('🆕 Є нові учасники');
+            await this.loadNewParticipants();
           }
+        } catch (error) {
+          console.log('Помилка оновлення:', error);
         }
-      } catch (e) {
-        console.log('Помилка автоочищення:', e);
+      }
+      
+      async hasNewParticipants() {
+        const localCount = participants.length;
+        return localCount !== this.participantsCount;
+      }
+      
+      async loadNewParticipants() {
+        if (this.isUpdating) return;
+        this.isUpdating = true;
+        
+        try {
+          const localData = localStorage.getItem('pysanka_participants');
+          if (localData) {
+            const newData = JSON.parse(localData);
+            
+            if (newData.length > participants.length) {
+              const oldIds = new Set(participants.map(p => p.id));
+              const newParticipants = newData.filter(p => !oldIds.has(p.id));
+              
+              participants = newData;
+              
+              // Додаємо тільки нові маркери
+              newParticipants.forEach(p => addSingleMarker(p));
+              
+              updateStats();
+              showToast(`🆕 +${newParticipants.length} нових!`);
+              
+              this.participantsCount = participants.length;
+            }
+          }
+        } catch (error) {
+          console.log('Помилка завантаження:', error);
+        }
+        
+        this.isUpdating = false;
       }
     }
     
     // ============ ІНІЦІАЛІЗАЦІЯ ============
     document.addEventListener('DOMContentLoaded', function() {
-      autoCleanOnLoad();
       initMap();
       loadParticipants();
-      setInterval(loadParticipants, 5000);
       
-      document.body.addEventListener('touchmove', (e) => {
-        if (e.target.closest('.participants-list') || e.target.closest('.admin-content')) return;
-        e.preventDefault();
-      }, { passive: false });
+      const updater = new SmartUpdater();
+      updater.start();
+      
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          updater.checkForUpdates();
+        }
+      });
     });
     
-    // ============ ІНІЦІАЛІЗАЦІЯ КАРТИ ============
     function initMap() {
       map = L.map('ukraine-map', {
         zoomControl: false,
-        attributionControl: false,
-        fadeAnimation: true,
-        zoomAnimation: true,
-        markerZoomAnimation: true
+        attributionControl: false
       }).setView([49.0, 32.0], 6);
       
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -958,102 +402,17 @@
       }
     }
     
-    // ============ ЗАВАНТАЖЕННЯ УЧАСНИКІВ ============
     function loadParticipants() {
-      loadFromLocalStorage();
-      loadFromGoogleSheets();
-    }
-    
-    // ============ З LOCALSTORAGE ============
-    function loadFromLocalStorage() {
       try {
         const saved = localStorage.getItem('pysanka_participants');
         if (saved) {
-          const data = JSON.parse(saved);
-          if (data.length > 0) {
-            participants = data;
-            updateMap();
-            updateStats();
-            
-            if (data.length > previousCount) {
-              showNewParticipantToast(data[data.length - 1]);
-              previousCount = data.length;
-            }
-          }
+          participants = JSON.parse(saved);
+          updateMap();
+          updateStats();
         }
       } catch (e) {}
     }
     
-    // ============ З GOOGLE SHEETS (ОНОВЛЕНО) ============
-    function loadFromGoogleSheets() {
-      fetch(GOOGLE_SCRIPT_URL)
-        .then(response => response.json())
-        .then(data => {
-          if (data && data.length > 0) {
-            const validGoogleData = data.filter(item => 
-              (item.city || item.detectedCity) && 
-              item.name && 
-              item.name.trim() !== ''
-            );
-            
-            const googleParticipants = validGoogleData.map(item => {
-              // 1. Якщо є координати з Google Sheets - використовуємо їх
-              if (item.lat && item.lng) {
-                return {
-                  name: item.name,
-                  city: item.city || item.detectedCity || 'Невідоме місто',
-                  detectedCity: item.detectedCity,
-                  region: item.regionName || 'Україна',
-                  regionId: item.regionId || null,
-                  country: item.country || 'Україна',
-                  timestamp: item.timestamp,
-                  coords: { lat: parseFloat(item.lat), lng: parseFloat(item.lng) },
-                  symbol: REGION_SYMBOLS[item.regionId] || '🥚',
-                  isDiaspora: item.country && item.country !== 'Україна' || false
-                };
-              }
-              
-              // 2. Якщо немає координат - шукаємо через findCityCoords
-              const cityToFind = item.detectedCity || item.city;
-              const cityCoords = findCityCoords(cityToFind);
-              
-              return {
-                name: item.name,
-                city: item.city || item.detectedCity || 'Невідоме місто',
-                detectedCity: item.detectedCity,
-                region: cityCoords.region || item.regionName || 'Україна',
-                regionId: cityCoords.regionId || item.regionId || null,
-                country: cityCoords.country || item.country || 'Україна',
-                timestamp: item.timestamp,
-                coords: { lat: cityCoords.lat, lng: cityCoords.lng },
-                symbol: REGION_SYMBOLS[cityCoords.regionId || item.regionId] || '🥚',
-                isDiaspora: cityCoords.isDiaspora || false
-              };
-            });
-            
-            const allParticipants = [...participants];
-            
-            googleParticipants.forEach(gp => {
-              const exists = allParticipants.some(p => 
-                p.name === gp.name && p.city === gp.city
-              );
-              if (!exists) {
-                allParticipants.push(gp);
-              }
-            });
-            
-            if (allParticipants.length > participants.length) {
-              participants = allParticipants;
-              localStorage.setItem('pysanka_participants', JSON.stringify(participants));
-              updateMap();
-              updateStats();
-            }
-          }
-        })
-        .catch(() => {});
-    }
-    
-    // ============ ОНОВЛЕННЯ КАРТИ ============
     function updateMap() {
       markers.forEach(m => map.removeLayer(m));
       markers = [];
@@ -1077,15 +436,24 @@
       updateRegionProgress(regionCount);
     }
     
-    // ============ СТВОРЕННЯ МАРКЕРА ============
+    function addSingleMarker(participant) {
+      if (!map) return;
+      
+      const coords = participant.coords || { lat: 49.0, lng: 32.0 };
+      const colorClass = RAINBOW_CLASSES[markers.length % RAINBOW_CLASSES.length];
+      const marker = createMarker(participant, coords.lat, coords.lng, colorClass);
+      
+      marker.addTo(map);
+      markers.push(marker);
+    }
+    
     function createMarker(participant, lat, lng, colorClass) {
       const symbol = participant.symbol || '🥚';
+      const wish = participant.wish || 'Христос Воскрес!';
       
       const markerHtml = `
-        <div class="pysanka-marker" title="${participant.name}, ${participant.city}">
-          <div class="pysanka-egg ${colorClass}">
-            ${symbol}
-          </div>
+        <div class="pysanka-marker" title="${participant.name}">
+          <div class="pysanka-egg ${colorClass}">${symbol}</div>
         </div>
       `;
       
@@ -1093,31 +461,26 @@
         className: '',
         html: markerHtml,
         iconSize: [44, 62],
-        iconAnchor: [22, 31],
-        popupAnchor: [0, -31]
+        iconAnchor: [22, 31]
       });
       
       const marker = L.marker([lat, lng], { icon: icon });
       
-      const diasporaText = participant.isDiaspora ? '<br><small style="color:#ff9800;">🇺🇦 Серце з Україною</small>' : '';
+      const diasporaText = participant.isDiaspora ? '<br><small>🇺🇦 Серце з Україною</small>' : '';
       
       marker.bindPopup(`
-        <div style="text-align: center; font-family: 'Cormorant Garamond', serif; min-width: 140px; padding: 5px;">
-          <div style="font-size: 28px; margin-bottom: 5px;">${symbol}</div>
-          <b style="color: #6a1e2a; font-size: 16px;">${participant.name}</b><br>
-          <i style="color: #c9a03d; font-size: 14px;">${participant.city}</i>
-          ${participant.country ? `<br><small style="color: #666;">${participant.country}</small>` : ''}
+        <div style="text-align: center; min-width: 160px;">
+          <div style="font-size: 28px;">${symbol}</div>
+          <b style="color: #8B2C2C;">${participant.name}</b><br>
+          <i style="color: #FFB347;">${participant.city}</i><br>
+          <small style="color: #666; font-style: italic;">"${wish}"</small>
           ${diasporaText}
         </div>
-      `, {
-        className: 'custom-popup',
-        closeButton: false
-      });
+      `);
       
       return marker;
     }
     
-    // ============ ОНОВЛЕННЯ СТАТИСТИКИ ============
     function updateStats() {
       const count = participants.length;
       document.getElementById('participantCount').textContent = count;
@@ -1125,34 +488,33 @@
       const listEl = document.getElementById('participantsList');
       
       if (count === 0) {
-        listEl.innerHTML = '<div style="text-align: center; opacity: 0.5; padding: 20px;">Чекаємо на учасників...</div>';
+        listEl.innerHTML = '<div style="text-align: center; padding: 20px;">Чекаємо...</div>';
         return;
       }
       
-      const recentParticipants = [...participants].reverse().slice(0, 8);
+      const recent = [...participants].reverse().slice(0, 8);
       
-      listEl.innerHTML = recentParticipants.map((p, i) => {
-        const colorIndex = i % RAINBOW_CLASSES.length;
+      listEl.innerHTML = recent.map((p, i) => {
+        const wish = p.wish || 'Христос Воскрес!';
+        const shortWish = wish.length > 30 ? wish.substr(0, 27) + '...' : wish;
+        
         return `
           <div class="participant-item" onclick="flyToParticipant('${p.name.replace(/'/g, "\\'")}')">
             <span class="participant-symbol">${p.symbol || '🥚'}</span>
             <span class="participant-name">${p.name}</span>
-            <span class="participant-city">${p.city}</span>
+            <span class="participant-wish" title="${wish}">"${shortWish}"</span>
           </div>
         `;
       }).join('');
-      
-      if (count > 30 && statsVisible) {
-        setTimeout(() => {
-          if (statsVisible && count > 30) {
-            toggleStats();
-            showToast('Статистику приховано для зручності');
-          }
-        }, 2000);
-      }
     }
     
-    // ============ ПЕРЕЛІТ ДО УЧАСНИКА ============
+    function updateRegionProgress(regionCount) {
+      const active = Object.keys(regionCount).length;
+      document.getElementById('regionsActive').textContent = `${active}/14`;
+      document.getElementById('progressBar').style.width = (active / 14 * 100) + '%';
+    }
+    
+    // ============ ФУНКЦІЇ ============
     window.flyToParticipant = function(name) {
       const p = participants.find(p => p.name === name);
       if (p) {
@@ -1169,27 +531,9 @@
       }
     };
     
-    // ============ ОНОВЛЕННЯ ПРОГРЕСУ РЕГІОНІВ ============
-    function updateRegionProgress(regionCount) {
-      const activeRegions = Object.keys(regionCount).length;
-      document.getElementById('regionsActive').textContent = `${activeRegions}/14`;
-      
-      const progressPercent = (activeRegions / 14) * 100;
-      document.getElementById('progressBar').style.width = progressPercent + '%';
-      
-      document.getElementById('celebrateBtn').style.display = activeRegions >= 14 ? 'flex' : 'none';
-    }
-    
-    // ============ ПОКАЗ СПОВІЩЕННЯ ============
-    function showNewParticipantToast(participant) {
-      showToast(`${participant.name} з міста ${participant.city} приєднався! 🌸`);
-    }
-    
     function showToast(message) {
       const toast = document.getElementById('toastMessage');
-      const toastText = document.getElementById('toastText');
-      
-      toastText.textContent = message;
+      document.getElementById('toastText').textContent = message;
       toast.style.display = 'flex';
       
       if (navigator.vibrate) navigator.vibrate(50);
@@ -1199,13 +543,11 @@
       }, 3000);
     }
     
-    // ============ ОНОВЛЕННЯ КАРТИ ============
     function refreshMap() {
       loadParticipants();
       showToast('Карту оновлено! 🌈');
     }
     
-    // ============ ПРИХОВАТИ/ПОКАЗАТИ СТАТИСТИКУ ============
     function toggleStats() {
       const panel = document.getElementById('statsPanel');
       const content = document.getElementById('statsContent');
@@ -1214,145 +556,19 @@
       if (statsVisible) {
         content.style.display = 'none';
         panel.style.minWidth = '60px';
-        panel.style.padding = '12px';
         btn.innerHTML = '👁️‍🗨️';
-        btn.title = 'Показати статистику';
         statsVisible = false;
       } else {
         content.style.display = 'block';
         panel.style.minWidth = '260px';
-        panel.style.padding = '16px';
         btn.innerHTML = '👁️';
-        btn.title = 'Приховати статистику';
         statsVisible = true;
       }
     }
     
-    // ============ СВЯТКУВАННЯ ============
-    function showCelebration() {
-      document.getElementById('celebrationOverlay').classList.add('active');
-      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-    }
-    
-    function hideCelebration() {
-      document.getElementById('celebrationOverlay').classList.remove('active');
-    }
-    
-    // ============ АДМІН-ФУНКЦІЇ ============
-    function showAdminPanel() {
-      document.getElementById('adminModal').style.display = 'flex';
-      updateAdminStats();
-    }
-    
-    function closeAdminPanel() {
-      document.getElementById('adminModal').style.display = 'none';
-    }
-    
-    function updateAdminStats() {
-      const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
-      const emptyParticipants = participants.filter(p => 
-        !p.city || p.city.trim() === '' || p.city === 'undefined' || p.city === 'null'
-      );
-      
-      let statsHtml = `
-        <p>Всього в localStorage: ${participants.length}</p>
-        <p>Пустих записів: ${emptyParticipants.length}</p>
-      `;
-      
-      document.getElementById('adminStats').innerHTML = statsHtml;
-      
-      let emptyHtml = '';
-      if (emptyParticipants.length > 0) {
-        emptyHtml = '<h4 style="color:#ff9800; margin-top:10px;">Пусті учасники:</h4>';
-        emptyParticipants.slice(0, 5).forEach((p, i) => {
-          emptyHtml += `<p style="font-size:12px; margin:5px 0;">${i+1}. ID: ${p.id}, Ім'я: ${p.name || '?'}</p>`;
-        });
-        if (emptyParticipants.length > 5) {
-          emptyHtml += `<p>... та ще ${emptyParticipants.length - 5}</p>`;
-        }
-      }
-      
-      document.getElementById('emptyParticipantsList').innerHTML = emptyHtml;
-    }
-    
-    function quickCleanEmpty() {
-      cleanEmptyParticipants();
-    }
-    
-    function cleanEmptyParticipants() {
-      if (!confirm('Видалити всіх учасників без міста? Вони зникнуть з карти.')) return;
-      
-      try {
-        const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
-        const validParticipants = participants.filter(p => 
-          p.city && 
-          p.city.trim() !== '' && 
-          p.city !== 'undefined' && 
-          p.city !== 'null'
-        );
-        
-        localStorage.setItem('pysanka_participants', JSON.stringify(validParticipants));
-        
-        alert(`✅ Видалено ${participants.length - validParticipants.length} пустих записів`);
-        
-        closeAdminPanel();
-        location.reload();
-      } catch (e) {
-        alert('Помилка: ' + e);
-      }
-    }
-    
-    async function syncWithGoogleSheets() {
-      if (!confirm('Завантажити дані з Google Sheets та оновити локальну карту?')) return;
-      
-      try {
-        showToast('🔄 Синхронізація...');
-        
-        const response = await fetch(GOOGLE_SCRIPT_URL);
-        const data = await response.json();
-        
-        if (data && data.length > 0) {
-          const validData = data.filter(item => 
-            item.city && 
-            item.city.trim() !== '' && 
-            item.name && 
-            item.name.trim() !== ''
-          );
-          
-          localStorage.setItem('pysanka_participants', JSON.stringify(validData));
-          
-          alert(`✅ Завантажено ${validData.length} учасників з Google Sheets`);
-          closeAdminPanel();
-          location.reload();
-        } else {
-          alert('❌ Немає даних в Google Sheets');
-        }
-      } catch (e) {
-        alert('Помилка синхронізації: ' + e);
-      }
-    }
-    
-    function resetLocalData() {
-      if (confirm('❓ Очистити всі локальні маркери? Карта перезавантажиться з таблиці при наступному оновленні.')) {
-        localStorage.removeItem('pysanka_participants');
-        alert('✅ Локальні дані очищено');
-        closeAdminPanel();
-        location.reload();
-      }
-    }
-    
-    // ============ ЕКСПОРТ ФУНКЦІЙ ============
+    // ============ ЕКСПОРТ ============
     window.refreshMap = refreshMap;
-    window.showCelebration = showCelebration;
-    window.hideCelebration = hideCelebration;
     window.toggleStats = toggleStats;
-    window.flyToParticipant = flyToParticipant;
-    window.showAdminPanel = showAdminPanel;
-    window.closeAdminPanel = closeAdminPanel;
-    window.cleanEmptyParticipants = cleanEmptyParticipants;
-    window.quickCleanEmpty = quickCleanEmpty;
-    window.syncWithGoogleSheets = syncWithGoogleSheets;
-    window.resetLocalData = resetLocalData;
   </script>
 </body>
 </html>
