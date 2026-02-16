@@ -341,6 +341,12 @@
       font-size: 14px;
     }
     
+    .control-btn.admin {
+      background: #8B0000;
+      border-color: #ff9800;
+      color: #ff9800;
+    }
+    
     /* ============ ПОВІДОМЛЕННЯ ============ */
     .toast-message {
       position: fixed;
@@ -426,7 +432,120 @@
       margin-bottom: 30px;
     }
     
-    /* ============ АДАПТАЦІЯ ДЛЯ МАЛЕНЬКИХ ЕКРАНІВ ============ */
+    /* ============ АДМІН-ПАНЕЛЬ ============ */
+    .admin-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+    }
+    
+    .admin-content {
+      background: var(--bordo);
+      border: 3px solid var(--gold);
+      border-radius: 30px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      color: white;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    
+    .admin-title {
+      color: var(--gold);
+      font-family: var(--font-heading);
+      font-size: 28px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .admin-btn {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .admin-btn:active {
+      transform: scale(0.98);
+    }
+    
+    .admin-btn.primary {
+      background: var(--gold);
+      color: var(--bordo);
+    }
+    
+    .admin-btn.warning {
+      background: #ff9800;
+      color: white;
+    }
+    
+    .admin-btn.danger {
+      background: #f44336;
+      color: white;
+    }
+    
+    .admin-stats {
+      background: rgba(0,0,0,0.3);
+      border-radius: 20px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+    
+    .admin-close {
+      width: 100%;
+      padding: 15px;
+      margin-top: 20px;
+      background: transparent;
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      border-radius: 30px;
+      cursor: pointer;
+    }
+    
+    /* ============ КНОПКА АДМІНА ============ */
+    .admin-trigger {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 150;
+      background: rgba(106, 30, 42, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 10px 20px;
+      border-radius: 50px;
+      border: 2px solid var(--gold);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      display: flex;
+      gap: 10px;
+    }
+    
+    .admin-trigger-btn {
+      background: var(--gold);
+      color: var(--bordo);
+      border: none;
+      padding: 8px 15px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    /* ============ АДАПТАЦІЯ ============ */
     @media (max-width: 380px) {
       .stats-panel {
         min-width: 220px;
@@ -452,9 +571,17 @@
         height: 54px;
         font-size: 20px;
       }
+      
+      .admin-trigger {
+        padding: 8px 12px;
+      }
+      
+      .admin-trigger-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
     }
     
-    /* ============ АДАПТАЦІЯ ДЛЯ iPhone X ТА НОВІШИХ ============ */
     @supports (padding: max(0px)) {
       .stats-panel {
         top: max(10px, env(safe-area-inset-top));
@@ -469,37 +596,9 @@
       .toast-message {
         top: max(20px, env(safe-area-inset-top));
       }
-    }
-    
-    /* ============ АДАПТАЦІЯ ДЛЯ ПЛАНШЕТІВ ============ */
-    @media (min-width: 768px) and (max-width: 1024px) {
-      .stats-panel {
-        min-width: 300px;
-      }
       
-      .pysanka-egg {
-        width: 50px;
-        height: 70px;
-        font-size: 26px;
-      }
-      
-      .control-btn {
-        min-width: 180px;
-        padding: 14px 24px;
-        font-size: 16px;
-      }
-    }
-    
-    /* ============ ТЕМНА ТЕМА (ОПЦІОНАЛЬНО) ============ */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --cream: #2a2a2a;
-        --beige: #1a1a1a;
-        --dark: #f5eee6;
-      }
-      
-      .stats-panel {
-        background: rgba(106, 30, 42, 0.98);
+      .admin-trigger {
+        bottom: max(20px, env(safe-area-inset-bottom));
       }
     }
   </style>
@@ -549,6 +648,43 @@
     <button class="control-btn small" onclick="window.location.href='phase1.html'">
       🥚 Почати
     </button>
+  </div>
+  
+  <!-- Кнопка адміна -->
+  <div class="admin-trigger">
+    <button class="admin-trigger-btn" onclick="showAdminPanel()">
+      🔧 Адмін
+    </button>
+    <button class="admin-trigger-btn" onclick="quickCleanEmpty()" title="Швидке очищення пустих">
+      🧹
+    </button>
+  </div>
+  
+  <!-- Адмін-панель -->
+  <div class="admin-modal" id="adminModal">
+    <div class="admin-content">
+      <h2 class="admin-title">🔧 Адмін-панель</h2>
+      
+      <button class="admin-btn primary" onclick="syncWithGoogleSheets()">
+        🔄 Примусова синхронізація з Google Sheets
+      </button>
+      
+      <button class="admin-btn warning" onclick="cleanEmptyParticipants()">
+        🧹 Очистити пустих учасників (без міста)
+      </button>
+      
+      <button class="admin-btn danger" onclick="resetLocalData()">
+        🗑️ Повне очищення локальних даних
+      </button>
+      
+      <div class="admin-stats" id="adminStats">
+        Завантаження статистики...
+      </div>
+      
+      <div id="emptyParticipantsList" style="max-height:200px; overflow-y:auto; margin-top:10px;"></div>
+      
+      <button class="admin-close" onclick="closeAdminPanel()">Закрити</button>
+    </div>
   </div>
   
   <!-- Повідомлення -->
@@ -615,15 +751,41 @@
     let previousCount = 0;
     let statsVisible = true;
     
+    // ============ АВТОМАТИЧНЕ ОЧИЩЕННЯ ПРИ ЗАВАНТАЖЕННІ ============
+    function autoCleanOnLoad() {
+      try {
+        const saved = localStorage.getItem('pysanka_participants');
+        if (saved) {
+          const data = JSON.parse(saved);
+          const validData = data.filter(p => 
+            p.city && 
+            p.city.trim() !== '' && 
+            p.city !== 'undefined' && 
+            p.city !== 'null' &&
+            p.name && 
+            p.name.trim() !== ''
+          );
+          
+          if (data.length !== validData.length) {
+            console.log(`🧹 Автоматично очищено ${data.length - validData.length} пустих записів`);
+            localStorage.setItem('pysanka_participants', JSON.stringify(validData));
+          }
+        }
+      } catch (e) {
+        console.log('Помилка автоочищення:', e);
+      }
+    }
+    
     // Ініціалізація
     document.addEventListener('DOMContentLoaded', function() {
+      autoCleanOnLoad();
       initMap();
       loadParticipants();
       setInterval(loadParticipants, 5000);
       
       // Запобігаємо скролу body
       document.body.addEventListener('touchmove', (e) => {
-        if (e.target.closest('.participants-list')) return;
+        if (e.target.closest('.participants-list') || e.target.closest('.admin-content')) return;
         e.preventDefault();
       }, { passive: false });
     });
@@ -681,7 +843,15 @@
         .then(response => response.json())
         .then(data => {
           if (data && data.length > 0) {
-            const googleParticipants = data.map(item => ({
+            // Фільтруємо тільки валідні записи з Google Sheets
+            const validGoogleData = data.filter(item => 
+              item.city && 
+              item.city.trim() !== '' && 
+              item.name && 
+              item.name.trim() !== ''
+            );
+            
+            const googleParticipants = validGoogleData.map(item => ({
               name: item.name,
               city: item.city,
               region: item.regionName,
@@ -853,7 +1023,6 @@
       toastText.textContent = message;
       toast.style.display = 'flex';
       
-      // Вібрація (тільки на Android)
       if (navigator.vibrate) navigator.vibrate(50);
       
       setTimeout(() => {
@@ -900,12 +1069,127 @@
       document.getElementById('celebrationOverlay').classList.remove('active');
     }
     
+    // ============ АДМІН-ФУНКЦІЇ ============
+    
+    function showAdminPanel() {
+      document.getElementById('adminModal').style.display = 'flex';
+      updateAdminStats();
+    }
+    
+    function closeAdminPanel() {
+      document.getElementById('adminModal').style.display = 'none';
+    }
+    
+    function updateAdminStats() {
+      const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
+      const emptyParticipants = participants.filter(p => 
+        !p.city || p.city.trim() === '' || p.city === 'undefined' || p.city === 'null'
+      );
+      
+      let statsHtml = `
+        <p>Всього в localStorage: ${participants.length}</p>
+        <p>Пустих записів: ${emptyParticipants.length}</p>
+      `;
+      
+      document.getElementById('adminStats').innerHTML = statsHtml;
+      
+      let emptyHtml = '';
+      if (emptyParticipants.length > 0) {
+        emptyHtml = '<h4 style="color:#ff9800; margin-top:10px;">Пусті учасники:</h4>';
+        emptyParticipants.slice(0, 5).forEach((p, i) => {
+          emptyHtml += `<p style="font-size:12px; margin:5px 0;">${i+1}. ID: ${p.id}, Ім'я: ${p.name || '?'}</p>`;
+        });
+        if (emptyParticipants.length > 5) {
+          emptyHtml += `<p>... та ще ${emptyParticipants.length - 5}</p>`;
+        }
+      }
+      
+      document.getElementById('emptyParticipantsList').innerHTML = emptyHtml;
+    }
+    
+    // Швидке очищення (для кнопки)
+    function quickCleanEmpty() {
+      cleanEmptyParticipants();
+    }
+    
+    // Очищення пустих учасників
+    function cleanEmptyParticipants() {
+      if (!confirm('Видалити всіх учасників без міста? Вони зникнуть з карти.')) return;
+      
+      try {
+        const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
+        const validParticipants = participants.filter(p => 
+          p.city && 
+          p.city.trim() !== '' && 
+          p.city !== 'undefined' && 
+          p.city !== 'null'
+        );
+        
+        localStorage.setItem('pysanka_participants', JSON.stringify(validParticipants));
+        
+        alert(`✅ Видалено ${participants.length - validParticipants.length} пустих записів`);
+        
+        closeAdminPanel();
+        location.reload();
+      } catch (e) {
+        alert('Помилка: ' + e);
+      }
+    }
+    
+    // Синхронізація з Google Sheets
+    async function syncWithGoogleSheets() {
+      if (!confirm('Завантажити дані з Google Sheets та оновити локальну карту?')) return;
+      
+      try {
+        showToast('🔄 Синхронізація...');
+        
+        const response = await fetch(GOOGLE_SCRIPT_URL);
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          // Фільтруємо тільки валідні записи
+          const validData = data.filter(item => 
+            item.city && 
+            item.city.trim() !== '' && 
+            item.name && 
+            item.name.trim() !== ''
+          );
+          
+          localStorage.setItem('pysanka_participants', JSON.stringify(validData));
+          
+          alert(`✅ Завантажено ${validData.length} учасників з Google Sheets`);
+          closeAdminPanel();
+          location.reload();
+        } else {
+          alert('❌ Немає даних в Google Sheets');
+        }
+      } catch (e) {
+        alert('Помилка синхронізації: ' + e);
+      }
+    }
+    
+    // Повне очищення локальних даних
+    function resetLocalData() {
+      if (confirm('❓ Очистити всі локальні маркери? Карта перезавантажиться з таблиці при наступному оновленні.')) {
+        localStorage.removeItem('pysanka_participants');
+        alert('✅ Локальні дані очищено');
+        closeAdminPanel();
+        location.reload();
+      }
+    }
+    
     // Експорт функцій
     window.refreshMap = refreshMap;
     window.showCelebration = showCelebration;
     window.hideCelebration = hideCelebration;
     window.toggleStats = toggleStats;
     window.flyToParticipant = flyToParticipant;
+    window.showAdminPanel = showAdminPanel;
+    window.closeAdminPanel = closeAdminPanel;
+    window.cleanEmptyParticipants = cleanEmptyParticipants;
+    window.quickCleanEmpty = quickCleanEmpty;
+    window.syncWithGoogleSheets = syncWithGoogleSheets;
+    window.resetLocalData = resetLocalData;
   </script>
 </body>
 </html>
