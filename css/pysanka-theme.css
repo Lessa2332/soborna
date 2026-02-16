@@ -1,22 +1,31 @@
 :root {
-  /* Кольори музею pysanka.org.ua */
-  --bordo: #6a1e2a;
-  --bordo-light: #8b2f3c;
-  --gold: #c9a03d;
-  --gold-light: #e5b73b;
-  --cream: #f5eee6;
-  --brown: #4a2c1a;
-  --beige: #e8d9c0;
-  --dark: #1a1a1a;
+  /* 🔴 Глибокий червоний — життя, традиція */
+  --bordo: #8B2C2C;      /* Трохи яскравіший, більш червоний */
+  --bordo-dark: #5A1E1E;  /* Для глибини */
+  --bordo-light: #B23B3B;  /* Акценти */
+  
+  /* ⚫ Чорний — орнамент, графічність */
+  --black: #2A1E1E;       /* Теплий чорний з відтінком червоного */
+  --black-soft: #3A2A2A;   /* Для текстур */
+  
+  /* 🟡 Теплий жовтий — сонце, світло */
+  --gold: #E8B13E;        /* Як жовток, сонячний */
+  --gold-light: #FFD966;   /* Сяйво */
+  --gold-dark: #C48B2C;    /* Для контурів */
+  
+  /* 🤍 Світлий фон — сучасність */
+  --cream: #FEF7E6;       /* Теплий білий, як шкаралупа */
+  --cream-dark: #F5EBD9;   /* Трохи глибший */
+  --beige: #E8D9C0;        /* Для текстур */
   
   /* Шрифти */
   --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
   --font-body: 'Open Sans', 'Helvetica', sans-serif;
   
   /* Тіні */
-  --shadow-sm: 0 2px 8px rgba(106, 30, 42, 0.1);
-  --shadow-md: 0 4px 16px rgba(106, 30, 42, 0.15);
-  --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
+  --shadow-sm: 0 2px 8px rgba(139, 44, 44, 0.1);
+  --shadow-md: 0 4px 16px rgba(139, 44, 44, 0.15);
+  --shadow-lg: 0 8px 32px rgba(139, 44, 44, 0.2);
   
   /* Анімації */
   --transition: all 0.3s ease;
@@ -31,36 +40,123 @@
 body {
   font-family: var(--font-body);
   background-color: var(--cream);
-  color: var(--dark);
+  color: var(--black);
   line-height: 1.6;
   min-height: 100vh;
-  background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23c9a03d" stroke-width="0.5" opacity="0.1"/></svg>');
+  position: relative;
 }
 
+/* 🥚 ГОЛОВНИЙ ФОН — ТЕКСТУРА ПИСАНКИ */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    /* Основна сітка-орнамент */
+    repeating-linear-gradient(
+      45deg,
+      rgba(232, 177, 62, 0.03) 0px,
+      rgba(232, 177, 62, 0.03) 20px,
+      rgba(139, 44, 44, 0.02) 20px,
+      rgba(139, 44, 44, 0.02) 40px
+    ),
+    /* Тонкі лінії-тріщинки */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 49px,
+      rgba(42, 30, 30, 0.02) 50px,
+      transparent 51px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 49px,
+      rgba(42, 30, 30, 0.02) 50px,
+      transparent 51px
+    );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 🏵️ ОРНАМЕНТ У ХЕДЕРІ */
+.header-ornament {
+  position: relative;
+  height: 80px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.header-ornament::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold) 20%,
+    var(--bordo) 50%,
+    var(--gold) 80%,
+    transparent
+  );
+  transform: translateY(-50%);
+}
+
+.header-ornament::after {
+  content: '🥚 ⚫ 🟡 🔴 🥚';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: var(--bordo);
+  opacity: 0.3;
+  white-space: nowrap;
+  letter-spacing: 10px;
+}
+
+/* 🎨 ЗАГОЛОВКИ З ПИСАНКОВИМИ АКЦЕНТАМИ */
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-weight: 700;
   color: var(--bordo);
+  position: relative;
+  display: inline-block;
 }
 
-/* Декоративні елементи */
-.ornament {
-  background-image: url('data:image/svg+xml;utf8,<svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg"><path d="M10 15 L30 5 L50 15 L70 5 L90 15 L110 5" stroke="%23c9a03d" fill="none" stroke-width="1.5"/><circle cx="20" cy="15" r="2" fill="%236a1e2a"/><circle cx="50" cy="15" r="2" fill="%236a1e2a"/><circle cx="80" cy="15" r="2" fill="%236a1e2a"/><circle cx="110" cy="15" r="2" fill="%236a1e2a"/></svg>');
-  height: 30px;
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
   width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--bordo), var(--gold));
+}
+
+/* 🥚 ДЕКОРАТИВНІ ЕЛЕМЕНТИ */
+.egg-divider {
+  width: 100%;
+  height: 40px;
+  background-image: url('data:image/svg+xml;utf8,<svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 20 L40 10 L60 20 L80 10 L100 20 L120 10" stroke="%23E8B13E" fill="none" stroke-width="1.5" opacity="0.3"/><circle cx="30" cy="20" r="3" fill="%238B2C2C" opacity="0.2"/><circle cx="60" cy="20" r="3" fill="%238B2C2C" opacity="0.2"/><circle cx="90" cy="20" r="3" fill="%238B2C2C" opacity="0.2"/></svg>');
   background-repeat: repeat-x;
-  margin: 20px 0;
+  background-position: center;
   opacity: 0.5;
 }
 
-/* Кнопки в стилі музею */
+/* 🔴 КНОПКИ З ЖОВТИМ АКЦЕНТОМ */
 .btn {
   display: inline-block;
-  padding: 12px 32px;
-  background: transparent;
-  border: 2px solid var(--bordo);
-  color: var(--bordo);
+  padding: 14px 36px;
+  background: linear-gradient(135deg, var(--bordo) 0%, var(--bordo-dark) 100%);
+  border: none;
+  color: var(--gold-light);
   font-family: var(--font-heading);
   font-size: 18px;
   font-weight: 600;
@@ -71,77 +167,126 @@ h1, h2, h3, h4 {
   text-decoration: none;
   position: relative;
   overflow: hidden;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(139, 44, 44, 0.3);
+  border: 1px solid var(--gold);
 }
 
-.btn:before {
+.btn::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: var(--bordo);
-  transition: var(--transition);
-  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, var(--gold-light) 0%, transparent 70%);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s, opacity 0.3s;
 }
 
 .btn:hover {
-  color: var(--cream);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(232, 177, 62, 0.4);
+  color: white;
 }
 
-.btn:hover:before {
-  left: 0;
+.btn:hover::before {
+  width: 300px;
+  height: 300px;
+  opacity: 0.3;
+}
+
+.btn:active {
+  transform: translateY(0);
 }
 
 .btn-gold {
-  border-color: var(--gold);
-  color: var(--gold);
-}
-
-.btn-gold:before {
-  background: var(--gold);
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: var(--bordo);
+  border: 1px solid var(--bordo);
 }
 
 .btn-gold:hover {
-  color: var(--bordo);
+  color: var(--black);
 }
 
-/* Картки */
+/* 🃏 КАРТКИ З ПИСАНКОВОЮ ТЕКСТУРОЮ */
 .card {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--gold-light);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--gold);
+  border-radius: 30px;
   padding: 30px;
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(5px);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Поля вводу */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: linear-gradient(90deg, var(--gold), var(--bordo), var(--gold), var(--bordo), var(--gold));
+  opacity: 0.5;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 100px;
+  height: 100px;
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L75 40 L60 75 L40 75 L25 40 Z" fill="none" stroke="%23E8B13E" stroke-width="1" opacity="0.1"/></svg>');
+  background-repeat: repeat;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* ✍️ ПОЛЯ ВВОДУ */
 .input-field {
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--gold);
-  background: rgba(255, 255, 255, 0.8);
+  padding: 15px 20px;
+  border: 2px solid var(--gold);
+  background: rgba(255, 255, 255, 0.9);
   font-family: var(--font-body);
   font-size: 16px;
   transition: var(--transition);
-  border-radius: 4px;
+  border-radius: 50px;
+  color: var(--black);
 }
 
 .input-field:focus {
   outline: none;
   border-color: var(--bordo);
-  box-shadow: 0 0 0 3px rgba(106, 30, 42, 0.1);
+  box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.2);
+  background: white;
 }
 
-/* Адаптивність */
+.input-field::placeholder {
+  color: var(--gold-dark);
+  opacity: 0.5;
+  font-style: italic;
+}
+
+/* 📱 АДАПТИВНІСТЬ */
 @media (max-width: 768px) {
   .card {
     padding: 20px;
+    border-radius: 20px;
   }
   
   .btn {
-    padding: 10px 24px;
+    padding: 12px 28px;
     font-size: 16px;
+  }
+  
+  .header-ornament::after {
+    font-size: 18px;
+    letter-spacing: 5px;
   }
 }
