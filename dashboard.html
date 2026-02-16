@@ -211,61 +211,6 @@
       border-radius: 12px;
     }
     
-    /* Легенда */
-    .legend-panel {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(106, 30, 42, 0.85);
-      backdrop-filter: blur(8px);
-      border: 2px solid var(--gold);
-      border-radius: 16px;
-      padding: 15px;
-      color: white;
-      z-index: 100;
-      max-width: 240px;
-    }
-    
-    .legend-title {
-      font-family: var(--font-heading);
-      color: var(--gold);
-      margin-bottom: 10px;
-      font-size: 18px;
-      text-align: center;
-    }
-    
-    .legend-colors {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin: 15px 0;
-    }
-    
-    .legend-color-sample {
-      width: 30px;
-      height: 42px;
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      border: 2px solid white;
-      transform: rotate(-5deg);
-    }
-    
-    .legend-color-sample.rainbow-1 { background: linear-gradient(135deg, #FF6B6B, #FF8E8E); }
-    .legend-color-sample.rainbow-2 { background: linear-gradient(135deg, #FFB347, #FFA07A); }
-    .legend-color-sample.rainbow-3 { background: linear-gradient(135deg, #FFD93D, #FFE55C); }
-    .legend-color-sample.rainbow-4 { background: linear-gradient(135deg, #6BCB77, #8FDC89); }
-    .legend-color-sample.rainbow-5 { background: linear-gradient(135deg, #4D96FF, #6DABFF); }
-    .legend-color-sample.rainbow-6 { background: linear-gradient(135deg, #9D65C9, #B47AE8); }
-    .legend-color-sample.rainbow-7 { background: linear-gradient(135deg, #FF8A9C, #FFB6C1); }
-    .legend-color-sample.rainbow-8 { background: linear-gradient(135deg, #A9D6E5, #C7E9F0); }
-    
-    .legend-text {
-      font-size: 12px;
-      text-align: center;
-      margin-top: 5px;
-      font-style: italic;
-      color: var(--gold-light);
-    }
-    
     /* Кнопки */
     .control-panel {
       position: fixed;
@@ -386,12 +331,6 @@
         font-size: 36px;
       }
       
-      .legend-panel {
-        bottom: 10px;
-        left: 10px;
-        padding: 10px;
-      }
-      
       .control-panel {
         bottom: 10px;
         right: 10px;
@@ -429,22 +368,6 @@
     <div class="participants-list" id="participantsList">
       <div style="text-align: center; opacity: 0.5; padding: 20px;">Чекаємо на учасників...</div>
     </div>
-  </div>
-  
-  <!-- Легенда з кольорами -->
-  <div class="legend-panel">
-    <div class="legend-title">🎨 ВЕСНЯНІ КОЛЬОРИ</div>
-    <div class="legend-colors">
-      <div class="legend-color-sample rainbow-1"></div>
-      <div class="legend-color-sample rainbow-2"></div>
-      <div class="legend-color-sample rainbow-3"></div>
-      <div class="legend-color-sample rainbow-4"></div>
-      <div class="legend-color-sample rainbow-5"></div>
-      <div class="legend-color-sample rainbow-6"></div>
-      <div class="legend-color-sample rainbow-7"></div>
-      <div class="legend-color-sample rainbow-8"></div>
-    </div>
-    <div class="legend-text">кожна писанка унікальна</div>
   </div>
   
   <!-- Кнопки -->
@@ -764,4 +687,3 @@
   </script>
 </body>
 </html>
-
