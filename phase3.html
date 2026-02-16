@@ -7,9 +7,6 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
-  <!-- Підключаємо regions.js -->
-  <script src="js/regions.js"></script>
-  
   <style>
     :root {
       --bordo: #6a1e2a;
@@ -467,20 +464,16 @@
     <h1 style="text-align: center;">Передай енергію</h1>
     <p style="text-align: center; color: var(--bordo); margin-bottom: 40px;">14 регіонів України чекають на твій внесок</p>
     
-    <!-- Статистика -->
     <div class="stats-panel" id="statsPanel" style="display: none;">
       <span style="font-size: 18px;">Всього учасників:</span>
       <span class="stats-number" id="totalParticipants">0</span>
     </div>
     
     <div class="scroll-container">
-      <!-- Інформація про регіон -->
       <div id="regionInfo" style="text-align: center; margin-bottom: 30px;"></div>
       
-      <!-- Сітка всіх регіонів для контексту -->
       <div class="regions-grid" id="regionsGrid"></div>
       
-      <!-- Форма -->
       <form id="energyForm" onsubmit="event.preventDefault(); sendEnergy();">
         <div class="form-group">
           <label class="form-label">Твоє ім'я</label>
@@ -489,13 +482,12 @@
         </div>
         
         <div class="form-group">
-          <label class="form-label">Місто (де ти зараз / звідки ти родом)</label>
+          <label class="form-label">Місто</label>
           <input type="text" id="userCity" class="input-field" placeholder="Наприклад: Львів" required autocomplete="off">
           <div id="citySuggestions" class="city-suggestions"></div>
           <div class="validation-hint" id="cityHint"></div>
         </div>
         
-        <!-- Енергетична анімація -->
         <div class="energy-transfer">
           <div class="pysanka-energy">
             <div class="energy-core" id="energyCore"></div>
@@ -504,24 +496,16 @@
           <p style="color: var(--bordo);" id="energyText">Твоя енергія готова до передачі</p>
         </div>
         
-        <!-- Приховані поля -->
         <input type="hidden" id="regionId">
         <input type="hidden" id="regionName">
         <input type="hidden" id="regionSymbol">
         
-        <!-- Кнопка -->
         <button type="submit" class="btn btn-gold" style="width: 100%;" id="submitBtn">
           🥚 ВІДПРАВИТИ КОД
         </button>
       </form>
       
-      <!-- Статус повідомлення -->
       <div id="statusMessage" class="status-message"></div>
-      
-      <!-- Попередній перегляд на карті -->
-      <div id="mapPreview" class="map-preview" style="display: none;">
-        <div id="userDot" class="map-dot" style="display: none;"></div>
-      </div>
     </div>
     
     <div class="footer-links">
@@ -536,138 +520,60 @@
     // ============ GOOGLE SHEETS URL ============
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJ57LtEcJCmCK2eKvKRQVE7eBMBwJGzj4tqpczcd8UCOEUQVkYHg_645-55qeHVl7M/exec';
     
-    // ============ 14 РЕГІОНІВ УКРАЇНИ ============
+    // ============ 14 РЕГІОНІВ ============
     const REGIONS = [
-      { id: 1, name: 'Поділля', symbol: '🌻', color: '#8B4513', cities: ['вінниця', 'хмельницький', 'тернопіль', 'кам\'янець-подільський'] },
-      { id: 2, name: 'Полісся', symbol: '🌲', color: '#228B22', cities: ['житомир', 'чернігів', 'рівне', 'луцьк', 'сарин', 'коростень'] },
-      { id: 3, name: 'Карпати', symbol: '🏔️', color: '#4A7023', cities: ['івано-франківськ', 'ужгород', 'чернівці', 'коломия', 'рахов', 'турка', 'сколе', 'болехів', 'долина'] },
-      { id: 4, name: 'Київщина', symbol: '🏛️', color: '#C41E3A', cities: ['київ', 'біла церква', 'фастів', 'переяслав'] },
-      { id: 5, name: 'Львівщина', symbol: '🦁', color: '#FFD700', cities: ['львів', 'дрогобич', 'струсів'] },
-      { id: 6, name: 'Одещина', symbol: '⚓', color: '#1E90FF', cities: ['одеса', 'ізмаїл', 'чорноморськ', 'білгород-дністровський'] },
-      { id: 7, name: 'Харківщина', symbol: '⚙️', color: '#B22222', cities: ['харків', 'ізюм', 'чугуїв'] },
-      { id: 8, name: 'Дніпропетровщина', symbol: '🌊', color: '#4682B4', cities: ['дніпро', 'кривий ріг', 'кам\'янське', 'нікополь'] },
-      { id: 9, name: 'Полтавщина', symbol: '🌾', color: '#DAA520', cities: ['полтава', 'кременчук', 'лубни'] },
-      { id: 10, name: 'Чернігівщина', symbol: '📚', color: '#2E8B57', cities: ['чернігів', 'ніжин', 'прилуки'] },
-      { id: 11, name: 'Черкащина', symbol: '🎭', color: '#CD5C5C', cities: ['черкаси', 'умань', 'золотоноша', 'чигирин', 'канів'] },
-      { id: 12, name: 'Крим', symbol: '🏖️', color: '#F4A460', cities: ['сімферополь', 'севастополь', 'ялта', 'феодосія', 'євпаторія', 'херсон'] },
-      { id: 13, name: 'Донеччина', symbol: '⛏️', color: '#696969', cities: ['донецьк', 'маріуполь', 'краматорськ', 'слов\'янськ'] },
-      { id: 14, name: 'Луганщина', symbol: '🌻', color: '#9ACD32', cities: ['луганськ', 'сіверськодонецьк', 'лисичанськ', 'старробільськ'] }
+      { id: 1, name: 'Поділля', symbol: '🌻' },
+      { id: 2, name: 'Полісся', symbol: '🌲' },
+      { id: 3, name: 'Карпати', symbol: '🏔️' },
+      { id: 4, name: 'Київщина', symbol: '🏛️' },
+      { id: 5, name: 'Львівщина', symbol: '🦁' },
+      { id: 6, name: 'Одещина', symbol: '⚓' },
+      { id: 7, name: 'Харківщина', symbol: '⚙️' },
+      { id: 8, name: 'Дніпропетровщина', symbol: '🌊' },
+      { id: 9, name: 'Полтавщина', symbol: '🌾' },
+      { id: 10, name: 'Чернігівщина', symbol: '📚' },
+      { id: 11, name: 'Черкащина', symbol: '🎭' },
+      { id: 12, name: 'Крим', symbol: '🏖️' },
+      { id: 13, name: 'Донеччина', symbol: '⛏️' },
+      { id: 14, name: 'Луганщина', symbol: '🌻' }
     ];
     
-    // ============ КООРДИНАТИ МІСТ ДЛЯ 14 РЕГІОНІВ ============
+    // ============ КООРДИНАТИ МІСТ ============
     const CITY_COORDS = {
-      // Поділля (1)
-      'вінниця': { x: 40, y: 50, regionId: 1, region: 'Поділля' },
-      'хмельницький': { x: 35, y: 50, regionId: 1, region: 'Поділля' },
-      'тернопіль': { x: 30, y: 45, regionId: 1, region: 'Поділля' },
-      'кам\'янець-подільський': { x: 33, y: 55, regionId: 1, region: 'Поділля' },
-      
-      // Полісся (2)
-      'житомир': { x: 40, y: 35, regionId: 2, region: 'Полісся' },
-      'чернігів': { x: 50, y: 25, regionId: 2, region: 'Полісся' },
-      'рівне': { x: 30, y: 35, regionId: 2, region: 'Полісся' },
-      'луцьк': { x: 25, y: 30, regionId: 2, region: 'Волинь' },
-      'сарин': { x: 28, y: 32, regionId: 2, region: 'Полісся' },
-      'коростень': { x: 42, y: 33, regionId: 2, region: 'Полісся' },
-      
-      // Карпати (3)
-      'івано-франківськ': { x: 25, y: 55, regionId: 3, region: 'Карпати' },
-      'ужгород': { x: 15, y: 55, regionId: 3, region: 'Закарпаття' },
-      'чернівці': { x: 30, y: 60, regionId: 3, region: 'Буковина' },
-      'коломия': { x: 24, y: 57, regionId: 3, region: 'Карпати' },
-      'рахов': { x: 20, y: 58, regionId: 3, region: 'Карпати' },
-      'турка': { x: 18, y: 48, regionId: 3, region: 'Карпати' },
-      'сколе': { x: 19, y: 47, regionId: 3, region: 'Карпати' },
-      'болехів': { x: 20, y: 49, regionId: 3, region: 'Карпати' },
-      'долина': { x: 21, y: 50, regionId: 3, region: 'Карпати' },
-      
-      // Київщина (4)
-      'київ': { x: 50, y: 45, regionId: 4, region: 'Київщина' },
-      'біла церква': { x: 48, y: 48, regionId: 4, region: 'Київщина' },
-      'фастів': { x: 47, y: 44, regionId: 4, region: 'Київщина' },
-      'переяслав': { x: 52, y: 43, regionId: 4, region: 'Київщина' },
-      
-      // Львівщина (5)
-      'львів': { x: 20, y: 40, regionId: 5, region: 'Львівщина' },
-      'дрогобич': { x: 18, y: 43, regionId: 5, region: 'Львівщина' },
-      'струсів': { x: 19, y: 42, regionId: 5, region: 'Львівщина' },
-      
-      // Одещина (6)
-      'одеса': { x: 45, y: 70, regionId: 6, region: 'Одещина' },
-      'ізмаїл': { x: 40, y: 80, regionId: 6, region: 'Одещина' },
-      'чорноморськ': { x: 46, y: 68, regionId: 6, region: 'Одещина' },
-      'білгород-дністровський': { x: 43, y: 72, regionId: 6, region: 'Одещина' },
-      
-      // Харківщина (7)
-      'харків': { x: 75, y: 35, regionId: 7, region: 'Харківщина' },
-      'ізюм': { x: 78, y: 40, regionId: 7, region: 'Харківщина' },
-      'чугуїв': { x: 76, y: 36, regionId: 7, region: 'Харківщина' },
-      
-      // Дніпропетровщина (8)
-      'дніпро': { x: 65, y: 55, regionId: 8, region: 'Дніпропетровщина' },
-      'кривий ріг': { x: 60, y: 60, regionId: 8, region: 'Дніпропетровщина' },
-      'кам\'янське': { x: 64, y: 54, regionId: 8, region: 'Дніпропетровщина' },
-      'нікополь': { x: 63, y: 63, regionId: 8, region: 'Дніпропетровщина' },
-      
-      // Полтавщина (9)
-      'полтава': { x: 60, y: 45, regionId: 9, region: 'Полтавщина' },
-      'кременчук': { x: 58, y: 50, regionId: 9, region: 'Полтавщина' },
-      'лубни': { x: 59, y: 43, regionId: 9, region: 'Полтавщина' },
-      
-      // Чернігівщина (10)
-      'чернігів': { x: 50, y: 25, regionId: 10, region: 'Чернігівщина' },
-      'ніжин': { x: 53, y: 28, regionId: 10, region: 'Чернігівщина' },
-      'прилуки': { x: 55, y: 30, regionId: 10, region: 'Чернігівщина' },
-      
-      // Черкащина (11)
-      'черкаси': { x: 55, y: 50, regionId: 11, region: 'Черкащина' },
-      'умань': { x: 52, y: 53, regionId: 11, region: 'Черкащина' },
-      'золотоноша': { x: 56, y: 48, regionId: 11, region: 'Черкащина' },
-      'чигирин': { x: 54, y: 51, regionId: 11, region: 'Черкащина' },
-      'канів': { x: 53, y: 49, regionId: 11, region: 'Черкащина' },
-      
-      // Крим (12)
-      'сімферополь': { x: 65, y: 85, regionId: 12, region: 'Крим' },
-      'севастополь': { x: 62, y: 87, regionId: 12, region: 'Крим' },
-      'ялта': { x: 66, y: 88, regionId: 12, region: 'Крим' },
-      'феодосія': { x: 70, y: 86, regionId: 12, region: 'Крим' },
-      'євпаторія': { x: 58, y: 86, regionId: 12, region: 'Крим' },
-      'херсон': { x: 55, y: 75, regionId: 12, region: 'Херсонщина' },
-      
-      // Донеччина (13)
-      'донецьк': { x: 80, y: 55, regionId: 13, region: 'Донеччина' },
-      'маріуполь': { x: 82, y: 65, regionId: 13, region: 'Донеччина' },
-      'краматорськ': { x: 79, y: 52, regionId: 13, region: 'Донеччина' },
-      'слов\'янськ': { x: 78, y: 53, regionId: 13, region: 'Донеччина' },
-      
-      // Луганщина (14)
-      'луганськ': { x: 85, y: 55, regionId: 14, region: 'Луганщина' },
-      'сіверськодонецьк': { x: 84, y: 52, regionId: 14, region: 'Луганщина' },
-      'лисичанськ': { x: 83, y: 53, regionId: 14, region: 'Луганщина' },
-      'старробільськ': { x: 86, y: 50, regionId: 14, region: 'Луганщина' }
+      'вінниця': { lat: 49.23, lng: 28.47, regionId: 1 },
+      'хмельницький': { lat: 49.42, lng: 26.98, regionId: 1 },
+      'тернопіль': { lat: 49.55, lng: 25.59, regionId: 1 },
+      'житомир': { lat: 50.25, lng: 28.66, regionId: 2 },
+      'чернігів': { lat: 51.50, lng: 31.29, regionId: 2 },
+      'рівне': { lat: 50.62, lng: 26.25, regionId: 2 },
+      'луцьк': { lat: 50.75, lng: 25.34, regionId: 2 },
+      'івано-франківськ': { lat: 48.92, lng: 24.71, regionId: 3 },
+      'ужгород': { lat: 48.62, lng: 22.30, regionId: 3 },
+      'чернівці': { lat: 48.29, lng: 25.94, regionId: 3 },
+      'київ': { lat: 50.45, lng: 30.52, regionId: 4 },
+      'львів': { lat: 49.84, lng: 24.03, regionId: 5 },
+      'одеса': { lat: 46.48, lng: 30.72, regionId: 6 },
+      'харків': { lat: 49.99, lng: 36.23, regionId: 7 },
+      'дніпро': { lat: 48.46, lng: 35.04, regionId: 8 },
+      'полтава': { lat: 49.59, lng: 34.55, regionId: 9 },
+      'черкаси': { lat: 49.44, lng: 32.06, regionId: 11 },
+      'сімферополь': { lat: 44.95, lng: 34.10, regionId: 12 },
+      'донецьк': { lat: 48.02, lng: 37.80, regionId: 13 },
+      'луганськ': { lat: 48.57, lng: 39.31, regionId: 14 }
     };
     
-    // Список всіх міст для автодоповнення
     const ALL_CITIES = Object.keys(CITY_COORDS).sort();
     
     let userRegion = null;
-    let selectedCity = null;
-    let participantsCount = 0;
     
     document.addEventListener('DOMContentLoaded', function() {
-      // Завантажуємо статистику
       loadStats();
-      
-      // Відображаємо сітку всіх регіонів
       displayRegionsGrid();
       
-      // Отримуємо регіон з localStorage
       try {
         const savedRegion = localStorage.getItem('pysanka_region');
         if (savedRegion) {
           const parsed = JSON.parse(savedRegion);
-          
-          // Знаходимо повну інформацію про регіон за ID
           const regionInfo = REGIONS.find(r => r.id === parsed.id);
           
           if (regionInfo) {
@@ -678,400 +584,175 @@
             document.getElementById('regionSymbol').value = regionInfo.symbol;
             
             document.getElementById('regionInfo').innerHTML = `
-              <div style="background: var(--bordo); color: var(--gold); padding: 15px; border-radius: 8px; border: 2px solid var(--gold);">
-                <span style="font-size: 48px;">${regionInfo.symbol || '🥚'}</span>
-                <h2 style="color: var(--gold); margin: 10px 0; font-size: 28px;">${regionInfo.name}</h2>
-                <p style="font-size: 16px;">Твій край чекає на твою енергію</p>
+              <div style="background: var(--bordo); color: var(--gold); padding: 15px; border-radius: 8px;">
+                <span style="font-size: 48px;">${regionInfo.symbol}</span>
+                <h2 style="color: var(--gold);">${regionInfo.name}</h2>
               </div>
             `;
             
-            // Підсвічуємо активний регіон в сітці
             highlightActiveRegion(regionInfo.id);
-          } else {
-            throw new Error('Регіон не знайдено');
           }
         } else {
-          // Якщо немає регіону, перенаправляємо на Етап 1
-          showStatus('Спочатку обери регіон на Етапі 1', 'error');
-          setTimeout(() => {
-            window.location.href = 'phase1.html';
-          }, 2000);
+          window.location.href = 'phase1.html';
         }
       } catch (e) {
-        console.error('Помилка завантаження регіону:', e);
-        showStatus('Помилка завантаження регіону', 'error');
+        console.error(e);
       }
       
-      // Налаштовуємо автодоповнення міст
       setupCityAutocomplete();
-      
-      // Валідація імені
-      setupNameValidation();
     });
     
     function loadStats() {
       try {
         const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
-        participantsCount = participants.length;
-        
-        if (participantsCount > 0) {
+        if (participants.length > 0) {
           document.getElementById('statsPanel').style.display = 'block';
-          document.getElementById('totalParticipants').textContent = participantsCount;
+          document.getElementById('totalParticipants').textContent = participants.length;
         }
-      } catch (e) {
-        console.log('Статистика не завантажена');
-      }
+      } catch (e) {}
     }
     
     function displayRegionsGrid() {
       const grid = document.getElementById('regionsGrid');
-      grid.innerHTML = REGIONS.map(region => `
-        <div class="region-badge-small" data-region-id="${region.id}" onclick="selectRegionFromGrid(${region.id})">
-          ${region.symbol} ${region.name}
+      grid.innerHTML = REGIONS.map(r => `
+        <div class="region-badge-small" data-region-id="${r.id}">
+          ${r.symbol} ${r.name}
         </div>
       `).join('');
     }
     
-    window.selectRegionFromGrid = function(regionId) {
-      const region = REGIONS.find(r => r.id === regionId);
-      if (region) {
-        // Показуємо підказку
-        showStatus(`Обрано регіон: ${region.name}. Але твій регіон - ${userRegion?.name}`, 'loading');
-      }
-    };
-    
-    function highlightActiveRegion(activeId) {
+    function highlightActiveRegion(id) {
       document.querySelectorAll('.region-badge-small').forEach(el => {
-        const id = parseInt(el.dataset.regionId);
-        if (id === activeId) {
+        if (parseInt(el.dataset.regionId) === id) {
           el.classList.add('active');
-        } else {
-          el.classList.remove('active');
         }
       });
     }
     
     function setupCityAutocomplete() {
-      const cityInput = document.getElementById('userCity');
+      const input = document.getElementById('userCity');
       const suggestions = document.getElementById('citySuggestions');
-      const cityHint = document.getElementById('cityHint');
       
-      cityInput.addEventListener('input', function() {
-        const value = this.value.toLowerCase().trim();
+      input.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
         if (value.length < 2) {
           suggestions.style.display = 'none';
-          cityHint.textContent = '';
           return;
         }
         
         const matches = ALL_CITIES.filter(city => city.includes(value));
         
         if (matches.length > 0) {
-          suggestions.innerHTML = matches
-            .map(city => {
-              const cityInfo = CITY_COORDS[city];
-              const isCorrectRegion = userRegion && cityInfo.regionId === userRegion.id;
-              return `<div class="city-suggestion-item" onclick="selectCity('${city}')">
-                <span>${city.charAt(0).toUpperCase() + city.slice(1)}</span>
-                <span class="region-tag" style="${isCorrectRegion ? 'background: #4CAF50;' : ''}">${cityInfo.region}</span>
-              </div>`;
-            })
-            .join('');
+          suggestions.innerHTML = matches.map(city => `
+            <div class="city-suggestion-item" onclick="selectCity('${city}')">
+              ${city.charAt(0).toUpperCase() + city.slice(1)}
+            </div>
+          `).join('');
           suggestions.style.display = 'block';
-        } else {
-          suggestions.style.display = 'none';
-          cityHint.textContent = 'Місто не знайдено в базі';
-          cityHint.style.color = '#dc3545';
         }
       });
       
-      // Ховаємо підказки при кліку поза
       document.addEventListener('click', function(e) {
-        if (!cityInput.contains(e.target) && !suggestions.contains(e.target)) {
+        if (!input.contains(e.target)) {
           suggestions.style.display = 'none';
-        }
-      });
-    }
-    
-    function setupNameValidation() {
-      const nameInput = document.getElementById('userName');
-      const nameHint = document.getElementById('nameHint');
-      
-      nameInput.addEventListener('input', function() {
-        const value = this.value.trim();
-        if (value.length < 2) {
-          nameHint.textContent = 'Ім\'я має бути не менше 2 символів';
-          nameHint.style.color = '#dc3545';
-          this.classList.add('error');
-        } else {
-          nameHint.textContent = '✓';
-          nameHint.style.color = '#4CAF50';
-          this.classList.remove('error');
         }
       });
     }
     
     window.selectCity = function(city) {
-      const cityInput = document.getElementById('userCity');
-      cityInput.value = city.charAt(0).toUpperCase() + city.slice(1);
+      document.getElementById('userCity').value = city.charAt(0).toUpperCase() + city.slice(1);
       document.getElementById('citySuggestions').style.display = 'none';
-      
-      // Показуємо точку на карті
-      showCityOnMap(city);
-      
-      // Валідація
-      validateCityRegion(city);
     };
     
-    function validateCityRegion(city) {
-      const cityData = CITY_COORDS[city.toLowerCase()];
-      const cityHint = document.getElementById('cityHint');
-      const cityInput = document.getElementById('userCity');
+    function sendEnergy() {
+      const name = document.getElementById('userName').value.trim();
+      const city = document.getElementById('userCity').value.trim();
+      const regionId = document.getElementById('regionId').value;
+      const regionName = document.getElementById('regionName').value;
+      const symbol = document.getElementById('regionSymbol').value;
       
-      if (!cityData || !userRegion) return;
-      
-      if (cityData.regionId === userRegion.id) {
-        cityHint.innerHTML = '✓ Місто відповідає твоєму регіону';
-        cityHint.style.color = '#4CAF50';
-        cityInput.classList.remove('error');
-      } else {
-        cityHint.innerHTML = `⚠️ Увага! Місто знаходиться в регіоні ${cityData.region}`;
-        cityHint.style.color = '#FF9800';
-        cityInput.classList.add('error');
+      if (!name || name.length < 2) {
+        showStatus('Введи ім\'я', 'error');
+        return;
       }
-    }
-    
-    function showCityOnMap(city) {
-      const cityData = CITY_COORDS[city.toLowerCase()];
-      if (!cityData) return;
       
-      const mapPreview = document.getElementById('mapPreview');
-      const userDot = document.getElementById('userDot');
+      if (!city) {
+        showStatus('Введи місто', 'error');
+        return;
+      }
       
-      mapPreview.style.display = 'block';
-      userDot.style.display = 'block';
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Відправляється...';
       
-      // Встановлюємо позицію на умовній карті
-      userDot.style.left = cityData.x + '%';
-      userDot.style.top = cityData.y + '%';
+      showStatus('Енергія передається...', 'loading');
+      animateEnergyTransfer();
       
-      selectedCity = {
-        name: city,
-        coords: cityData
-      };
-    }
-    
-async function sendEnergy() {
-  const userName = document.getElementById('userName').value.trim();
-  const userCity = document.getElementById('userCity').value.trim();
-  const regionId = document.getElementById('regionId').value;
-  const regionName = document.getElementById('regionName').value;
-  const regionSymbol = document.getElementById('regionSymbol').value;
-  
-  // Валідація
-  if (!userName || userName.length < 2) {
-    showStatus('Будь ласка, введи коректне ім\'я', 'error');
-    return;
-  }
-  
-  if (!userCity) {
-    showStatus('Будь ласка, введи назву міста', 'error');
-    return;
-  }
-  
-  // Блокуємо кнопку
-  const submitBtn = document.getElementById('submitBtn');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Відправляється...';
-  
-  // Показуємо статус завантаження
-  showStatus('Енергія передається...', 'loading');
-  
-  // Анімація писанки
-  animateEnergyTransfer();
-  
-  try {
-    // Формуємо дані для відправки
-    const postData = {
-      regionId: parseInt(regionId),
-      regionName: regionName,
-      userName: userName,
-      city: userCity
-    };
-    
-    console.log('Відправляємо дані:', postData);
-    
-    // Відправка на Google Sheets через JSONP (обходить CORS)
-    const callbackName = 'jsonp_callback_' + Date.now();
-    
-    // Створюємо глобальну функцію для обробки відповіді
-    window[callbackName] = function(response) {
-      delete window[callbackName];
-      document.body.removeChild(script);
+      // ============ ВІДПРАВКА В GOOGLE SHEETS ============
+      const formData = new URLSearchParams();
+      formData.append('regionId', regionId);
+      formData.append('regionName', regionName);
+      formData.append('userName', name);
+      formData.append('city', city);
       
-      console.log('Відповідь від сервера:', response);
+      // Використовуємо fetch з mode: 'no-cors' (не чекаємо відповіді)
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+      }).catch(e => console.log('Помилка (ігноруємо):', e));
       
-      // Обробляємо успішну відправку
-      handleSuccessfulSubmit(userName, userCity, regionId, regionName, regionSymbol);
-    };
-    
-    // Створюємо скрипт для JSONP запиту
-    const script = document.createElement('script');
-    script.src = GOOGLE_SCRIPT_URL + '?callback=' + callbackName + '&' + new URLSearchParams({
-      regionId: parseInt(regionId),
-      regionName: regionName,
-      userName: userName,
-      city: userCity
-    });
-    
-    // Додаємо таймаут на випадок помилки
-    const timeout = setTimeout(() => {
-      if (window[callbackName]) {
-        console.log('Таймаут запиту, використовуємо локальне збереження');
-        delete window[callbackName];
-        document.body.removeChild(script);
+      // ============ ЗБЕРЕЖЕННЯ ЛОКАЛЬНО ============
+      setTimeout(() => {
+        const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
+        participants.push({
+          id: Date.now(),
+          name: name,
+          city: city,
+          region: regionName,
+          regionId: parseInt(regionId),
+          timestamp: new Date().toISOString(),
+          coords: CITY_COORDS[city.toLowerCase()] || { lat: 49.0, lng: 32.0 },
+          symbol: symbol
+        });
+        localStorage.setItem('pysanka_participants', JSON.stringify(participants));
         
-        // Все одно зберігаємо локально
-        handleSuccessfulSubmit(userName, userCity, regionId, regionName, regionSymbol);
-      }
-    }, 5000);
-    
-    // Обробка помилок завантаження скрипта
-    script.onerror = function() {
-      clearTimeout(timeout);
-      console.log('Помилка завантаження, використовуємо локальне збереження');
-      if (window[callbackName]) {
-        delete window[callbackName];
-        document.body.removeChild(script);
+        showStatus(`Дякуємо, ${name}! Твоя енергія приєдналася!`, 'success');
+        document.getElementById('energyText').innerHTML = '✨ Енергію передано! ✨';
+        document.getElementById('viewMapBtn').style.display = 'inline-block';
+        btn.style.display = 'none';
         
-        // Все одно зберігаємо локально
-        handleSuccessfulSubmit(userName, userCity, regionId, regionName, regionSymbol);
-      }
-    };
-    
-    document.body.appendChild(script);
-    
-  } catch (error) {
-    console.error('Помилка:', error);
-    showStatus('Сталася помилка при відправці. Спробуй ще раз.', 'error');
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'ВІДПРАВИТИ КОД';
-  }
-}
-
-// Функція для обробки успішної відправки (винесена окремо)
-function handleSuccessfulSubmit(userName, userCity, regionId, regionName, regionSymbol) {
-  try {
-    // Отримуємо координати міста
-    const cityLower = userCity.toLowerCase();
-    let cityCoords = CITY_COORDS[cityLower];
-    
-    if (!cityCoords) {
-      // Якщо місто не знайдено, створюємо умовні координати
-      cityCoords = { 
-        x: 50, 
-        y: 50, 
-        regionId: parseInt(regionId), 
-        region: regionName 
-      };
-    }
-    
-    // Зберігаємо в localStorage для карти
-    const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
-    const newParticipant = {
-      id: Date.now(),
-      name: userName,
-      city: userCity,
-      region: regionName,
-      regionId: parseInt(regionId),
-      timestamp: new Date().toISOString(),
-      coords: cityCoords,
-      symbol: regionSymbol || '🥚'
-    };
-    
-    participants.push(newParticipant);
-    localStorage.setItem('pysanka_participants', JSON.stringify(participants));
-    
-    // Оновлюємо лічильник учасників в регіонах
-    updateRegionStats(parseInt(regionId));
-    
-    // Оновлюємо статистику
-    participantsCount = participants.length;
-    document.getElementById('statsPanel').style.display = 'block';
-    document.getElementById('totalParticipants').textContent = participantsCount;
-    
-    // Показуємо успіх
-    showStatus(`Дякуємо, ${userName}! Твоя енергія приєдналася до Соборної Писанки!`, 'success');
-    
-    // Змінюємо текст енергії
-    document.getElementById('energyText').innerHTML = '✨ Енергію передано! ✨';
-    
-    // Показуємо кнопку переходу до карти
-    document.getElementById('viewMapBtn').style.display = 'inline-block';
-    
-    // Ховаємо кнопку відправки
-    document.getElementById('submitBtn').style.display = 'none';
-    
-    // Вібрація
-    if (navigator.vibrate) {
-      navigator.vibrate([200, 100, 200]);
-    }
-    
-    // Автоматичний перехід через 3 секунди
-    setTimeout(() => {
-      window.location.href = 'dashboard.html';
-    }, 3000);
-    
-  } catch (e) {
-    console.error('Помилка при локальному збереженні:', e);
-    showStatus('Дані збережено локально', 'success');
-  }
-}
-    function updateRegionStats(regionId) {
-      // Оновлюємо статистику регіонів в localStorage
-      const stats = JSON.parse(localStorage.getItem('pysanka_stats') || '{}');
-      stats[regionId] = (stats[regionId] || 0) + 1;
-      localStorage.setItem('pysanka_stats', JSON.stringify(stats));
-      
-      // Підсвічуємо регіон в сітці
-      highlightActiveRegion(regionId);
+        if (navigator.vibrate) navigator.vibrate(200);
+        
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 3000);
+      }, 2000);
     }
     
     function animateEnergyTransfer() {
       const core = document.getElementById('energyCore');
-      
-      // Додаємо частинки
-      for (let i = 0; i < 12; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        particle.style.setProperty('--tx', (Math.random() * 150 - 75) + 'px');
-        particle.style.setProperty('--ty', (Math.random() * -150 - 50) + 'px');
-        particle.style.animationDelay = i * 0.1 + 's';
-        particle.style.animationDuration = (2 + Math.random() * 2) + 's';
-        core.parentElement.appendChild(particle);
-        
-        setTimeout(() => {
-          particle.remove();
-        }, 4000);
+      for (let i = 0; i < 8; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.top = Math.random() * 100 + '%';
+        p.style.setProperty('--tx', (Math.random() * 100 - 50) + 'px');
+        p.style.setProperty('--ty', (Math.random() * -100 - 50) + 'px');
+        core.parentElement.appendChild(p);
+        setTimeout(() => p.remove(), 3000);
       }
     }
     
-    function showStatus(message, type) {
-      const statusEl = document.getElementById('statusMessage');
-      statusEl.textContent = message;
-      statusEl.className = 'status-message status-' + type;
-      statusEl.style.display = 'block';
-      
-      // Автоматично ховаємо через 5 секунд (крім success)
+    function showStatus(msg, type) {
+      const el = document.getElementById('statusMessage');
+      el.textContent = msg;
+      el.className = 'status-message status-' + type;
+      el.style.display = 'block';
       if (type !== 'success') {
-        setTimeout(() => {
-          statusEl.style.display = 'none';
-        }, 5000);
+        setTimeout(() => el.style.display = 'none', 5000);
       }
     }
   </script>
 </body>
 </html>
-
