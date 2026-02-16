@@ -1,34 +1,32 @@
 :root {
-  /* 🔴 Глибокий червоний — життя, традиція */
-  --bordo: #8B2C2C;      /* Трохи яскравіший, більш червоний */
-  --bordo-dark: #5A1E1E;  /* Для глибини */
-  --bordo-light: #B23B3B;  /* Акценти */
+  /* 🔴 Класичний глибокий червоний — традиційний колір писанки */
+  --bordo: #8B0000;        /* Темно-червоний, як натуральний барвник */
+  --bordo-dark: #660000;   /* Для акцентів і тіней */
+  --bordo-light: #A32626;  /* Для hover, не надто яскравий */
+
+  /* ⚫ Чорний — контури, орнаменти */
+  --black: #1A0F0F;         /* Майже чистий чорний з теплим відтінком */
   
-  /* ⚫ Чорний — орнамент, графічність */
-  --black: #2A1E1E;       /* Теплий чорний з відтінком червоного */
-  --black-soft: #3A2A2A;   /* Для текстур */
-  
-  /* 🟡 Теплий жовтий — сонце, світло */
-  --gold: #E8B13E;        /* Як жовток, сонячний */
-  --gold-light: #FFD966;   /* Сяйво */
-  --gold-dark: #C48B2C;    /* Для контурів */
-  
-  /* 🤍 Світлий фон — сучасність */
-  --cream: #FEF7E6;       /* Теплий білий, як шкаралупа */
-  --cream-dark: #F5EBD9;   /* Трохи глибший */
-  --beige: #E8D9C0;        /* Для текстур */
-  
+  /* 🟡 Жовтий — віск, сонце */
+  --gold: #D4AF37;          /* Класичний золотаво-жовтий, як віск */
+  --gold-light: #E8C66E;    /* Ледь світліший для акцентів */
+  --gold-dark: #B08B2A;     /* Для контурів */
+
+  /* 🤍 Кремовий фон — шкаралупа */
+  --cream: #FFF8E7;         /* Теплий, майже білий */
+  --beige: #F0E6D2;         /* Для легких текстур */
+
   /* Шрифти */
-  --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
-  --font-body: 'Open Sans', 'Helvetica', sans-serif;
-  
-  /* Тіні */
-  --shadow-sm: 0 2px 8px rgba(139, 44, 44, 0.1);
-  --shadow-md: 0 4px 16px rgba(139, 44, 44, 0.15);
-  --shadow-lg: 0 8px 32px rgba(139, 44, 44, 0.2);
-  
-  /* Анімації */
-  --transition: all 0.3s ease;
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Open Sans', Arial, sans-serif;
+
+  /* Тіні — дуже стримані */
+  --shadow-sm: 0 2px 6px rgba(26, 15, 15, 0.08);
+  --shadow-md: 0 4px 12px rgba(26, 15, 15, 0.1);
+  --shadow-lg: 0 8px 24px rgba(26, 15, 15, 0.12);
+
+  /* Перехід */
+  --transition: all 0.4s ease;
 }
 
 * {
@@ -46,116 +44,78 @@ body {
   position: relative;
 }
 
-/* 🥚 ГОЛОВНИЙ ФОН — ТЕКСТУРА ПИСАНКИ */
+/* 🥚 Тонка текстура шкаралупи + ледь помітний орнамент */
 body::before {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    /* Основна сітка-орнамент */
-    repeating-linear-gradient(
-      45deg,
-      rgba(232, 177, 62, 0.03) 0px,
-      rgba(232, 177, 62, 0.03) 20px,
-      rgba(139, 44, 44, 0.02) 20px,
-      rgba(139, 44, 44, 0.02) 40px
-    ),
-    /* Тонкі лінії-тріщинки */
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 49px,
-      rgba(42, 30, 30, 0.02) 50px,
-      transparent 51px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 49px,
-      rgba(42, 30, 30, 0.02) 50px,
-      transparent 51px
-    );
+  top: 0; left: 0; width: 100%; height: 100%;
+  background:
+    /* Дуже легка сітка-тріщинки */
+    repeating-linear-gradient(0deg, transparent 0px, transparent 49px, rgba(26, 15, 15, 0.02) 49.5px, transparent 50px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 49px, rgba(26, 15, 15, 0.02) 49.5px, transparent 50px),
+    /* Традиційний безконечник */
+    repeating-conic-gradient(from 0deg at 50% 50%, rgba(212, 175, 55, 0.03) 0deg, transparent 30deg);
   pointer-events: none;
   z-index: -1;
+  opacity: 0.6;
 }
 
-/* 🏵️ ОРНАМЕНТ У ХЕДЕРІ */
+/* 🏵️ Орнамент у хедері — простий і традиційний */
 .header-ornament {
+  height: 60px;
   position: relative;
-  height: 80px;
-  width: 100%;
   overflow: hidden;
 }
-
 .header-ornament::before {
   content: '';
   position: absolute;
   top: 50%;
-  left: 0;
-  right: 0;
+  left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--gold) 20%,
-    var(--bordo) 50%,
-    var(--gold) 80%,
-    transparent
-  );
+  background: var(--gold);
   transform: translateY(-50%);
 }
-
 .header-ornament::after {
-  content: '🥚 ⚫ 🟡 🔴 🥚';
+  content: '✢ ✤ ✢ ✤ ✢';
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 24px;
-  color: var(--bordo);
-  opacity: 0.3;
-  white-space: nowrap;
-  letter-spacing: 10px;
+  font-size: 20px;
+  color: var(--gold);
+  opacity: 0.4;
+  letter-spacing: 20px;
 }
 
-/* 🎨 ЗАГОЛОВКИ З ПИСАНКОВИМИ АКЦЕНТАМИ */
+/* Заголовки */
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
   font-weight: 700;
   color: var(--bordo);
-  position: relative;
-  display: inline-block;
 }
-
 h1::after {
   content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 100%;
+  display: block;
+  width: 80px;
   height: 2px;
-  background: linear-gradient(90deg, var(--gold), var(--bordo), var(--gold));
+  background: var(--gold);
+  margin: 8px auto 0;
 }
 
-/* 🥚 ДЕКОРАТИВНІ ЕЛЕМЕНТИ */
+/* Декоративний divider */
 .egg-divider {
-  width: 100%;
   height: 40px;
-  background-image: url('data:image/svg+xml;utf8,<svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 20 L40 10 L60 20 L80 10 L100 20 L120 10" stroke="%23E8B13E" fill="none" stroke-width="1.5" opacity="0.3"/><circle cx="30" cy="20" r="3" fill="%238B2C2C" opacity="0.2"/><circle cx="60" cy="20" r="3" fill="%238B2C2C" opacity="0.2"/><circle cx="90" cy="20" r="3" fill="%238B2C2C" opacity="0.2"/></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg width="100" height="40" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg"><path d="M10 20 L30 10 L50 20 L70 10 L90 20" stroke="%23D4AF37" fill="none" stroke-width="2" opacity="0.5"/><circle cx="20" cy="20" r="3" fill="%238B0000"/><circle cx="50" cy="20" r="3" fill="%238B0000"/><circle cx="80" cy="20" r="3" fill="%238B0000"/></svg>');
   background-repeat: repeat-x;
   background-position: center;
-  opacity: 0.5;
 }
 
-/* 🔴 КНОПКИ З ЖОВТИМ АКЦЕНТОМ */
+/* 🔴 Кнопки — традиційні, без блиску */
 .btn {
   display: inline-block;
   padding: 14px 36px;
-  background: linear-gradient(135deg, var(--bordo) 0%, var(--bordo-dark) 100%);
-  border: none;
+  background: var(--bordo);
+  border: 2px solid var(--gold);
   color: var(--gold-light);
   font-family: var(--font-heading);
   font-size: 18px;
@@ -164,129 +124,60 @@ h1::after {
   letter-spacing: 2px;
   cursor: pointer;
   transition: var(--transition);
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
-  border-radius: 50px;
-  box-shadow: 0 4px 15px rgba(139, 44, 44, 0.3);
-  border: 1px solid var(--gold);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
 }
-
-.btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: radial-gradient(circle, var(--gold-light) 0%, transparent 70%);
-  opacity: 0;
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s, opacity 0.3s;
-}
-
 .btn:hover {
+  background: var(--bordo-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(232, 177, 62, 0.4);
-  color: white;
+  box-shadow: var(--shadow-md);
 }
-
-.btn:hover::before {
-  width: 300px;
-  height: 300px;
-  opacity: 0.3;
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
 .btn-gold {
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  background: var(--gold);
   color: var(--bordo);
-  border: 1px solid var(--bordo);
+  border-color: var(--bordo);
 }
-
 .btn-gold:hover {
-  color: var(--black);
+  background: var(--gold-light);
+  color: var(--bordo-dark);
 }
 
-/* 🃏 КАРТКИ З ПИСАНКОВОЮ ТЕКСТУРОЮ */
+/* Картки — матові, традиційні */
 .card {
-  background: rgba(255, 255, 255, 0.95);
-  border: 2px solid var(--gold);
-  border-radius: 30px;
+  background: white;
+  border: 3px solid var(--gold);
+  border-radius: 20px;
   padding: 30px;
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
-
 .card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 10px;
-  background: linear-gradient(90deg, var(--gold), var(--bordo), var(--gold), var(--bordo), var(--gold));
-  opacity: 0.5;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: var(--gold);
 }
 
-.card::after {
-  content: '';
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 100px;
-  height: 100px;
-  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L75 40 L60 75 L40 75 L25 40 Z" fill="none" stroke="%23E8B13E" stroke-width="1" opacity="0.1"/></svg>');
-  background-repeat: repeat;
-  opacity: 0.1;
-  pointer-events: none;
-}
-
-/* ✍️ ПОЛЯ ВВОДУ */
+/* Поля вводу */
 .input-field {
-  width: 100%;
   padding: 15px 20px;
   border: 2px solid var(--gold);
-  background: rgba(255, 255, 255, 0.9);
+  background: white;
   font-family: var(--font-body);
   font-size: 16px;
+  border-radius: 8px;
   transition: var(--transition);
-  border-radius: 50px;
-  color: var(--black);
 }
-
 .input-field:focus {
   outline: none;
   border-color: var(--bordo);
-  box-shadow: 0 0 0 4px rgba(232, 177, 62, 0.2);
-  background: white;
+  box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.15);
 }
 
-.input-field::placeholder {
-  color: var(--gold-dark);
-  opacity: 0.5;
-  font-style: italic;
-}
-
-/* 📱 АДАПТИВНІСТЬ */
+/* Адаптивність */
 @media (max-width: 768px) {
-  .card {
-    padding: 20px;
-    border-radius: 20px;
-  }
-  
-  .btn {
-    padding: 12px 28px;
-    font-size: 16px;
-  }
-  
-  .header-ornament::after {
-    font-size: 18px;
-    letter-spacing: 5px;
-  }
+  .card { padding: 20px; }
+  .btn { padding: 12px 28px; font-size: 16px; }
 }
