@@ -7,6 +7,9 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
+  <!-- Підключаємо regions.js -->
+  <script src="js/regions.js"></script>
+  
   <style>
     :root {
       --bordo: #6a1e2a;
@@ -530,6 +533,9 @@
   </div>
   
   <script>
+    // ============ GOOGLE SHEETS URL ============
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJ57LtEcJCmCK2eKvKRQVE7eBMBwJGzj4tqpczcd8UCOEUQVkYHg_645-55qeHVl7M/exec';
+    
     // ============ 14 РЕГІОНІВ УКРАЇНИ ============
     const REGIONS = [
       { id: 1, name: 'Поділля', symbol: '🌻', color: '#8B4513', cities: ['вінниця', 'хмельницький', 'тернопіль', 'кам\'янець-подільський'] },
@@ -879,14 +885,32 @@
       submitBtn.textContent = 'Відправляється...';
       
       // Показуємо статус завантаження
-      showStatus('Енергія передається...', 'loading');
+      showStatus('Енергія передається до Google Sheets...', 'loading');
       
       // Анімація писанки
       animateEnergyTransfer();
       
       try {
-        // Імітація відправки на сервер
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Формуємо дані для відправки
+        const postData = {
+          regionId: parseInt(regionId),
+          regionName: regionName,
+          userName: userName,
+          city: userCity,
+          timestamp: new Date().toISOString()
+        };
+        
+        console.log('Відправляємо дані:', postData);
+        
+        // Відправка на Google Sheets
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors', // для Google Apps Script
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData)
+        });
         
         // Отримуємо координати міста
         const cityLower = userCity.toLowerCase();
@@ -902,7 +926,7 @@
           };
         }
         
-        // Зберігаємо в localStorage для карти
+        // Зберігаємо в localStorage для карти (як резервна копія)
         const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
         const newParticipant = {
           id: Date.now(),
@@ -930,7 +954,7 @@
         showStatus(`Дякуємо, ${userName}! Твоя енергія приєдналася до Соборної Писанки!`, 'success');
         
         // Змінюємо текст енергії
-        document.getElementById('energyText').innerHTML = '✨ Енергію передано! ✨';
+        document.getElementById('energyText').innerHTML = '✨ Енергію передано до Google Sheets! ✨';
         
         // Показуємо кнопку переходу до карти
         document.getElementById('viewMapBtn').style.display = 'inline-block';
@@ -950,7 +974,7 @@
         
       } catch (error) {
         console.error('Помилка:', error);
-        showStatus('Сталася помилка. Спробуй ще раз.', 'error');
+        showStatus('Сталася помилка при відправці. Спробуй ще раз.', 'error');
         submitBtn.disabled = false;
         submitBtn.textContent = 'ВІДПРАВИТИ КОД';
       }
