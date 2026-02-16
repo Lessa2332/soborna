@@ -18,6 +18,8 @@
       --brown: #4a2c1a;
       --beige: #e8d9c0;
       --dark: #1a1a1a;
+      --red-scanner: #ff3333;
+      --red-scanner-glow: #ff0000;
       --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
       --font-body: 'Open Sans', 'Helvetica', sans-serif;
       --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
@@ -99,16 +101,116 @@
     }
     
     .pysanka-symbol {
-      font-size: 80px;
-      filter: drop-shadow(0 0 15px var(--gold));
+      width: 120px;
+      height: 120px;
       margin-bottom: 20px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .pysanka-symbol img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 15px var(--gold));
       animation: pulse 2s infinite;
     }
     
     @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.1); opacity: 1; }
-      100% { transform: scale(1); opacity: 0.8; }
+      0% { transform: scale(1); opacity: 0.9; filter: drop-shadow(0 0 10px var(--gold)); }
+      50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 20px var(--gold)); }
+      100% { transform: scale(1); opacity: 0.9; filter: drop-shadow(0 0 10px var(--gold)); }
+    }
+    
+    /* ============ ЧЕРВОНИЙ СКАНЕР ============ */
+    .scanner-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--red-scanner) 20%, 
+        var(--red-scanner-glow) 50%, 
+        var(--red-scanner) 80%, 
+        transparent 100%);
+      box-shadow: 0 0 20px var(--red-scanner-glow);
+      animation: scan 2s ease-in-out infinite;
+      z-index: 10;
+    }
+    
+    .scanner-line::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(180deg, 
+        rgba(255, 51, 51, 0.3) 0%,
+        transparent 100%);
+    }
+    
+    .scanner-line::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(0deg, 
+        rgba(255, 51, 51, 0.3) 0%,
+        transparent 100%);
+    }
+    
+    @keyframes scan {
+      0% {
+        opacity: 0.5;
+        transform: translateY(0);
+      }
+      25% {
+        opacity: 1;
+        transform: translateY(-10px);
+      }
+      50% {
+        opacity: 0.8;
+        transform: translateY(-20px);
+      }
+      75% {
+        opacity: 1;
+        transform: translateY(-10px);
+      }
+      100% {
+        opacity: 0.5;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Додатковий ефект сканування */
+    .scan-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(255, 51, 51, 0.1) 45%,
+        rgba(255, 51, 51, 0.3) 50%,
+        rgba(255, 51, 51, 0.1) 55%,
+        transparent 100%);
+      pointer-events: none;
+      animation: scanOverlay 2s ease-in-out infinite;
+      z-index: 5;
+    }
+    
+    @keyframes scanOverlay {
+      0% { transform: translateY(-100%); }
+      50% { transform: translateY(0); }
+      100% { transform: translateY(100%); }
     }
     
     .region-display {
@@ -188,6 +290,7 @@
       text-decoration: none;
       position: relative;
       overflow: hidden;
+      z-index: 1;
     }
     
     .btn:before {
@@ -222,6 +325,24 @@
     .btn-gold:hover {
       color: var(--bordo);
     }
+    
+    /* Індикатор сканування */
+    .scanning-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 12px;
+      height: 12px;
+      background: var(--red-scanner);
+      border-radius: 50%;
+      box-shadow: 0 0 15px var(--red-scanner-glow);
+      animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -234,7 +355,15 @@
     
     <div class="magic-mirror" id="magicMirror" onclick="startRitual()">
       <div class="mirror-content">
-        <div class="pysanka-symbol" id="symbol">🥚</div>
+        <div class="pysanka-symbol" id="symbol">
+          <!-- ВАШЕ ЗОБРАЖЕННЯ hub.png -->
+          <img src="assets/hub.png" alt="Соборна Писанка" id="pysankaImage">
+        </div>
+        
+        <!-- Червона лінія сканера -->
+        <div class="scanner-line" id="scannerLine"></div>
+        <div class="scan-overlay" id="scanOverlay"></div>
+        <div class="scanning-indicator" id="scanIndicator"></div>
         
         <div id="initialMessage" class="oracle-text">
           Торкнись, щоб пробудити пам'ять роду...
@@ -289,19 +418,30 @@
     ];
     
     let currentRegion = null;
+    let scanInterval = null;
     
     function startRitual() {
       const symbol = document.getElementById('symbol');
+      const pysankaImage = document.getElementById('pysankaImage');
       const initialMsg = document.getElementById('initialMessage');
       const runes = document.querySelectorAll('.rune');
       const progressBar = document.getElementById('progressBar');
       const progressFill = document.getElementById('progressFill');
       const magicMirror = document.getElementById('magicMirror');
+      const scannerLine = document.getElementById('scannerLine');
+      const scanOverlay = document.getElementById('scanOverlay');
+      const scanIndicator = document.getElementById('scanIndicator');
       
       magicMirror.style.pointerEvents = 'none';
       
-      symbol.style.animation = 'pulse 0.5s infinite';
-      initialMsg.innerHTML = 'Прислухаюсь до голосу предків...';
+      // Активуємо сканер
+      scannerLine.style.display = 'block';
+      scanOverlay.style.display = 'block';
+      scanIndicator.style.display = 'block';
+      
+      // Змінюємо анімацію зображення
+      pysankaImage.style.animation = 'pulse 0.5s infinite';
+      initialMsg.innerHTML = '🔴 Сканування... Прислухаюсь до голосу предків...';
       
       runes.forEach(rune => { rune.style.opacity = '1'; });
       
@@ -311,11 +451,11 @@
       setTimeout(() => { progressFill.style.width = '25%'; }, 100);
       setTimeout(() => { 
         progressFill.style.width = '50%'; 
-        initialMsg.innerHTML = 'Візерунки оживають...'; 
+        initialMsg.innerHTML = '🔴 Сканування... Візерунки оживають...'; 
       }, 1000);
       setTimeout(() => { 
         progressFill.style.width = '75%'; 
-        initialMsg.innerHTML = 'Пам\'ять роду прокидається...'; 
+        initialMsg.innerHTML = '🔴 Сканування... Пам\'ять роду прокидається...'; 
       }, 2000);
       setTimeout(() => { progressFill.style.width = '100%'; }, 3000);
       
@@ -324,11 +464,15 @@
         currentRegion = REGIONS[randomIndex];
         
         document.getElementById('regionDisplay').innerHTML = currentRegion.name;
-        document.getElementById('symbol').innerHTML = currentRegion.symbol;
         document.getElementById('selectedRegion').value = currentRegion.name;
         document.getElementById('selectedRegionId').value = currentRegion.id;
         
-        initialMsg.innerHTML = `Твій край — <strong style="color: var(--gold);">${currentRegion.name}</strong>`;
+        // Вимкнути сканер
+        scannerLine.style.display = 'none';
+        scanOverlay.style.display = 'none';
+        scanIndicator.style.display = 'none';
+        
+        initialMsg.innerHTML = `✅ Сканування завершено! Твій край — <strong style="color: var(--gold);">${currentRegion.name}</strong>`;
         progressBar.style.display = 'none';
         
         document.getElementById('result').innerHTML = `
@@ -353,13 +497,17 @@
         
         if (navigator.vibrate) navigator.vibrate(200);
         
-        symbol.style.animation = 'none';
+        pysankaImage.style.animation = 'pulse 2s infinite';
         magicMirror.style.pointerEvents = 'auto';
       }, 4000);
     }
     
     function resetRitual() {
-      document.getElementById('symbol').innerHTML = '🥚';
+      const pysankaImage = document.getElementById('pysankaImage');
+      const scannerLine = document.getElementById('scannerLine');
+      const scanOverlay = document.getElementById('scanOverlay');
+      const scanIndicator = document.getElementById('scanIndicator');
+      
       document.getElementById('regionDisplay').innerHTML = '';
       document.getElementById('initialMessage').innerHTML = 'Торкнись, щоб пробудити пам\'ять роду...';
       document.getElementById('progressBar').style.display = 'none';
@@ -370,25 +518,36 @@
       document.getElementById('selectedRegionId').value = '';
       document.getElementById('magicMirror').style.pointerEvents = 'auto';
       
+      // Вимкнути сканер
+      scannerLine.style.display = 'none';
+      scanOverlay.style.display = 'none';
+      scanIndicator.style.display = 'none';
+      
       document.querySelectorAll('.rune').forEach(rune => { rune.style.opacity = '0.2'; });
+      
+      pysankaImage.style.animation = 'pulse 2s infinite';
       
       localStorage.removeItem('pysanka_region');
     }
     
     window.addEventListener('load', function() {
+      // Сховати сканер при завантаженні
+      document.getElementById('scannerLine').style.display = 'none';
+      document.getElementById('scanOverlay').style.display = 'none';
+      document.getElementById('scanIndicator').style.display = 'none';
+      
       const savedRegion = localStorage.getItem('pysanka_region');
       if (savedRegion) {
         try {
           const region = JSON.parse(savedRegion);
           if (region && region.id) {
             document.getElementById('regionDisplay').innerHTML = region.name;
-            document.getElementById('symbol').innerHTML = region.symbol;
             document.getElementById('selectedRegion').value = region.name;
             document.getElementById('selectedRegionId').value = region.id;
             
             document.getElementById('result').innerHTML = `
               <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px;">
-                <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання, дитино ${region.name}!</p>
+                <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання ${region.name}!</p>
                 <p>Твій край вже обрано</p>
                 <p style="font-size: 48px; margin: 15px 0;">${region.ornament || '🥚'}</p>
               </div>
@@ -405,4 +564,3 @@
   </script>
 </body>
 </html>
-
