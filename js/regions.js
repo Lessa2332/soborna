@@ -1,3 +1,4 @@
+// js/regions.js
 const REGIONS = [
   { 
     id: 1, 
@@ -5,7 +6,7 @@ const REGIONS = [
     texture: 'assets/regions/1-podillya.png',
     symbol: '🌻',
     color: '#8B4513',
-    coords: { lat: 48.5, lng: 27.5 } // приблизні координати
+    coords: { lat: 48.5, lng: 27.5 }
   },
   { 
     id: 2, 
