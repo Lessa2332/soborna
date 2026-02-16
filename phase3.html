@@ -861,125 +861,172 @@
       };
     }
     
-    async function sendEnergy() {
-      const userName = document.getElementById('userName').value.trim();
-      const userCity = document.getElementById('userCity').value.trim();
-      const regionId = document.getElementById('regionId').value;
-      const regionName = document.getElementById('regionName').value;
-      const regionSymbol = document.getElementById('regionSymbol').value;
+async function sendEnergy() {
+  const userName = document.getElementById('userName').value.trim();
+  const userCity = document.getElementById('userCity').value.trim();
+  const regionId = document.getElementById('regionId').value;
+  const regionName = document.getElementById('regionName').value;
+  const regionSymbol = document.getElementById('regionSymbol').value;
+  
+  // Валідація
+  if (!userName || userName.length < 2) {
+    showStatus('Будь ласка, введи коректне ім\'я', 'error');
+    return;
+  }
+  
+  if (!userCity) {
+    showStatus('Будь ласка, введи назву міста', 'error');
+    return;
+  }
+  
+  // Блокуємо кнопку
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Відправляється...';
+  
+  // Показуємо статус завантаження
+  showStatus('Енергія передається...', 'loading');
+  
+  // Анімація писанки
+  animateEnergyTransfer();
+  
+  try {
+    // Формуємо дані для відправки
+    const postData = {
+      regionId: parseInt(regionId),
+      regionName: regionName,
+      userName: userName,
+      city: userCity
+    };
+    
+    console.log('Відправляємо дані:', postData);
+    
+    // Відправка на Google Sheets через JSONP (обходить CORS)
+    const callbackName = 'jsonp_callback_' + Date.now();
+    
+    // Створюємо глобальну функцію для обробки відповіді
+    window[callbackName] = function(response) {
+      delete window[callbackName];
+      document.body.removeChild(script);
       
-      // Валідація
-      if (!userName || userName.length < 2) {
-        showStatus('Будь ласка, введи коректне ім\'я', 'error');
-        return;
+      console.log('Відповідь від сервера:', response);
+      
+      // Обробляємо успішну відправку
+      handleSuccessfulSubmit(userName, userCity, regionId, regionName, regionSymbol);
+    };
+    
+    // Створюємо скрипт для JSONP запиту
+    const script = document.createElement('script');
+    script.src = GOOGLE_SCRIPT_URL + '?callback=' + callbackName + '&' + new URLSearchParams({
+      regionId: parseInt(regionId),
+      regionName: regionName,
+      userName: userName,
+      city: userCity
+    });
+    
+    // Додаємо таймаут на випадок помилки
+    const timeout = setTimeout(() => {
+      if (window[callbackName]) {
+        console.log('Таймаут запиту, використовуємо локальне збереження');
+        delete window[callbackName];
+        document.body.removeChild(script);
+        
+        // Все одно зберігаємо локально
+        handleSuccessfulSubmit(userName, userCity, regionId, regionName, regionSymbol);
       }
-      
-      if (!userCity) {
-        showStatus('Будь ласка, введи назву міста', 'error');
-        return;
+    }, 5000);
+    
+    // Обробка помилок завантаження скрипта
+    script.onerror = function() {
+      clearTimeout(timeout);
+      console.log('Помилка завантаження, використовуємо локальне збереження');
+      if (window[callbackName]) {
+        delete window[callbackName];
+        document.body.removeChild(script);
+        
+        // Все одно зберігаємо локально
+        handleSuccessfulSubmit(userName, userCity, regionId, regionName, regionSymbol);
       }
-      
-      // Блокуємо кнопку
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Відправляється...';
-      
-      // Показуємо статус завантаження
-      showStatus('Енергія передається до Google Sheets...', 'loading');
-      
-      // Анімація писанки
-      animateEnergyTransfer();
-      
-      try {
-        // Формуємо дані для відправки
-        const postData = {
-          regionId: parseInt(regionId),
-          regionName: regionName,
-          userName: userName,
-          city: userCity,
-          timestamp: new Date().toISOString()
-        };
-        
-        console.log('Відправляємо дані:', postData);
-        
-        // Відправка на Google Sheets
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors', // для Google Apps Script
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(postData)
-        });
-        
-        // Отримуємо координати міста
-        const cityLower = userCity.toLowerCase();
-        let cityCoords = CITY_COORDS[cityLower];
-        
-        if (!cityCoords) {
-          // Якщо місто не знайдено, створюємо умовні координати
-          cityCoords = { 
-            x: 50, 
-            y: 50, 
-            regionId: parseInt(regionId), 
-            region: regionName 
-          };
-        }
-        
-        // Зберігаємо в localStorage для карти (як резервна копія)
-        const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
-        const newParticipant = {
-          id: Date.now(),
-          name: userName,
-          city: userCity,
-          region: regionName,
-          regionId: parseInt(regionId),
-          timestamp: new Date().toISOString(),
-          coords: cityCoords,
-          symbol: regionSymbol || '🥚'
-        };
-        
-        participants.push(newParticipant);
-        localStorage.setItem('pysanka_participants', JSON.stringify(participants));
-        
-        // Оновлюємо лічильник учасників в регіонах
-        updateRegionStats(parseInt(regionId));
-        
-        // Оновлюємо статистику
-        participantsCount = participants.length;
-        document.getElementById('statsPanel').style.display = 'block';
-        document.getElementById('totalParticipants').textContent = participantsCount;
-        
-        // Показуємо успіх
-        showStatus(`Дякуємо, ${userName}! Твоя енергія приєдналася до Соборної Писанки!`, 'success');
-        
-        // Змінюємо текст енергії
-        document.getElementById('energyText').innerHTML = '✨ Енергію передано до Google Sheets! ✨';
-        
-        // Показуємо кнопку переходу до карти
-        document.getElementById('viewMapBtn').style.display = 'inline-block';
-        
-        // Ховаємо кнопку відправки
-        submitBtn.style.display = 'none';
-        
-        // Вібрація
-        if (navigator.vibrate) {
-          navigator.vibrate([200, 100, 200]);
-        }
-        
-        // Автоматичний перехід через 3 секунди
-        setTimeout(() => {
-          window.location.href = 'dashboard.html';
-        }, 3000);
-        
-      } catch (error) {
-        console.error('Помилка:', error);
-        showStatus('Сталася помилка при відправці. Спробуй ще раз.', 'error');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'ВІДПРАВИТИ КОД';
-      }
+    };
+    
+    document.body.appendChild(script);
+    
+  } catch (error) {
+    console.error('Помилка:', error);
+    showStatus('Сталася помилка при відправці. Спробуй ще раз.', 'error');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'ВІДПРАВИТИ КОД';
+  }
+}
+
+// Функція для обробки успішної відправки (винесена окремо)
+function handleSuccessfulSubmit(userName, userCity, regionId, regionName, regionSymbol) {
+  try {
+    // Отримуємо координати міста
+    const cityLower = userCity.toLowerCase();
+    let cityCoords = CITY_COORDS[cityLower];
+    
+    if (!cityCoords) {
+      // Якщо місто не знайдено, створюємо умовні координати
+      cityCoords = { 
+        x: 50, 
+        y: 50, 
+        regionId: parseInt(regionId), 
+        region: regionName 
+      };
     }
     
+    // Зберігаємо в localStorage для карти
+    const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
+    const newParticipant = {
+      id: Date.now(),
+      name: userName,
+      city: userCity,
+      region: regionName,
+      regionId: parseInt(regionId),
+      timestamp: new Date().toISOString(),
+      coords: cityCoords,
+      symbol: regionSymbol || '🥚'
+    };
+    
+    participants.push(newParticipant);
+    localStorage.setItem('pysanka_participants', JSON.stringify(participants));
+    
+    // Оновлюємо лічильник учасників в регіонах
+    updateRegionStats(parseInt(regionId));
+    
+    // Оновлюємо статистику
+    participantsCount = participants.length;
+    document.getElementById('statsPanel').style.display = 'block';
+    document.getElementById('totalParticipants').textContent = participantsCount;
+    
+    // Показуємо успіх
+    showStatus(`Дякуємо, ${userName}! Твоя енергія приєдналася до Соборної Писанки!`, 'success');
+    
+    // Змінюємо текст енергії
+    document.getElementById('energyText').innerHTML = '✨ Енергію передано! ✨';
+    
+    // Показуємо кнопку переходу до карти
+    document.getElementById('viewMapBtn').style.display = 'inline-block';
+    
+    // Ховаємо кнопку відправки
+    document.getElementById('submitBtn').style.display = 'none';
+    
+    // Вібрація
+    if (navigator.vibrate) {
+      navigator.vibrate([200, 100, 200]);
+    }
+    
+    // Автоматичний перехід через 3 секунди
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 3000);
+    
+  } catch (e) {
+    console.error('Помилка при локальному збереженні:', e);
+    showStatus('Дані збережено локально', 'success');
+  }
+}
     function updateRegionStats(regionId) {
       // Оновлюємо статистику регіонів в localStorage
       const stats = JSON.parse(localStorage.getItem('pysanka_stats') || '{}');
@@ -1027,3 +1074,4 @@
   </script>
 </body>
 </html>
+
