@@ -227,13 +227,11 @@
 <body>
   <div class="container">
     
-    <!-- Декоративна голівка -->
     <div class="ornament"></div>
     
     <h1>Поклик предків</h1>
     <p style="text-align: center; color: var(--bordo); margin-bottom: 40px;">Доторкнись до чарівної писанки, щоб дізнатись свій край</p>
     
-    <!-- Головний елемент - чарівне дзеркало -->
     <div class="magic-mirror" id="magicMirror" onclick="startRitual()">
       <div class="mirror-content">
         <div class="pysanka-symbol" id="symbol">🥚</div>
@@ -258,16 +256,13 @@
       </div>
     </div>
     
-    <!-- Результат -->
     <div id="result" style="text-align: center; margin: 30px 0;"></div>
     
-    <!-- Кнопки -->
     <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
       <button class="btn" onclick="resetRitual()" id="resetBtn" style="display: none;">Повторити</button>
       <a href="phase2.html" class="btn btn-gold" id="continueBtn" style="display: none;">Знайти на карті</a>
     </div>
     
-    <!-- Приховане поле для збереження регіону -->
     <input type="hidden" id="selectedRegion" value="">
     <input type="hidden" id="selectedRegionId" value="">
     
@@ -275,106 +270,22 @@
   </div>
   
   <script>
-    // ============ 14 РЕГІОНІВ З ЧИСЛОВИМИ ID ============
+    // ============ 14 РЕГІОНІВ ============
     const REGIONS = [
-      { 
-        id: 1, 
-        name: 'Поділля', 
-        ornament: '🌻', 
-        symbol: '🌸',
-        texture: 'assets/regions/1-podillya.png'
-      },
-      { 
-        id: 2, 
-        name: 'Полісся', 
-        ornament: '🌲', 
-        symbol: '🌿',
-        texture: 'assets/regions/2-polissya.png'
-      },
-      { 
-        id: 3, 
-        name: 'Карпати', 
-        ornament: '🏔️', 
-        symbol: '🌲',
-        texture: 'assets/regions/3-carpathians.png'
-      },
-      { 
-        id: 4, 
-        name: 'Київщина', 
-        ornament: '🏛️', 
-        symbol: '⚜️',
-        texture: 'assets/regions/4-kyiv.png'
-      },
-      { 
-        id: 5, 
-        name: 'Львівщина', 
-        ornament: '🦁', 
-        symbol: '🦁',
-        texture: 'assets/regions/5-lviv.png'
-      },
-      { 
-        id: 6, 
-        name: 'Одещина', 
-        ornament: '🌊', 
-        symbol: '⚓',
-        texture: 'assets/regions/6-odesa.png'
-      },
-      { 
-        id: 7, 
-        name: 'Харківщина', 
-        ornament: '⚙️', 
-        symbol: '⚙️',
-        texture: 'assets/regions/7-kharkiv.png'
-      },
-      { 
-        id: 8, 
-        name: 'Дніпропетровщина', 
-        ornament: '🌊', 
-        symbol: '🌊',
-        texture: 'assets/regions/8-dnipro.png'
-      },
-      { 
-        id: 9, 
-        name: 'Полтавщина', 
-        ornament: '🌻', 
-        symbol: '🌻',
-        texture: 'assets/regions/9-poltava.png'
-      },
-      { 
-        id: 10, 
-        name: 'Чернігівщина', 
-        ornament: '📚', 
-        symbol: '📚',
-        texture: 'assets/regions/10-chernihiv.png'
-      },
-      { 
-        id: 11, 
-        name: 'Черкащина', 
-        ornament: '🎭', 
-        symbol: '🎭',
-        texture: 'assets/regions/11-cherkasy.png'
-      },
-      { 
-        id: 12, 
-        name: 'Крим', 
-        ornament: '🏖️', 
-        symbol: '🏖️',
-        texture: 'assets/regions/12-crimea.png'
-      },
-      { 
-        id: 13, 
-        name: 'Донеччина', 
-        ornament: '⛏️', 
-        symbol: '⛏️',
-        texture: 'assets/regions/13-donetsk.png'
-      },
-      { 
-        id: 14, 
-        name: 'Луганщина', 
-        ornament: '🌻', 
-        symbol: '🌻',
-        texture: 'assets/regions/14-luhansk.png'
-      }
+      { id: 1, name: 'Поділля', ornament: '🌻', symbol: '🌻', texture: 'assets/regions/1-podillya.png' },
+      { id: 2, name: 'Полісся', ornament: '🌲', symbol: '🌲', texture: 'assets/regions/2-polissya.png' },
+      { id: 3, name: 'Карпати', ornament: '🏔️', symbol: '🏔️', texture: 'assets/regions/3-carpathians.png' },
+      { id: 4, name: 'Київщина', ornament: '🏛️', symbol: '🏛️', texture: 'assets/regions/4-kyiv.png' },
+      { id: 5, name: 'Львівщина', ornament: '🦁', symbol: '🦁', texture: 'assets/regions/5-lviv.png' },
+      { id: 6, name: 'Одещина', ornament: '⚓', symbol: '⚓', texture: 'assets/regions/6-odesa.png' },
+      { id: 7, name: 'Харківщина', ornament: '⚙️', symbol: '⚙️', texture: 'assets/regions/7-kharkiv.png' },
+      { id: 8, name: 'Дніпропетровщина', ornament: '🌊', symbol: '🌊', texture: 'assets/regions/8-dnipro.png' },
+      { id: 9, name: 'Полтавщина', ornament: '🌻', symbol: '🌻', texture: 'assets/regions/9-poltava.png' },
+      { id: 10, name: 'Чернігівщина', ornament: '📚', symbol: '📚', texture: 'assets/regions/10-chernihiv.png' },
+      { id: 11, name: 'Черкащина', ornament: '🎭', symbol: '🎭', texture: 'assets/regions/11-cherkasy.png' },
+      { id: 12, name: 'Крим', ornament: '🏖️', symbol: '🏖️', texture: 'assets/regions/12-crimea.png' },
+      { id: 13, name: 'Донеччина', ornament: '⛏️', symbol: '⛏️', texture: 'assets/regions/13-donetsk.png' },
+      { id: 14, name: 'Луганщина', ornament: '🌻', symbol: '🌻', texture: 'assets/regions/14-luhansk.png' }
     ];
     
     let currentRegion = null;
@@ -387,69 +298,48 @@
       const progressFill = document.getElementById('progressFill');
       const magicMirror = document.getElementById('magicMirror');
       
-      // Блокуємо повторний клік
       magicMirror.style.pointerEvents = 'none';
       
-      // Анімація початку
       symbol.style.animation = 'pulse 0.5s infinite';
       initialMsg.innerHTML = 'Прислухаюсь до голосу предків...';
       
-      // Активуємо руни
-      runes.forEach(rune => {
-        rune.style.opacity = '1';
-      });
+      runes.forEach(rune => { rune.style.opacity = '1'; });
       
-      // Показуємо прогрес-бар
       progressBar.style.display = 'block';
       progressFill.style.width = '0%';
       
-      // Анімація заповнення
-      setTimeout(() => {
-        progressFill.style.width = '25%';
-      }, 100);
-      
-      setTimeout(() => {
-        progressFill.style.width = '50%';
-        initialMsg.innerHTML = 'Візерунки оживають...';
+      setTimeout(() => { progressFill.style.width = '25%'; }, 100);
+      setTimeout(() => { 
+        progressFill.style.width = '50%'; 
+        initialMsg.innerHTML = 'Візерунки оживають...'; 
       }, 1000);
-      
-      setTimeout(() => {
-        progressFill.style.width = '75%';
-        initialMsg.innerHTML = 'Пам\'ять роду прокидається...';
+      setTimeout(() => { 
+        progressFill.style.width = '75%'; 
+        initialMsg.innerHTML = 'Пам\'ять роду прокидається...'; 
       }, 2000);
+      setTimeout(() => { progressFill.style.width = '100%'; }, 3000);
       
       setTimeout(() => {
-        progressFill.style.width = '100%';
-      }, 3000);
-      
-      // Фінал
-      setTimeout(() => {
-        // Вибираємо випадковий регіон
         const randomIndex = Math.floor(Math.random() * REGIONS.length);
         currentRegion = REGIONS[randomIndex];
         
-        // Оновлюємо UI
         document.getElementById('regionDisplay').innerHTML = currentRegion.name;
-        document.getElementById('symbol').innerHTML = currentRegion.symbol || '🥚';
+        document.getElementById('symbol').innerHTML = currentRegion.symbol;
         document.getElementById('selectedRegion').value = currentRegion.name;
         document.getElementById('selectedRegionId').value = currentRegion.id;
         
         initialMsg.innerHTML = `Твій край — <strong style="color: var(--gold);">${currentRegion.name}</strong>`;
-        
-        // Ховаємо прогрес-бар
         progressBar.style.display = 'none';
         
-        // Показуємо результат
         document.getElementById('result').innerHTML = `
           <div style="background: var(--bordo); color: var(--gold); padding: 20px; border-radius: 8px;">
             <p style="font-size: 24px; margin-bottom: 10px;">✨ Вітання, дитино ${currentRegion.name}!</p>
             <p>Твій рід походить з цього благословенного краю.</p>
-            <p style="font-size: 48px; margin: 15px 0;">${currentRegion.ornament || '🥚'}</p>
+            <p style="font-size: 48px; margin: 15px 0;">${currentRegion.ornament}</p>
             <p>Запам'ятай цей образ — він знадобиться тобі на наступному етапі.</p>
           </div>
         `;
         
-        // Зберігаємо в localStorage для наступних етапів
         localStorage.setItem('pysanka_region', JSON.stringify({
           id: currentRegion.id,
           name: currentRegion.name,
@@ -458,14 +348,10 @@
           texture: currentRegion.texture
         }));
         
-        // Показуємо кнопки
         document.getElementById('resetBtn').style.display = 'inline-block';
         document.getElementById('continueBtn').style.display = 'inline-block';
         
-        // Вібрація для мобільних
-        if (navigator.vibrate) {
-          navigator.vibrate(200);
-        }
+        if (navigator.vibrate) navigator.vibrate(200);
         
         symbol.style.animation = 'none';
         magicMirror.style.pointerEvents = 'auto';
@@ -473,7 +359,6 @@
     }
     
     function resetRitual() {
-      // Скидаємо всі елементи
       document.getElementById('symbol').innerHTML = '🥚';
       document.getElementById('regionDisplay').innerHTML = '';
       document.getElementById('initialMessage').innerHTML = 'Торкнись, щоб пробудити пам\'ять роду...';
@@ -485,25 +370,19 @@
       document.getElementById('selectedRegionId').value = '';
       document.getElementById('magicMirror').style.pointerEvents = 'auto';
       
-      // Скидаємо руни
-      document.querySelectorAll('.rune').forEach(rune => {
-        rune.style.opacity = '0.2';
-      });
+      document.querySelectorAll('.rune').forEach(rune => { rune.style.opacity = '0.2'; });
       
-      // Видаляємо з localStorage
       localStorage.removeItem('pysanka_region');
     }
     
-    // Перевіряємо, чи є вже збережений регіон
     window.addEventListener('load', function() {
       const savedRegion = localStorage.getItem('pysanka_region');
       if (savedRegion) {
         try {
           const region = JSON.parse(savedRegion);
           if (region && region.id) {
-            // Відновлюємо стан
             document.getElementById('regionDisplay').innerHTML = region.name;
-            document.getElementById('symbol').innerHTML = region.symbol || '🥚';
+            document.getElementById('symbol').innerHTML = region.symbol;
             document.getElementById('selectedRegion').value = region.name;
             document.getElementById('selectedRegionId').value = region.id;
             
