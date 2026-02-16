@@ -24,12 +24,15 @@
       --font-body: 'Open Sans', 'Helvetica', sans-serif;
       --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
       --transition: all 0.3s ease;
+      --safe-area-top: env(safe-area-inset-top, 0px);
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
     }
     
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
     
     body {
@@ -38,6 +41,7 @@
       color: var(--cream);
       min-height: 100vh;
       position: relative;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
     
     body::before {
@@ -87,6 +91,7 @@
     .magic-frame {
       position: relative;
       background: rgba(26, 26, 26, 0.6);
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       border: 2px solid var(--gold);
       border-radius: 30px;
@@ -144,6 +149,14 @@
       margin-bottom: 5px;
     }
     
+    .region-help {
+      font-size: 14px;
+      opacity: 0.8;
+      color: var(--cream);
+      margin-top: 5px;
+      font-style: italic;
+    }
+    
     .form-group {
       margin-bottom: 25px;
       position: relative;
@@ -169,6 +182,7 @@
       font-size: 16px;
       color: white;
       transition: var(--transition);
+      -webkit-backdrop-filter: blur(5px);
       backdrop-filter: blur(5px);
     }
     
@@ -183,32 +197,20 @@
       color: rgba(255, 255, 255, 0.5);
     }
     
-    .city-suggestions {
-      position: absolute;
-      width: 100%;
-      background: rgba(106, 30, 42, 0.95);
-      backdrop-filter: blur(10px);
-      border: 2px solid var(--gold);
-      border-top: none;
-      border-radius: 0 0 20px 20px;
-      max-height: 200px;
-      overflow-y: auto;
-      display: none;
-      z-index: 100;
-      margin-top: -5px;
+    /* Підказка для міжнародних міст */
+    .city-hint {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--gold-light);
+      opacity: 0.7;
+      padding-left: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
     
-    .city-suggestion-item {
-      padding: 12px 20px;
-      cursor: pointer;
-      color: white;
-      transition: var(--transition);
-      border-bottom: 1px solid rgba(201, 160, 61, 0.3);
-    }
-    
-    .city-suggestion-item:hover {
-      background: var(--gold);
-      color: var(--bordo);
+    .city-hint i {
+      font-size: 16px;
     }
     
     .energy-transfer {
@@ -272,6 +274,7 @@
       position: relative;
       overflow: hidden;
       border-radius: 50px;
+      -webkit-tap-highlight-color: transparent;
     }
     
     .btn:before {
@@ -286,21 +289,22 @@
       z-index: -1;
     }
     
-    .btn:hover {
-      color: var(--bordo);
+    .btn:hover:before {
+      left: 0;
     }
     
-    .btn:hover:before {
+    .btn:active {
+      color: var(--bordo);
+      transform: scale(0.98);
+    }
+    
+    .btn:active:before {
       left: 0;
     }
     
     .btn:disabled {
       opacity: 0.5;
-      cursor: not-allowed;
-    }
-    
-    .btn:disabled:hover:before {
-      left: -100%;
+      pointer-events: none;
     }
     
     .status-message {
@@ -385,10 +389,19 @@
             <input type="text" id="userName" class="input-field" placeholder="Як тебе звати?" required maxlength="50">
           </div>
           
-          <div class="form-group" style="position: relative;">
-            <label class="form-label">Місто.Твоє побажання</label>
-            <input type="text" id="userCity" class="input-field" placeholder="Наприклад: Львів.З Великоднем!" required autocomplete="off">
-            <div id="citySuggestions" class="city-suggestions"></div>
+          <div class="form-group">
+            <label class="form-label">
+              <span>Місто або місцевість</span>
+              <span style="font-size: 14px; opacity: 0.7; margin-left: 10px;">🌍</span>
+            </label>
+            <input type="text" id="userCity" class="input-field" 
+                   placeholder="Наприклад: Чорноморськ, Україна або Торонто, Канада" 
+                   required autocomplete="off">
+            
+            <!-- Підказка для діаспори -->
+            <div class="city-hint">
+              <i>✈️</i> Якщо ти за кордоном, напиши: "Народився в Чорноморську, живу в Торонто"
+            </div>
           </div>
           
           <!-- Енергетична анімація -->
@@ -405,7 +418,7 @@
           <input type="hidden" id="regionSymbol">
           
           <button type="submit" class="btn" style="width: 100%;" id="submitBtn">
-            🥚 ВІДПРАВИТИ КОД
+            🥚 ВІДПРАВИТИ
           </button>
         </form>
         
@@ -426,7 +439,7 @@
     // ============ GOOGLE SHEETS URL ============
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzEnTeoAdgYv_4DTh3P9g8BPILmXPi4B7FTrHz-54q7nZxpPBEvejaWsIP_jWjZQtdM/exec';
     
-    // ============ КООРДИНАТИ МІСТ ============
+    // ============ КООРДИНАТИ МІСТ УКРАЇНИ (ДЛЯ ТИХ, ХТО В УКРАЇНІ) ============
     const CITY_COORDS = {
       'вінниця': { lat: 49.23, lng: 28.47, regionId: 1 },
       'хмельницький': { lat: 49.42, lng: 26.98, regionId: 1 },
@@ -447,10 +460,12 @@
       'черкаси': { lat: 49.44, lng: 32.06, regionId: 11 },
       'сімферополь': { lat: 44.95, lng: 34.10, regionId: 12 },
       'донецьк': { lat: 48.02, lng: 37.80, regionId: 13 },
-      'луганськ': { lat: 48.57, lng: 39.31, regionId: 14 }
+      'луганськ': { lat: 48.57, lng: 39.31, regionId: 14 },
+      // Кримські міста
+      'ялта': { lat: 44.50, lng: 34.17, regionId: 12 },
+      'феодосія': { lat: 45.03, lng: 35.38, regionId: 12 },
+      'євпаторія': { lat: 45.20, lng: 33.36, regionId: 12 }
     };
-    
-    const ALL_CITIES = Object.keys(CITY_COORDS).sort();
     
     let userRegion = null;
     
@@ -459,8 +474,7 @@
         const savedRegion = localStorage.getItem('pysanka_region');
         if (savedRegion) {
           const parsed = JSON.parse(savedRegion);
-          // ПЕРЕКОНАЙТЕСЬ, ЩО REGIONS Є ГЛОБАЛЬНИМ
-          const regionInfo = window.REGIONS ? window.REGIONS.find(r => r.id === parsed.id) : null;
+          const regionInfo = REGIONS.find(r => r.id === parsed.id);
           
           if (regionInfo) {
             userRegion = regionInfo;
@@ -472,6 +486,7 @@
             document.getElementById('regionInfo').innerHTML = `
               <div class="region-symbol">${regionInfo.symbol}</div>
               <div class="region-name">${regionInfo.name}</div>
+              <div class="region-help">Твій історичний край</div>
             `;
           }
         } else {
@@ -480,49 +495,7 @@
       } catch (e) {
         console.error(e);
       }
-      
-      setupCityAutocomplete();
     });
-    
-    function setupCityAutocomplete() {
-      const input = document.getElementById('userCity');
-      const suggestions = document.getElementById('citySuggestions');
-      
-      input.addEventListener('input', function() {
-        const value = this.value.toLowerCase().split('.')[0].trim(); // Беремо тільки місто до крапки
-        if (value.length < 2) {
-          suggestions.style.display = 'none';
-          return;
-        }
-        
-        const matches = ALL_CITIES.filter(city => city.includes(value));
-        
-        if (matches.length > 0) {
-          suggestions.innerHTML = matches.map(city => `
-            <div class="city-suggestion-item" onclick="selectCity('${city}')">
-              ${city.charAt(0).toUpperCase() + city.slice(1)}
-            </div>
-          `).join('');
-          suggestions.style.display = 'block';
-        } else {
-          suggestions.style.display = 'none';
-        }
-      });
-      
-      document.addEventListener('click', function(e) {
-        if (!input.contains(e.target)) {
-          suggestions.style.display = 'none';
-        }
-      });
-    }
-    
-    window.selectCity = function(city) {
-      const currentValue = document.getElementById('userCity').value;
-      const parts = currentValue.split('.');
-      const wish = parts.length > 1 ? '.' + parts.slice(1).join('.') : '';
-      document.getElementById('userCity').value = city.charAt(0).toUpperCase() + city.slice(1) + wish;
-      document.getElementById('citySuggestions').style.display = 'none';
-    };
     
     function sendEnergy() {
       const name = document.getElementById('userName').value.trim();
@@ -532,12 +505,12 @@
       const symbol = document.getElementById('regionSymbol').value;
       
       if (!name || name.length < 2) {
-        showStatus('Введи ім\'я', 'error');
+        showStatus('Будь ласка, введи ім\'я', 'error');
         return;
       }
       
       if (!city) {
-        showStatus('Введи місто', 'error');
+        showStatus('Розкажи, звідки ти', 'error');
         return;
       }
       
@@ -548,50 +521,73 @@
       showStatus('Енергія передається...', 'loading');
       animateEnergyTransfer();
       
-      // ============ ВИПРАВЛЕНО: ВІДПРАВКА В GOOGLE SHEETS ============
+      // ============ ВІДПРАВКА В GOOGLE SHEETS ============
       const postData = {
         regionId: regionId,
         regionName: regionName,
-        userName: name,  // ВАЖЛИВО: саме userName, як у скрипті!
-        city: city.split('.')[0].trim() // Відправляємо тільки місто без побажання
+        userName: name,
+        city: city  // Тепер надсилаємо все, що написав користувач
       };
       
-      console.log('Відправляємо дані:', postData);
+      console.log('Відправляємо:', postData);
       
-      // Використовуємо fetch з mode: 'no-cors' для Google Apps Script
       fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors', // ЗМІНЕНО: no-cors замість cors!
+        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(postData)
-      })
-      .then(() => {
-        console.log('Дані відправлено на сервер');
-        // Продовжуємо незалежно від відповіді
-      })
-      .catch(error => {
-        console.log('Помилка відправки (але дані збережено локально):', error);
-      });
+      }).catch(() => {});
       
       // ============ ЗБЕРЕЖЕННЯ ЛОКАЛЬНО ============
       setTimeout(() => {
         const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
+        
+        // Визначаємо координати (якщо місто в списку - ставимо точну точку)
+        const cityLower = city.toLowerCase();
+        let coords = { lat: 49.0, lng: 32.0 }; // Центр України за замовчуванням
+        
+        // Перевіряємо, чи є місто в списку українських міст
+        for (let [key, value] of Object.entries(CITY_COORDS)) {
+          if (cityLower.includes(key)) {
+            coords = { lat: value.lat, lng: value.lng };
+            // Якщо знайшли регіон, використовуємо його
+            if (value.regionId) {
+              regionId = value.regionId;
+            }
+            break;
+          }
+        }
+        
+        // Якщо містить "крим" - ставимо в Крим
+        if (cityLower.includes('крим') || cityLower.includes('crimea')) {
+          coords = { lat: 45.0, lng: 34.0 };
+        }
+        
+        // Додаємо учасника
         participants.push({
           id: Date.now(),
           name: name,
-          city: city, // Зберігаємо з побажанням
+          city: city, // Зберігаємо оригінальний текст
+          originalCity: city, // Дублюємо для пошуку
           region: regionName,
           regionId: parseInt(regionId),
           timestamp: new Date().toISOString(),
-          coords: CITY_COORDS[city.split('.')[0].toLowerCase().trim()] || { lat: 49.0, lng: 32.0 },
+          coords: coords,
           symbol: symbol,
-          wish: city.includes('.') ? city.split('.')[1].trim() : ''
+          isDiaspora: !cityLower.includes('україн') && !Object.keys(CITY_COORDS).some(c => cityLower.includes(c))
         });
+        
         localStorage.setItem('pysanka_participants', JSON.stringify(participants));
         
-        showStatus(`Дякуємо, ${name}!`, 'success');
+        // Персоналізоване повідомлення
+        let message = `Дякуємо, ${name}!`;
+        if (cityLower.includes('канад') || cityLower.includes('сша') || cityLower.includes('європ')) {
+          message = `Дякуємо, ${name}! Твоє серце з Україною! 🥚`;
+        }
+        
+        showStatus(message, 'success');
         document.getElementById('energyText').innerHTML = '✨ Енергію передано! ✨';
         document.getElementById('viewMapBtn').style.display = 'inline-block';
         btn.style.display = 'none';
@@ -632,5 +628,3 @@
   </script>
 </body>
 </html>
-
-
