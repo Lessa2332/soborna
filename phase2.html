@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>🥚 Етап 2: Оживи писанку</title>
+  <title>🥚 Оживи писанку | Чарівна AR-подорож</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
+    /* ============ ОНОВЛЕНІ СТИЛІ ============ */
     * {
       margin: 0;
       padding: 0;
@@ -15,7 +16,7 @@
     }
   
     body {
-      background: linear-gradient(135deg, #6a1e2a 0%, #4a2c1a 100%);
+      background: linear-gradient(135deg, #8B2C2C 0%, #5A1E1E 100%);
       overflow: hidden;
       font-family: 'Cormorant Garamond', serif;
     }
@@ -33,142 +34,220 @@
       display: none;
       transform: scaleX(1);
     }
-    #canvas { z-index: 2; display: block; }
+    #canvas { 
+      z-index: 2; 
+      display: block; 
+    }
   
+    /* ============ ЧАРІВНЕ ЗАВАНТАЖЕННЯ ============ */
     #loading {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #6a1e2a 0%, #4a2c1a 100%);
+      background: linear-gradient(135deg, #8B2C2C 0%, #5A1E1E 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 1000;
-      color: #e5b73b;
+      color: #FFD966;
       text-align: center;
       padding: 20px;
     }
   
     .loader {
-      width: 60px;
-      height: 60px;
-      border: 4px solid rgba(229, 183, 59, 0.3);
-      border-top: 4px solid #e5b73b;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
+      width: 80px;
+      height: 80px;
+      border: 5px solid rgba(255, 217, 102, 0.3);
+      border-top: 5px solid #FFD966;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      animation: spin 1s linear infinite, eggShape 2s ease-in-out infinite;
+      margin-bottom: 30px;
+      box-shadow: 0 0 30px rgba(255, 217, 102, 0.5);
+    }
+    
+    @keyframes eggShape {
+      0%, 100% { border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; }
+      50% { border-radius: 45% 55% 55% 45% / 55% 45% 55% 45%; }
+    }
+    
+    .loading-progress {
+      width: 200px;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+    
+    .loading-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #FFD966, #E8B13E);
+      transition: width 0.3s;
+      border-radius: 4px;
     }
   
+    /* ============ ІНФОРМАЦІЯ ПРО РЕГІОН ============ */
     #regionInfo {
       position: fixed;
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(106, 30, 42, 0.9);
+      background: rgba(139, 44, 44, 0.95);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      color: #e5b73b;
-      padding: 12px 24px;
+      color: #FFD966;
+      padding: 15px 30px;
       border-radius: 50px;
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 600;
       z-index: 85;
       text-align: center;
-      border: 2px solid #e5b73b;
+      border: 2px solid #E8B13E;
       display: none;
-      box-shadow: 0 0 25px rgba(229, 183, 59, 0.3);
+      box-shadow: 0 0 30px rgba(232, 177, 62, 0.5);
       font-family: 'Cormorant Garamond', serif;
       white-space: nowrap;
+      animation: slideDown 0.5s ease;
+    }
+    
+    @keyframes slideDown {
+      from { transform: translate(-50%, -100%); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
     }
   
+    /* ============ ПІДКАЗКА ДЛЯ ДОЛОНІ ============ */
     #handIndicator {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(106, 30, 42, 0.95);
+      background: rgba(42, 30, 30, 0.95);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      color: #e5b73b;
-      padding: 20px 30px;
-      border-radius: 30px;
-      border: 2px solid #e5b73b;
+      color: #FFD966;
+      padding: 25px 35px;
+      border-radius: 60px;
+      border: 3px solid #E8B13E;
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
       z-index: 99;
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 600;
-      box-shadow: 0 0 40px rgba(229, 183, 59, 0.5);
+      box-shadow: 0 0 60px rgba(232, 177, 62, 0.6);
       white-space: nowrap;
       font-family: 'Cormorant Garamond', serif;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 40px rgba(232, 177, 62, 0.5); }
+      50% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 80px rgba(232, 177, 62, 0.8); }
     }
   
     #handIndicator span {
-      font-size: 36px;
+      font-size: 48px;
+      animation: handWave 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes handWave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(15deg); }
+      75% { transform: rotate(-10deg); }
     }
   
+    /* ============ ЗВОРОТНИЙ ЗВ'ЯЗОК ПО ЖЕСТАХ ============ */
     #gestureFeedback {
       position: fixed;
-      bottom: 100px;
+      bottom: 120px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(106, 30, 42, 0.95);
-      color: #e5b73b;
-      padding: 12px 24px;
-      border-radius: 40px;
-      font-size: 28px;
+      background: rgba(42, 30, 30, 0.95);
+      color: #FFD966;
+      padding: 15px 30px;
+      border-radius: 60px;
+      font-size: 32px;
       font-weight: 700;
       z-index: 90;
       opacity: 0;
-      transition: opacity 0.3s;
       text-align: center;
-      box-shadow: 0 0 30px rgba(229, 183, 59, 0.6);
+      box-shadow: 0 0 40px rgba(232, 177, 62, 0.8);
       font-family: 'Cormorant Garamond', serif;
       white-space: nowrap;
       pointer-events: none;
+      border: 2px solid #E8B13E;
     }
   
+    /* ============ ЧАРІВНА КНОПКА "ДАЛІ" ============ */
     .btn-next {
       position: fixed;
-      bottom: 30px;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
-      background: #e5b73b;
-      color: #6a1e2a;
+      background: linear-gradient(135deg, #E8B13E, #FFD966);
+      color: #8B2C2C;
       border: none;
-      border-radius: 50px;
-      padding: 15px 40px;
-      font-size: 24px;
+      border-radius: 60px;
+      padding: 18px 50px;
+      font-size: 28px;
       font-weight: bold;
       cursor: pointer;
       z-index: 100;
       display: none;
-      box-shadow: 0 0 30px #e5b73b;
+      box-shadow: 0 0 50px #FFD966;
       font-family: 'Cormorant Garamond', serif;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      transition: transform 0.3s;
+      letter-spacing: 3px;
+      transition: all 0.3s;
       -webkit-tap-highlight-color: transparent;
+      border: 2px solid white;
+      animation: buttonAppear 0.5s ease-out, buttonGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes buttonAppear {
+      0% { transform: translateX(-50%) scale(0); opacity: 0; }
+      50% { transform: translateX(-50%) scale(1.2); }
+      100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    }
+    
+    @keyframes buttonGlow {
+      0%, 100% { box-shadow: 0 0 30px #FFD966; }
+      50% { box-shadow: 0 0 70px #FFD966; }
     }
   
     .btn-next:active {
       transform: translateX(-50%) scale(0.95);
     }
   
+    /* ============ ФЕЄРВЕРК З ПИСАНОК ============ */
+    .confetti-egg {
+      position: fixed;
+      pointer-events: none;
+      z-index: 150;
+      font-size: 24px;
+      animation: confettiFall 3s ease-out forwards;
+    }
+    
+    @keyframes confettiFall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+  
+    /* ============ ПОМИЛКА ============ */
     #errorMessage {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(106, 30, 42, 0.98);
-      color: #e5b73b;
+      background: rgba(139, 44, 44, 0.98);
+      color: #FFD966;
       padding: 30px;
       border-radius: 30px;
-      border: 3px solid #e5b73b;
+      border: 3px solid #E8B13E;
       z-index: 2000;
       text-align: center;
       max-width: 80%;
@@ -184,7 +263,7 @@
    
     @keyframes feedbackShow {
       0% { opacity: 0; transform: translateX(-50%) scale(0.8); }
-      50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
       100% { opacity: 1; transform: translateX(-50%) scale(1); }
     }
    
@@ -197,16 +276,26 @@
 <body>
   <div id="loading">
     <div class="loader"></div>
-    <div style="font-size: 1.8em; margin-bottom: 10px;">🥚 Завантаження...</div>
-    <p style="margin-top: 20px; color: rgba(255,255,255,0.9); font-size: 18px;">Використовуйте задню камеру та покажіть долоню</p>
+    <div style="font-size: 2.2em; margin-bottom: 10px;">🥚 Чарівна писанка прокидається...</div>
+    <div class="loading-progress">
+      <div class="loading-bar" id="loadingBar"></div>
+    </div>
+    <p style="margin-top: 30px; color: rgba(255,255,255,0.9); font-size: 20px;">Покажи долоню - і станеться диво!</p>
   </div>
+  
   <video id="video" playsinline muted></video>
   <canvas id="canvas"></canvas>
+  
   <div id="regionInfo"></div>
-  <div id="handIndicator"><span>👋</span> Покажіть долоню</div>
+  <div id="handIndicator"><span>👋</span> Покажи долоню!</div>
   <div id="gestureFeedback"></div>
-  <button class="btn-next" id="nextBtn" onclick="goToNextPhase()">✨ ДАЛІ ✨</button>
+  
+  <button class="btn-next" id="nextBtn" onclick="goToNextPhase()">
+    ✨ ЧАРІВНА ПОДОРОЖ ✨
+  </button>
+  
   <div id="errorMessage"></div>
+  
   <script type="module">
     import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
     import { FilesetResolver, HandLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm";
@@ -229,20 +318,21 @@
       { id: 14, name: 'Луганщина', texture: 'assets/regions/14-luhansk.png', symbol: '🌻' }
     ];
 
-    // ============ НАЛАШТУВАННЯ ============
+    // ============ НАЛАШТУВАННЯ (ОПТИМІЗОВАНІ) ============
     const CONFIG = {
-      SMOOTHING_FACTOR: 0.6,
-      HAND_NOT_DETECTED_THRESHOLD: 60,
-      EGG_SCALE: 0.8,
-      EGG_HEIGHT_OFFSET: 0.3,       // Трохи підняли, щоб писанка була точно над долонею
+      SMOOTHING_FACTOR: 0.7,        // Більш плавне слідування
+      HAND_NOT_DETECTED_THRESHOLD: 30,
+      EGG_SCALE: 0.7,               // Трохи менша для кращого огляду
+      EGG_HEIGHT_OFFSET: 0.2,
       MIN_SCALE: 0.3,
-      MAX_SCALE: 2.5,               // Трохи збільшили максимум
-      ZOOM_SENSITIVITY: 4.0,        // Зробили чутливішим (розведення/зведення пальців)
-      ROTATION_SENSITIVITY: 2.5,
-      STABLE_FRAMES_FOR_NEXT: 90,
+      MAX_SCALE: 2.2,
+      ZOOM_SENSITIVITY: 3.5,
+      ROTATION_SENSITIVITY: 2.0,
+      STABLE_FRAMES_FOR_NEXT: 45,    // 1.5 секунди при 30fps
       FPS_LIMIT: 30,
       PERFORMANCE_MODE: true,
-      FEEDBACK_DURATION: 1000
+      FEEDBACK_DURATION: 1500,
+      SHOW_BUTTON_DELAY: 5000        // 5 секунд для кнопки
     };
 
     // Отримуємо регіон
@@ -259,12 +349,13 @@
       currentRegion = REGIONS[0];
     }
 
-    // Стан додатку
+    // Стан додатку (розширений)
     const state = {
       landmarks: null,
       isHandVisible: false,
       handFrames: 0,
       stableFrames: 0,
+      buttonShown: false,            // Фікс: кнопка показана раз і назавжди
       animationId: null,
       regionTexture: null,
       egg: null,
@@ -280,7 +371,10 @@
       prevRotationAngle: 0,
       currentRotationY: 0,
       feedbackTimeout: null,
-      lastFrameTime: 0
+      lastFrameTime: 0,
+      targetVisible: false,
+      appStartTime: Date.now(),
+      loadingProgress: 0
     };
 
     // DOM елементи
@@ -288,6 +382,7 @@
       video: document.getElementById('video'),
       canvas: document.getElementById('canvas'),
       loading: document.getElementById('loading'),
+      loadingBar: document.getElementById('loadingBar'),
       regionInfo: document.getElementById('regionInfo'),
       handIndicator: document.getElementById('handIndicator'),
       gestureFeedback: document.getElementById('gestureFeedback'),
@@ -298,25 +393,45 @@
     let scene, camera, renderer;
     let handLandmarker;
 
-    // ============ ДОПОМІЖНІ ФУНКЦІЇ ============
+    // ============ ФУНКЦІЯ ДЛЯ ФЕЄРВЕРКУ ============
+    function createConfettiEggs() {
+      const symbols = ['🥚', '🥚', '🥚', '🥚', '🥚', '🌻', '🌲', '🏔️', '🏛️', '🦁'];
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          const egg = document.createElement('div');
+          egg.className = 'confetti-egg';
+          egg.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          egg.style.left = Math.random() * 100 + '%';
+          egg.style.animationDuration = (2 + Math.random() * 2) + 's';
+          egg.style.fontSize = (20 + Math.random() * 30) + 'px';
+          document.body.appendChild(egg);
+          setTimeout(() => egg.remove(), 3000);
+        }, i * 50);
+      }
+    }
+
+    // ============ ПОКРАЩЕНИЙ ЗВОРОТНІЙ ЗВ'ЯЗОК ============
     function showGestureFeedback(icon, text, duration = CONFIG.FEEDBACK_DURATION) {
-      elements.gestureFeedback.innerHTML = `<span style="font-size: 40px; margin-right: 10px;">${icon}</span>${text}`;
+      elements.gestureFeedback.innerHTML = `<span style="font-size: 48px; margin-right: 15px;">${icon}</span>${text}`;
       elements.gestureFeedback.style.animation = 'feedbackShow 0.3s forwards';
-     
+      
       if (state.feedbackTimeout) clearTimeout(state.feedbackTimeout);
       state.feedbackTimeout = setTimeout(() => {
         elements.gestureFeedback.style.animation = 'feedbackHide 0.3s forwards';
       }, duration - 300);
+      
+      // Вібрація для тактильного відчуття
+      if (navigator.vibrate) navigator.vibrate(50);
     }
 
     function showError(msg) {
       elements.errorMessage.style.display = 'block';
-      elements.errorMessage.innerHTML = `❌ ${msg}<br><br><button onclick="location.reload()" style="background:#e5b73b; color:#6a1e2a; border:none; padding:10px 20px; border-radius:30px; margin-top:15px; font-size:18px;">Спробувати знову</button>`;
+      elements.errorMessage.innerHTML = `❌ ${msg}<br><br><button onclick="location.reload()" style="background:#E8B13E; color:#8B2C2C; border:none; padding:12px 24px; border-radius:40px; margin-top:15px; font-size:20px; font-weight:bold;">Спробувати знову</button>`;
     }
 
-    // НОВА ФУНКЦІЯ: обчислення центру долоні (середнє між основами пальців + зап'ястям)
+    // Покращене обчислення центру долоні
     function getPalmCenter(landmarks) {
-      const points = [0, 5, 9, 13, 17]; // wrist + бази пальців
+      const points = [0, 5, 9, 13, 17];
       let sumX = 0, sumY = 0;
       points.forEach(idx => {
         sumX += landmarks[idx].x;
@@ -328,7 +443,7 @@
       };
     }
 
-    // ============ РОЗПІЗНАВАЧ ЖЕСТІВ ============
+    // ============ ПОКРАЩЕНИЙ РОЗПІЗНАВАЧ ЖЕСТІВ ============
     class GestureRecognizer {
       static recognize(landmarks) {
         if (!landmarks) return 'none';
@@ -361,14 +476,14 @@
         const fingers = [8, 12, 16, 20];
         let straightCount = 0;
         for (const tip of fingers) {
-          if (landmarks[tip].y < landmarks[tip - 2].y - 0.01) straightCount++; // трохи послабили
+          if (landmarks[tip].y < landmarks[tip - 2].y) straightCount++;
         }
-        return straightCount >= 2; // послабили для легшого розпізнавання
+        return straightCount >= 3;
       }
     
       static isTwoFingers(landmarks) {
-        const indexStraight = landmarks[8].y < landmarks[6].y - 0.02;
-        const middleStraight = landmarks[12].y < landmarks[10].y - 0.02;
+        const indexStraight = landmarks[8].y < landmarks[6].y - 0.01;
+        const middleStraight = landmarks[12].y < landmarks[10].y - 0.01;
         const ringCurled = landmarks[16].y > landmarks[14].y;
         const pinkyCurled = landmarks[20].y > landmarks[18].y;
         return indexStraight && middleStraight && ringCurled && pinkyCurled;
@@ -397,37 +512,69 @@
       }
     }
 
-    // ============ ОСНОВНИЙ КЛАС ============
+    // ============ ОСНОВНИЙ КЛАС (ПОКРАЩЕНИЙ) ============
     class PisankaARApp {
       constructor() {
         state.currentRegion = currentRegion;
         this.checkBrowserSupport();
         this.init();
       }
+      
       checkBrowserSupport() {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          showError('Ваш браузер не підтримує камеру');
+          showError('Ваш браузер не підтримує камеру. Спробуйте Chrome або Safari');
           return false;
         }
         return true;
       }
+      
       async init() {
         try {
+          // Анімація завантаження
+          this.updateLoadingProgress();
+          
           await this.setupCamera();
           await this.initThreeJS();
           await this.initHandTracking();
-          this.hideLoading();
-          this.startAnimation();
-        
+          
+          // Показуємо регіон
           if (state.currentRegion) {
             elements.regionInfo.style.display = 'block';
             elements.regionInfo.innerHTML = `${state.currentRegion.symbol} ${state.currentRegion.name}`;
           }
+          
+          this.hideLoading();
+          this.startAnimation();
+          
+          // Автоматичний показ кнопки через 5 секунд (ФІКС)
+          setTimeout(() => {
+            if (!state.buttonShown) {
+              state.buttonShown = true;
+              elements.nextBtn.style.display = 'block';
+              createConfettiEggs();
+              showGestureFeedback('🎉', 'Час у подорож!', 3000);
+            }
+          }, CONFIG.SHOW_BUTTON_DELAY);
+          
         } catch (error) {
           console.error('Помилка:', error);
           showError('Не вдалося запустити задню камеру. Перевірте дозвіл і спробуйте ще раз.');
         }
       }
+      
+      updateLoadingProgress() {
+        const interval = setInterval(() => {
+          state.loadingProgress += Math.random() * 10;
+          if (state.loadingProgress >= 100) {
+            state.loadingProgress = 100;
+            clearInterval(interval);
+          }
+          if (elements.loadingBar) {
+            elements.loadingBar.style.width = state.loadingProgress + '%';
+          }
+        }, 200);
+      }
+      
       async setupCamera() {
         let stream = null;
         const constraints = {
@@ -438,6 +585,7 @@
             frameRate: { ideal: 30 }
           }
         };
+        
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         } catch (err) {
@@ -448,6 +596,7 @@
             throw new Error('Не вдалося отримати доступ до задньої камери');
           }
         }
+        
         elements.video.srcObject = stream;
         await new Promise(resolve => {
           elements.video.onloadedmetadata = () => {
@@ -456,6 +605,7 @@
           };
         });
       }
+      
       async initThreeJS() {
         scene = new THREE.Scene();
       
@@ -478,10 +628,16 @@
         const light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(1, 1, 1);
         scene.add(light);
+        
+        // Додаємо друге світло для краси
+        const backLight = new THREE.DirectionalLight(0xffaa00, 0.5);
+        backLight.position.set(-1, -1, -1);
+        scene.add(backLight);
       
         await this.loadRegionTexture();
         this.createPisanka();
       }
+      
       async loadRegionTexture() {
         if (!state.currentRegion) return;
       
@@ -494,19 +650,21 @@
           canvas.height = 256;
           const ctx = canvas.getContext('2d');
           const gradient = ctx.createLinearGradient(0, 0, 256, 256);
-          gradient.addColorStop(0, '#e5b73b');
-          gradient.addColorStop(1, '#c9a03d');
+          gradient.addColorStop(0, '#E8B13E');
+          gradient.addColorStop(1, '#FFD966');
           ctx.fillStyle = gradient;
           ctx.fillRect(0, 0, 256, 256);
-          ctx.fillStyle = '#6a1e2a';
+          ctx.fillStyle = '#8B2C2C';
           ctx.font = 'bold 80px "Cormorant Garamond"';
           ctx.fillText(state.currentRegion.symbol, 80, 160);
           state.regionTexture = new THREE.CanvasTexture(canvas);
         }
       }
+      
       createPisanka() {
         state.eggGroup = new THREE.Group();
         state.eggGroup.visible = false;
+        state.eggGroup.scale.set(0, 0, 0); // Починаємо з нуля для анімації
         scene.add(state.eggGroup);
       
         const geometry = new THREE.SphereGeometry(1, 40, 40);
@@ -533,15 +691,18 @@
       
         const material = new THREE.MeshStandardMaterial({
           map: state.regionTexture,
-          roughness: 0.35,
-          metalness: 0.15,
-          side: THREE.DoubleSide
+          roughness: 0.3,
+          metalness: 0.1,
+          side: THREE.DoubleSide,
+          emissive: new THREE.Color(0x442200),
+          emissiveIntensity: 0.1
         });
       
         state.egg = new THREE.Mesh(geometry, material);
         state.egg.scale.set(state.currentScale, state.currentScale, state.currentScale);
         state.eggGroup.add(state.egg);
       }
+      
       async initHandTracking() {
         try {
           const vision = await FilesetResolver.forVisionTasks(
@@ -555,15 +716,16 @@
             },
             runningMode: "VIDEO",
             numHands: 1,
-            minHandDetectionConfidence: 0.6,
-            minHandPresenceConfidence: 0.6,
-            minTrackingConfidence: 0.6
+            minHandDetectionConfidence: 0.5,
+            minHandPresenceConfidence: 0.5,
+            minTrackingConfidence: 0.5
           });
         } catch (error) {
           console.error('HandTracking помилка:', error);
-          showError('Не вдалося завантажити розпізнавання рук');
+          // Не показуємо помилку, просто працюємо без жестів
         }
       }
+      
       startAnimation() {
         const animate = (time) => {
           state.animationId = requestAnimationFrame(animate);
@@ -576,29 +738,40 @@
         };
         animate();
       }
+      
       update() {
         this.detectHand();
       
         if (state.landmarks && state.isHandVisible) {
-          // Автопоказ при появі руки
+          // Чарівна поява писанки
           if (!state.eggGroup.visible) {
             state.eggGroup.visible = true;
             elements.handIndicator.style.display = 'none';
+            
+            // Анімація появи
+            if (state.eggGroup.scale.x < 0.1) {
+              state.eggGroup.scale.set(0.1, 0.1, 0.1);
+            }
+            this.animateAppear();
           }
          
           this.updatePosition();
           this.applyGestures();
          
-          state.stableFrames++;
-          if (state.stableFrames >= CONFIG.STABLE_FRAMES_FOR_NEXT && state.eggGroup.visible) {
-            elements.nextBtn. style.display = 'block';
+          // Лічильник стабільності для кнопки (ФІКС)
+          if (!state.buttonShown) {
+            state.stableFrames++;
+            if (state.stableFrames >= CONFIG.STABLE_FRAMES_FOR_NEXT) {
+              state.buttonShown = true;
+              elements.nextBtn.style.display = 'block';
+              createConfettiEggs();
+              showGestureFeedback('🎉', 'Чарівна писанка готова!', 3000);
+            }
           }
         } else {
-          state.stableFrames = 0;
-          elements.nextBtn.style.display = 'none';
-        
+          // Якщо руки немає
           if (state.eggGroup.visible) {
-            state.eggGroup.visible = false;
+            this.animateDisappear();
           }
         
           if (state.handFrames > CONFIG.HAND_NOT_DETECTED_THRESHOLD) {
@@ -606,6 +779,58 @@
           }
         }
       }
+      
+      animateAppear() {
+        // Плавна поява
+        const targetScale = state.currentScale;
+        const duration = 300; // ms
+        const startTime = Date.now();
+        
+        const animate = () => {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeProgress = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+          
+          state.eggGroup.scale.set(
+            targetScale * easeProgress,
+            targetScale * easeProgress,
+            targetScale * easeProgress
+          );
+          
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          }
+        };
+        
+        animate();
+      }
+      
+      animateDisappear() {
+        const startScale = state.eggGroup.scale.x;
+        const duration = 200;
+        const startTime = Date.now();
+        
+        const animate = () => {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeProgress = Math.pow(1 - progress, 2);
+          
+          state.eggGroup.scale.set(
+            startScale * easeProgress,
+            startScale * easeProgress,
+            startScale * easeProgress
+          );
+          
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            state.eggGroup.visible = false;
+          }
+        };
+        
+        animate();
+      }
+      
       detectHand() {
         if (!handLandmarker || elements.video.readyState < 2) return;
       
@@ -617,7 +842,11 @@
             state.landmarks = results.landmarks[0];
             state.isHandVisible = true;
             state.handFrames = 0;
-            state.gesture = GestureRecognizer.recognize(state.landmarks);
+            
+            const newGesture = GestureRecognizer.recognize(state.landmarks);
+            if (newGesture !== state.gesture && newGesture !== 'none') {
+              state.gesture = newGesture;
+            }
           } else {
             state.landmarks = null;
             state.isHandVisible = false;
@@ -627,9 +856,9 @@
           console.error('Помилка виявлення руки:', error);
         }
       }
-      // ВИПРАВЛЕНО: позиціонування точно по центру долоні
+      
       updatePosition() {
-        if (!state.landmarks) return;
+        if (!state.landmarks || !state.eggGroup.visible) return;
       
         const center = getPalmCenter(state.landmarks);
       
@@ -640,35 +869,27 @@
         const clampedX = THREE.MathUtils.clamp(targetX, -maxX, maxX);
         const clampedY = THREE.MathUtils.clamp(targetY, -maxY, maxY);
       
-        if (state.eggGroup) {
-          state.eggGroup.position.x += (clampedX - state.eggGroup.position.x) * CONFIG.SMOOTHING_FACTOR;
-          state.eggGroup.position.y += (clampedY - state.eggGroup.position.y) * CONFIG.SMOOTHING_FACTOR;
-          state.eggGroup.position.z = 0.1;
-        }
+        state.eggGroup.position.x += (clampedX - state.eggGroup.position.x) * CONFIG.SMOOTHING_FACTOR;
+        state.eggGroup.position.y += (clampedY - state.eggGroup.position.y) * CONFIG.SMOOTHING_FACTOR;
+        state.eggGroup.position.z = 0.1;
       }
+      
       applyGestures() {
-        if (!state.eggGroup) return;
+        if (!state.eggGroup || !state.eggGroup.visible) return;
 
-        // Явний показ при відкритій долоні
-        if (state.gesture === 'open_palm' && state.prevGesture !== 'open_palm' && !state.eggGroup.visible) {
-          state.eggGroup.visible = true;
-          elements.handIndicator.style.display = 'none';
-          showGestureFeedback('✋', 'Писанка з\'явилася!', 1200);
-          if (navigator.vibrate) navigator.vibrate(50);
-          return;
+        // Відкрита долоня - показати підказку
+        if (state.gesture === 'open_palm' && state.prevGesture !== 'open_palm') {
+          showGestureFeedback('✋', 'Чудово!', 1000);
         }
 
-        if (!state.eggGroup.visible) return;
-
-        // Кулак — сховати
+        // Кулак - сховати
         if (state.gesture === 'fist' && state.prevGesture !== 'fist') {
-          state.eggGroup.visible = false;
-          showGestureFeedback('✊', 'Писанка сховалася', 1200);
-          if (navigator.vibrate) navigator.vibrate(80);
+          this.animateDisappear();
+          showGestureFeedback('✊', 'Писанка сховалась', 1200);
           return;
         }
       
-        // Pinch (великий + вказівний): масштабування
+        // Масштабування
         if (state.gesture === 'spreading') {
           if (!state.isSpreading) {
             state.isSpreading = true;
@@ -689,7 +910,7 @@
           state.isSpreading = false;
         }
       
-        // Два пальці — обертання
+        // Обертання двома пальцями
         if (state.gesture === 'two_fingers') {
           if (!state.isRotating) {
             state.isRotating = true;
@@ -708,11 +929,13 @@
           state.isRotating = false;
         }
       }
+      
       hideLoading() {
         elements.loading.style.display = 'none';
         elements.video.style.display = 'block';
         elements.handIndicator.style.display = 'flex';
       }
+      
       cleanup() {
         if (state.animationId) cancelAnimationFrame(state.animationId);
         if (elements.video.srcObject) {
