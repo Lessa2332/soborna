@@ -10,7 +10,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   
   <style>
-    /* ============ СТИЛІ (ті самі, що були) ============ */
+    /* ============ СТИЛІ (ті самі) ============ */
     :root {
       --bordo: #8B2C2C;
       --gold: #FFB347;
@@ -256,7 +256,7 @@
       </div>
       
       <div class="participants-list" id="participantsList">
-        <div style="text-align: center; opacity: 0.5; padding: 20px;">Чекаємо на учасників...</div>
+        <div style="text-align: center; opacity: 0.5; padding: 20px;">Завантаження...</div>
       </div>
     </div>
   </div>
@@ -274,15 +274,15 @@
   </div>
   
   <script>
-    // ============ БЕЗПЕЧНИЙ КОНФІГ ============
+    // ============ КОНФІГ ============
     const DASHBOARD_CONFIG = {
       SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbx5K0BYRggtszTnZh0-Hfw_JI7aoHqJBanzfs9x6bkvBpo5QMdJHJ2RzjnYbNsAJm1d/exec',
-      TOKEN: 'Soborna2024!@#$%^&*()_+Pysanka',
-      UPDATE_INTERVAL: 30000, // 30 секунд
-      CACHE_KEY: 'pysanka_cache'
+      TOKEN: '1680max',                     // <--- ВИПРАВЛЕНО
+      UPDATE_INTERVAL: 30000,               // 30 секунд
+      CACHE_KEY: 'pysanka_participants'
     };
     
-    // ============ КОЛЬОРИ ============
+    // ============ КОЛЬОРИ ТА СИМВОЛИ ============
     const RAINBOW_CLASSES = [
       'rainbow-1', 'rainbow-2', 'rainbow-3', 'rainbow-4', 'rainbow-5'
     ];
@@ -292,98 +292,18 @@
       8: '🌊', 9: '🌾', 10: '📚', 11: '🎭', 12: '🏖️', 13: '⛏️', 14: '🌻'
     };
     
-    // ============ ЗМІННІ ============
+    // ============ ГЛОБАЛЬНІ ЗМІННІ ============
     let map;
     let markers = [];
-    let participants = [];
+    let participants = [];           // завжди містить актуальні дані (серверні або локальні)
     let statsVisible = true;
-    let lastUpdate = 0;
     let updateTimer = null;
-    
-    // ============ SMART UPDATER ============
-    class SmartUpdater {
-      constructor() {
-        this.lastCheck = 0;
-        this.participantsCount = 0;
-        this.isUpdating = false;
-      }
-      
-      start() {
-        if (updateTimer) clearInterval(updateTimer);
-        
-        updateTimer = setInterval(() => this.checkForUpdates(), DASHBOARD_CONFIG.UPDATE_INTERVAL);
-        console.log('🟢 Smart updater запущено');
-      }
-      
-      async checkForUpdates() {
-        if (document.hidden) return;
-        
-        const now = Date.now();
-        if (now - this.lastCheck < 10000) return; // Не частіше 10 секунд
-        
-        this.lastCheck = now;
-        
-        try {
-          const hasChanges = await this.hasNewParticipants();
-          if (hasChanges) {
-            console.log('🆕 Є нові учасники');
-            await this.loadNewParticipants();
-          }
-        } catch (error) {
-          console.log('Помилка оновлення:', error);
-        }
-      }
-      
-      async hasNewParticipants() {
-        const localCount = participants.length;
-        return localCount !== this.participantsCount;
-      }
-      
-      async loadNewParticipants() {
-        if (this.isUpdating) return;
-        this.isUpdating = true;
-        
-        try {
-          const localData = localStorage.getItem('pysanka_participants');
-          if (localData) {
-            const newData = JSON.parse(localData);
-            
-            if (newData.length > participants.length) {
-              const oldIds = new Set(participants.map(p => p.id));
-              const newParticipants = newData.filter(p => !oldIds.has(p.id));
-              
-              participants = newData;
-              
-              // Додаємо тільки нові маркери
-              newParticipants.forEach(p => addSingleMarker(p));
-              
-              updateStats();
-              showToast(`🆕 +${newParticipants.length} нових!`);
-              
-              this.participantsCount = participants.length;
-            }
-          }
-        } catch (error) {
-          console.log('Помилка завантаження:', error);
-        }
-        
-        this.isUpdating = false;
-      }
-    }
     
     // ============ ІНІЦІАЛІЗАЦІЯ ============
     document.addEventListener('DOMContentLoaded', function() {
       initMap();
-      loadParticipants();
-      
-      const updater = new SmartUpdater();
-      updater.start();
-      
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) {
-          updater.checkForUpdates();
-        }
-      });
+      loadInitialData();             // спочатку локальні (швидко), потім серверні
+      startAutoUpdate();
     });
     
     function initMap() {
@@ -402,18 +322,71 @@
       }
     }
     
-    function loadParticipants() {
+    // ============ ЗАВАНТАЖЕННЯ ДАНИХ ============
+    async function loadInitialData() {
+      // Спочатку показуємо локальні (якщо є)
+      loadLocalParticipants();
+      // Потім пробуємо завантажити з сервера і оновити карту
+      await fetchServerParticipants();
+    }
+    
+    function loadLocalParticipants() {
       try {
-        const saved = localStorage.getItem('pysanka_participants');
+        const saved = localStorage.getItem(DASHBOARD_CONFIG.CACHE_KEY);
         if (saved) {
           participants = JSON.parse(saved);
           updateMap();
           updateStats();
         }
-      } catch (e) {}
+      } catch (e) {
+        console.log('Помилка читання localStorage');
+      }
     }
     
+    async function fetchServerParticipants() {
+      try {
+        const url = `${DASHBOARD_CONFIG.SCRIPT_URL}?token=${DASHBOARD_CONFIG.TOKEN}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.success && data.data && data.data.participants) {
+          // Серверні дані
+          const serverParticipants = data.data.participants;
+          
+          // Якщо participants ще не має даних, просто присвоюємо
+          if (!participants.length) {
+            participants = serverParticipants;
+          } else {
+            // Об'єднуємо: додаємо тих, кого немає в поточному масиві (за ID)
+            const existingIds = new Set(participants.map(p => p.id));
+            const newFromServer = serverParticipants.filter(p => !existingIds.has(p.id));
+            participants = [...participants, ...newFromServer];
+          }
+          
+          updateMap();
+          updateStats();
+          showToast(`🔄 Оновлено: ${participants.length} учасників`);
+        } else {
+          console.log('Сервер повернув помилку:', data.error);
+          showToast('⚠️ Не вдалося завантажити дані з сервера', 2000);
+        }
+      } catch (error) {
+        console.error('Помилка з'єднання з сервером:', error);
+        showToast('⚠️ Сервер недоступний, показую локальні дані', 2000);
+      }
+    }
+    
+    // ============ АВТОМАТИЧНЕ ОНОВЛЕННЯ ============
+    function startAutoUpdate() {
+      if (updateTimer) clearInterval(updateTimer);
+      updateTimer = setInterval(() => {
+        if (!document.hidden) fetchServerParticipants();
+      }, DASHBOARD_CONFIG.UPDATE_INTERVAL);
+    }
+    
+    // ============ ОНОВЛЕННЯ КАРТИ ============
     function updateMap() {
+      // Видалити старі маркери
       markers.forEach(m => map.removeLayer(m));
       markers = [];
       
@@ -434,17 +407,6 @@
       });
       
       updateRegionProgress(regionCount);
-    }
-    
-    function addSingleMarker(participant) {
-      if (!map) return;
-      
-      const coords = participant.coords || { lat: 49.0, lng: 32.0 };
-      const colorClass = RAINBOW_CLASSES[markers.length % RAINBOW_CLASSES.length];
-      const marker = createMarker(participant, coords.lat, coords.lng, colorClass);
-      
-      marker.addTo(map);
-      markers.push(marker);
     }
     
     function createMarker(participant, lat, lng, colorClass) {
@@ -481,6 +443,7 @@
       return marker;
     }
     
+    // ============ СТАТИСТИКА ============
     function updateStats() {
       const count = participants.length;
       document.getElementById('participantCount').textContent = count;
@@ -514,7 +477,7 @@
       document.getElementById('progressBar').style.width = (active / 14 * 100) + '%';
     }
     
-    // ============ ФУНКЦІЇ ============
+    // ============ ФУНКЦІЇ КЕРУВАННЯ ============
     window.flyToParticipant = function(name) {
       const p = participants.find(p => p.name === name);
       if (p) {
@@ -531,7 +494,7 @@
       }
     };
     
-    function showToast(message) {
+    function showToast(message, duration = 3000) {
       const toast = document.getElementById('toastMessage');
       document.getElementById('toastText').textContent = message;
       toast.style.display = 'flex';
@@ -540,12 +503,11 @@
       
       setTimeout(() => {
         toast.style.display = 'none';
-      }, 3000);
+      }, duration);
     }
     
     function refreshMap() {
-      loadParticipants();
-      showToast('Карту оновлено! 🌈');
+      fetchServerParticipants();
     }
     
     function toggleStats() {
@@ -566,7 +528,7 @@
       }
     }
     
-    // ============ ЕКСПОРТ ============
+    // ============ ЕКСПОРТ ФУНКЦІЙ ============
     window.refreshMap = refreshMap;
     window.toggleStats = toggleStats;
   </script>
