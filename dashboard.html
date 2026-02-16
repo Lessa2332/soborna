@@ -790,11 +790,12 @@
       'первомайський': { lat: 49.39, lng: 36.21, regionId: 7, region: 'Харківщина' },
       
       // Запорізька область
-      'мелітополь': { lat: 46.84, lng: 35.36, regionId: 8, region: 'Дніпропетровщина' },
-      'бердянськ': { lat: 46.75, lng: 36.79, regionId: 8, region: 'Дніпропетровщина' },
-      'енергодар': { lat: 47.50, lng: 34.66, regionId: 8, region: 'Дніпропетровщина' },
-      'токмак': { lat: 47.25, lng: 35.71, regionId: 8, region: 'Дніпропетровщина' },
-      'пологи': { lat: 47.48, lng: 36.25, regionId: 8, region: 'Дніпропетровщина' },
+      'запоріжжя': { lat: 47.84, lng: 35.14, regionId: 15, region: 'Запорізька область' },
+      'мелітополь': { lat: 46.84, lng: 35.36, regionId: 15, region: 'Запорізька область' },
+      'бердянськ': { lat: 46.75, lng: 36.79, regionId: 15, region: 'Запорізька область' },
+      'енергодар': { lat: 47.50, lng: 34.66, regionId: 15, region: 'Запорізька область' },
+      'токмак': { lat: 47.25, lng: 35.71, regionId: 15, region: 'Запорізька область' },
+      'пологи': { lat: 47.48, lng: 36.25, regionId: 15, region: 'Запорізька область' },
       
       // Полтавська область
       'кременчук': { lat: 49.06, lng: 33.40, regionId: 9, region: 'Полтавщина' },
@@ -888,7 +889,8 @@
     // ============ СИМВОЛИ РЕГІОНІВ ============
     const REGION_SYMBOLS = {
       1: '🌻', 2: '🌲', 3: '🏔️', 4: '🏛️', 5: '🦁', 6: '⚓', 7: '⚙️',
-      8: '🌊', 9: '🌾', 10: '📚', 11: '🎭', 12: '🏖️', 13: '⛏️', 14: '🌻'
+      8: '🌊', 9: '🌾', 10: '📚', 11: '🎭', 12: '🏖️', 13: '⛏️', 14: '🌻',
+      15: '🌾'  // Запорізька область
     };
     
     // ============ ЗМІННІ ============
@@ -982,28 +984,46 @@
       } catch (e) {}
     }
     
-    // ============ З GOOGLE SHEETS ============
+    // ============ З GOOGLE SHEETS (ОНОВЛЕНО) ============
     function loadFromGoogleSheets() {
       fetch(GOOGLE_SCRIPT_URL)
         .then(response => response.json())
         .then(data => {
           if (data && data.length > 0) {
             const validGoogleData = data.filter(item => 
-              item.city && 
-              item.city.trim() !== '' && 
+              (item.city || item.detectedCity) && 
               item.name && 
               item.name.trim() !== ''
             );
             
             const googleParticipants = validGoogleData.map(item => {
-              const cityCoords = findCityCoords(item.city);
+              // 1. Якщо є координати з Google Sheets - використовуємо їх
+              if (item.lat && item.lng) {
+                return {
+                  name: item.name,
+                  city: item.city || item.detectedCity || 'Невідоме місто',
+                  detectedCity: item.detectedCity,
+                  region: item.regionName || 'Україна',
+                  regionId: item.regionId || null,
+                  country: item.country || 'Україна',
+                  timestamp: item.timestamp,
+                  coords: { lat: parseFloat(item.lat), lng: parseFloat(item.lng) },
+                  symbol: REGION_SYMBOLS[item.regionId] || '🥚',
+                  isDiaspora: item.country && item.country !== 'Україна' || false
+                };
+              }
+              
+              // 2. Якщо немає координат - шукаємо через findCityCoords
+              const cityToFind = item.detectedCity || item.city;
+              const cityCoords = findCityCoords(cityToFind);
               
               return {
                 name: item.name,
-                city: item.city,
+                city: item.city || item.detectedCity || 'Невідоме місто',
+                detectedCity: item.detectedCity,
                 region: cityCoords.region || item.regionName || 'Україна',
                 regionId: cityCoords.regionId || item.regionId || null,
-                country: cityCoords.country || 'Україна',
+                country: cityCoords.country || item.country || 'Україна',
                 timestamp: item.timestamp,
                 coords: { lat: cityCoords.lat, lng: cityCoords.lng },
                 symbol: REGION_SYMBOLS[cityCoords.regionId || item.regionId] || '🥚',
