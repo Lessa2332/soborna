@@ -459,7 +459,8 @@
         const savedRegion = localStorage.getItem('pysanka_region');
         if (savedRegion) {
           const parsed = JSON.parse(savedRegion);
-          const regionInfo = REGIONS.find(r => r.id === parsed.id);
+          // ПЕРЕКОНАЙТЕСЬ, ЩО REGIONS Є ГЛОБАЛЬНИМ
+          const regionInfo = window.REGIONS ? window.REGIONS.find(r => r.id === parsed.id) : null;
           
           if (regionInfo) {
             userRegion = regionInfo;
@@ -488,7 +489,7 @@
       const suggestions = document.getElementById('citySuggestions');
       
       input.addEventListener('input', function() {
-        const value = this.value.toLowerCase();
+        const value = this.value.toLowerCase().split('.')[0].trim(); // Беремо тільки місто до крапки
         if (value.length < 2) {
           suggestions.style.display = 'none';
           return;
@@ -516,7 +517,10 @@
     }
     
     window.selectCity = function(city) {
-      document.getElementById('userCity').value = city.charAt(0).toUpperCase() + city.slice(1);
+      const currentValue = document.getElementById('userCity').value;
+      const parts = currentValue.split('.');
+      const wish = parts.length > 1 ? '.' + parts.slice(1).join('.') : '';
+      document.getElementById('userCity').value = city.charAt(0).toUpperCase() + city.slice(1) + wish;
       document.getElementById('citySuggestions').style.display = 'none';
     };
     
@@ -544,27 +548,28 @@
       showStatus('Енергія передається...', 'loading');
       animateEnergyTransfer();
       
-      // ============ ВІДПРАВКА В GOOGLE SHEETS (ВИПРАВЛЕНО) ============
+      // ============ ВИПРАВЛЕНО: ВІДПРАВКА В GOOGLE SHEETS ============
       const postData = {
         regionId: regionId,
         regionName: regionName,
-        userName: name,
-        city: city
+        userName: name,  // ВАЖЛИВО: саме userName, як у скрипті!
+        city: city.split('.')[0].trim() // Відправляємо тільки місто без побажання
       };
       
-      // Використовуємо fetch правильно
+      console.log('Відправляємо дані:', postData);
+      
+      // Використовуємо fetch з mode: 'no-cors' для Google Apps Script
       fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        mode: 'cors', // Змінюємо на cors
-        redirect: 'follow',
+        mode: 'no-cors', // ЗМІНЕНО: no-cors замість cors!
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(postData)
       })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Успішно відправлено в Google Sheets:', data);
+      .then(() => {
+        console.log('Дані відправлено на сервер');
+        // Продовжуємо незалежно від відповіді
       })
       .catch(error => {
         console.log('Помилка відправки (але дані збережено локально):', error);
@@ -576,12 +581,13 @@
         participants.push({
           id: Date.now(),
           name: name,
-          city: city,
+          city: city, // Зберігаємо з побажанням
           region: regionName,
           regionId: parseInt(regionId),
           timestamp: new Date().toISOString(),
-          coords: CITY_COORDS[city.toLowerCase()] || { lat: 49.0, lng: 32.0 },
-          symbol: symbol
+          coords: CITY_COORDS[city.split('.')[0].toLowerCase().trim()] || { lat: 49.0, lng: 32.0 },
+          symbol: symbol,
+          wish: city.includes('.') ? city.split('.')[1].trim() : ''
         });
         localStorage.setItem('pysanka_participants', JSON.stringify(participants));
         
@@ -626,4 +632,5 @@
   </script>
 </body>
 </html>
+
 
