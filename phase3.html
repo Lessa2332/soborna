@@ -869,14 +869,19 @@
       const geoResult = await geocodeCity(city);
       
       // ============ ВІДПРАВКА В GOOGLE SHEETS ============
+      // ВАЖЛИВО: Додаємо координати до postData
       const postData = {
         regionId: regionId,
         regionName: regionName,
         userName: name,
         city: city,
         detectedCity: geoResult.cityName,
-        country: geoResult.country
+        country: geoResult.country,
+        lat: geoResult.coords.lat,      // ← ДОДАНО!
+        lng: geoResult.coords.lng       // ← ДОДАНО!
       };
+      
+      console.log('📤 Відправляємо дані з координатами:', postData);
       
       fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
