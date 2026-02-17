@@ -1,32 +1,19 @@
 :root {
-  /* 🔴 Класичний глибокий червоний — традиційний колір писанки */
-  --bordo: #8B0000;        /* Темно-червоний, як натуральний барвник */
-  --bordo-dark: #660000;   /* Для акцентів і тіней */
-  --bordo-light: #A32626;  /* Для hover, не надто яскравий */
+  --magic-purple: #2b003e;
+  --magic-purple-dark: #1b001f;
+  --magic-purple-light: #5a1a7a;
 
-  /* ⚫ Чорний — контури, орнаменти */
-  --black: #1A0F0F;         /* Майже чистий чорний з теплим відтінком */
-  
-  /* 🟡 Жовтий — віск, сонце */
-  --gold: #D4AF37;          /* Класичний золотаво-жовтий, як віск */
-  --gold-light: #E8C66E;    /* Ледь світліший для акцентів */
-  --gold-dark: #B08B2A;     /* Для контурів */
+  --gold-magic: #D4AF37;
+  --gold-light: #E8C66E;
+  --gold-dark: #B08B2A;
 
-  /* 🤍 Кремовий фон — шкаралупа */
-  --cream: #FFF8E7;         /* Теплий, майже білий */
-  --beige: #F0E6D2;         /* Для легких текстур */
+  --shadow-sm: 0 2px 6px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.35);
 
-  /* Шрифти */
+  --transition: all 0.4s ease;
   --font-heading: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Open Sans', Arial, sans-serif;
-
-  /* Тіні — дуже стримані */
-  --shadow-sm: 0 2px 6px rgba(26, 15, 15, 0.08);
-  --shadow-md: 0 4px 12px rgba(26, 15, 15, 0.1);
-  --shadow-lg: 0 8px 24px rgba(26, 15, 15, 0.12);
-
-  /* Перехід */
-  --transition: all 0.4s ease;
 }
 
 * {
@@ -37,53 +24,62 @@
 
 body {
   font-family: var(--font-body);
-  background-color: var(--cream);
-  color: var(--black);
-  line-height: 1.6;
+  background-color: var(--magic-purple);
+  color: var(--gold-magic);
   min-height: 100vh;
   position: relative;
+  overflow-x: hidden;
+  line-height: 1.6;
+  text-shadow: 0 0 2px rgba(0,0,0,0.5); /* Легка тінь для читабельності */
 }
 
-/* 🥚 Тонка текстура шкаралупи + ледь помітний орнамент */
+/* 🌌 Фоновий туман із меншою opacity для кращої читабельності */
 body::before {
   content: '';
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
   background:
-    /* Дуже легка сітка-тріщинки */
-    repeating-linear-gradient(0deg, transparent 0px, transparent 49px, rgba(26, 15, 15, 0.02) 49.5px, transparent 50px),
-    repeating-linear-gradient(90deg, transparent 0px, transparent 49px, rgba(26, 15, 15, 0.02) 49.5px, transparent 50px),
-    /* Традиційний безконечник (зменшений, прозорий) */
-    repeating-conic-gradient(from 0deg at 50% 50%, rgba(212, 175, 55, 0.03) 0deg, transparent 30deg);
+    radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 1px, transparent 2px),
+    radial-gradient(circle at 70% 80%, rgba(234, 198, 110, 0.02) 2px, transparent 4px),
+    repeating-conic-gradient(from 0deg at 50% 50%, rgba(212, 175, 55, 0.01) 0deg, transparent 40deg);
   pointer-events: none;
-  z-index: -1;
-  opacity: 0.6;
+  z-index: -2;
+  opacity: 0.45;
+  animation: shimmer 8s infinite alternate ease-in-out;
 }
 
-/* Додаємо новий шар із символами-оберегами (напівпрозоро) */
+/* ✨ Символи на фоні з помірною яскравістю */
 body::after {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0; width: 100%; height: 100%;
   background-image: 
-    /* Символи: сонце, зірка, безконечник, хрест, дерево життя, ромби */
-    url('data:image/svg+xml;utf8,<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="15" fill="none" stroke="%23D4AF37" stroke-width="1" opacity="0.15"/><path d="M100 40 L100 160 M40 100 L160 100" stroke="%23D4AF37" stroke-width="1" opacity="0.15"/><circle cx="100" cy="100" r="40" fill="none" stroke="%23D4AF37" stroke-width="1" opacity="0.1"/><path d="M60 70 L140 130 M140 70 L60 130" stroke="%23D4AF37" stroke-width="1" opacity="0.15"/><rect x="80" y="80" width="40" height="40" fill="none" stroke="%23D4AF37" stroke-width="1" opacity="0.1"/></svg>'),
-    url('data:image/svg+xml;utf8,<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><path d="M150 50 L180 120 L250 130 L200 180 L220 250 L150 210 L80 250 L100 180 L50 130 L120 120 Z" fill="none" stroke="%238B0000" stroke-width="1" opacity="0.08"/><circle cx="150" cy="150" r="20" fill="none" stroke="%238B0000" stroke-width="1" opacity="0.1"/></svg>'),
-    /* Додамо ще дрібних крапок як на писанках */
-    radial-gradient(circle at 10% 30%, rgba(139, 0, 0, 0.05) 2px, transparent 2px),
-    radial-gradient(circle at 90% 70%, rgba(212, 175, 55, 0.05) 3px, transparent 3px);
-  background-repeat: repeat, repeat, repeat, repeat;
-  background-size: 200px 200px, 300px 300px, 50px 50px, 80px 80px;
+    url('data:image/svg+xml;utf8,<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="15" fill="none" stroke="%23D4AF37" stroke-width="1" opacity="0.08"/><path d="M100 40 L100 160 M40 100 L160 100" stroke="%23D4AF37" stroke-width="1" opacity="0.08"/><circle cx="100" cy="100" r="40" fill="none" stroke="%23D4AF37" stroke-width="1" opacity="0.04"/><path d="M60 70 L140 130 M140 70 L60 130" stroke="%23D4AF37" stroke-width="1" opacity="0.06"/><rect x="80" y="80" width="40" height="40" fill="none" stroke="%23D4AF37" stroke-width="1" opacity="0.04"/></svg>'),
+    radial-gradient(circle at 15% 20%, rgba(234, 198, 110, 0.02) 2px, transparent 2px),
+    radial-gradient(circle at 80% 75%, rgba(212, 175, 55, 0.01) 3px, transparent 3px);
+  background-repeat: repeat, repeat, repeat;
+  background-size: 200px 200px, 50px 50px, 80px 80px;
   pointer-events: none;
   z-index: -1;
-  opacity: 0.5;
-  mix-blend-mode: multiply; /* щоб м'яко поєднувалося */
+  opacity: 0.4;
+  mix-blend-mode: lighten;
+  animation: glow 6s infinite alternate ease-in-out;
 }
 
-/* 🏵️ Орнамент у хедері — простий і традиційний, тепер із писанковими мотивами */
+/* 🔮 Анімації */
+@keyframes shimmer {
+  0% { opacity: 0.45; transform: translate(0,0) scale(1); }
+  50% { opacity: 0.55; transform: translate(10px, -10px) scale(1.01); }
+  100% { opacity: 0.5; transform: translate(-5px,5px) scale(1); }
+}
+
+@keyframes glow {
+  0% { opacity: 0.4; transform: rotate(0deg) scale(1); }
+  50% { opacity: 0.55; transform: rotate(2deg) scale(1.01); }
+  100% { opacity: 0.45; transform: rotate(-2deg) scale(1); }
+}
+
+/* Хедер */
 .header-ornament {
   height: 80px;
   position: relative;
@@ -95,60 +91,48 @@ body::after {
   top: 50%;
   left: 0; right: 0;
   height: 2px;
-  background: var(--gold);
+  background: var(--gold-magic);
   transform: translateY(-50%);
 }
 .header-ornament::after {
-  content: '☼ ✤ ✢ ✤ ✢ ☼';
+  content: '★ ✤ ✢ ✤ ✢ ★';
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 24px;
-  color: var(--gold);
-  opacity: 0.5;
+  color: var(--gold-magic);
+  opacity: 0.6;
   letter-spacing: 16px;
   white-space: nowrap;
+  animation: glow 4s infinite alternate ease-in-out;
+  text-shadow: 0 0 2px rgba(0,0,0,0.4);
 }
 
-/* Заголовки з додатковим символом */
+/* Заголовки */
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
   font-weight: 700;
-  color: var(--bordo);
+  color: var(--gold-magic);
   position: relative;
   display: inline-block;
+  text-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
-h1::before {
-  content: '☀';
-  font-size: 0.8em;
-  margin-right: 10px;
-  opacity: 0.3;
-  color: var(--gold);
-}
+h1::before { content: '✦'; font-size: 0.8em; margin-right: 10px; opacity: 0.3; color: var(--gold-light);}
 h1::after {
   content: '';
   display: block;
-  width: 100px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  width: 100px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-magic), transparent);
   margin: 10px auto 0;
 }
 
-/* Декоративний divider з символами */
-.egg-divider {
-  height: 50px;
-  background-image: url('data:image/svg+xml;utf8,<svg width="120" height="50" viewBox="0 0 120 50" xmlns="http://www.w3.org/2000/svg"><path d="M20 25 L40 15 L60 25 L80 15 L100 25" stroke="%23D4AF37" fill="none" stroke-width="2" opacity="0.6"/><circle cx="30" cy="25" r="4" fill="%238B0000" opacity="0.4"/><circle cx="60" cy="25" r="4" fill="%238B0000" opacity="0.4"/><circle cx="90" cy="25" r="4" fill="%238B0000" opacity="0.4"/><text x="10" y="40" font-size="12" fill="%23D4AF37" opacity="0.3" font-family="Cormorant Garamond">✶ ✺ ✶</text></svg>');
-  background-repeat: repeat-x;
-  background-position: center;
-}
-
-/* 🔴 Кнопки — тепер із легким орнаментом по краях */
+/* Кнопки */
 .btn {
   display: inline-block;
   padding: 14px 36px;
-  background: var(--bordo);
-  border: 2px solid var(--gold);
+  background: var(--magic-purple-light);
+  border: 2px solid var(--gold-magic);
   color: var(--gold-light);
   font-family: var(--font-heading);
   font-size: 18px;
@@ -157,8 +141,8 @@ h1::after {
   letter-spacing: 2px;
   cursor: pointer;
   transition: var(--transition);
-  border-radius: 8px;
-  box-shadow: var(--shadow-sm);
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
   position: relative;
   overflow: hidden;
 }
@@ -166,72 +150,66 @@ h1::after {
   content: '';
   position: absolute;
   top: 5px; left: 5px; right: 5px; bottom: 5px;
-  border: 1px dashed rgba(212, 175, 55, 0.3);
-  border-radius: 4px;
+  border: 1px dashed rgba(212, 175, 55, 0.25);
+  border-radius: 6px;
   pointer-events: none;
 }
 .btn:hover {
-  background: var(--bordo-dark);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  background: var(--magic-purple-dark);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.8);
 }
 .btn-gold {
-  background: var(--gold);
-  color: var(--bordo);
-  border-color: var(--bordo);
+  background: var(--gold-magic);
+  color: var(--magic-purple-light);
+  border-color: var(--magic-purple-light);
 }
-.btn-gold::before {
-  border-color: rgba(139, 0, 0, 0.3);
-}
+.btn-gold::before { border-color: rgba(42, 0, 62, 0.3); }
 .btn-gold:hover {
   background: var(--gold-light);
-  color: var(--bordo-dark);
+  color: var(--magic-purple-dark);
 }
 
-/* Картки — матові, традиційні, з напівпрозорим орнаментом */
+/* Картки */
 .card {
-  background: rgba(255, 255, 255, 0.9); /* трохи прозорості */
-  backdrop-filter: blur(2px);
-  border: 3px solid var(--gold);
+  background: rgba(42, 0, 62, 0.85);
+  backdrop-filter: blur(3px);
+  border: 2px solid var(--gold-magic);
   border-radius: 20px;
   padding: 30px;
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
+  text-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 6px;
-  background: var(--gold);
-}
+.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: var(--gold-magic);}
 .card::after {
   content: '';
-  position: absolute;
-  bottom: 10px; right: 10px;
-  width: 80px; height: 80px;
-  background-image: url('data:image/svg+xml;utf8,<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="15" fill="none" stroke="%23D4AF37" stroke-width="2" opacity="0.2"/><path d="M40 10 L40 70 M10 40 L70 40" stroke="%23D4AF37" stroke-width="2" opacity="0.2"/><path d="M20 20 L60 60 M60 20 L20 60" stroke="%23D4AF37" stroke-width="2" opacity="0.2"/></svg>');
+  position: absolute; bottom: 10px; right: 10px; width: 80px; height: 80px;
+  background-image: url('data:image/svg+xml;utf8,<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="15" fill="none" stroke="%23D4AF37" stroke-width="2" opacity="0.15"/><path d="M40 10 L40 70 M10 40 L70 40" stroke="%23D4AF37" stroke-width="2" opacity="0.15"/><path d="M20 20 L60 60 M60 20 L20 60" stroke="%23D4AF37" stroke-width="2" opacity="0.15"/></svg>');
   background-repeat: no-repeat;
-  opacity: 0.2;
+  opacity: 0.15;
   pointer-events: none;
+  animation: glow 6s infinite alternate ease-in-out;
 }
 
-/* Поля вводу — можна додати легкий орнамент на фон */
+/* Поля вводу */
 .input-field {
   padding: 15px 20px;
-  border: 2px solid var(--gold);
-  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--gold-magic);
+  background: rgba(42,0,62,0.75);
   font-family: var(--font-body);
   font-size: 16px;
   border-radius: 8px;
+  color: var(--gold-light);
   transition: var(--transition);
+  text-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
 .input-field:focus {
   outline: none;
-  border-color: var(--bordo);
-  box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.15);
-  background: white;
+  border-color: var(--magic-purple-light);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+  background: rgba(42,0,62,0.95);
 }
 
 /* Адаптивність */
@@ -239,3 +217,4 @@ h1::after {
   .card { padding: 20px; }
   .btn { padding: 12px 28px; font-size: 16px; }
 }
+
