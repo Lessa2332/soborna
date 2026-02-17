@@ -139,19 +139,19 @@
     }
     
     /* Логотип HUB на всю писанку */
-    .hub-logo {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.6;
-      mix-blend-mode: lighten;
-      filter: drop-shadow(0 0 10px var(--gold-magic));
-      z-index: 2;
-      pointer-events: none;
-    }
+.hub-logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill; /* розтягне на весь контейнер */
+  opacity: 0.6;
+  mix-blend-mode: lighten;
+  filter: drop-shadow(0 0 10px var(--gold-magic));
+  z-index: 2;
+  pointer-events: none;
+}
     
     /* ДНК-спіраль навколо писанки (оновлена під нові кольори) */
     .dna-helix {
@@ -944,3 +944,4 @@
   </script>
 </body>
 </html>
+
