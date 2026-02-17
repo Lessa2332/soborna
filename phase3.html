@@ -51,34 +51,9 @@
       padding: 30px 25px;
       box-shadow: var(--shadow-lg), 0 0 30px rgba(212, 175, 55, 0.3);
     }
+    /* Прихований блок з інформацією про регіон, щоб не займав місце */
     .region-info {
-      text-align: center;
-      margin-bottom: 30px;
-      padding: 20px;
-      background: rgba(90, 26, 122, 0.5);
-      border-radius: 30px;
-      border: 1px solid var(--gold-magic);
-    }
-    .region-symbol {
-      font-size: 64px;
-      filter: drop-shadow(0 0 15px var(--gold-magic));
-      margin-bottom: 10px;
-      animation: float 3s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    .region-name {
-      font-family: var(--font-heading);
-      font-size: 32px;
-      color: var(--gold-magic);
-      margin-bottom: 5px;
-    }
-    .region-desc {
-      font-size: 16px;
-      color: var(--gold-light);
-      opacity: 0.9;
+      display: none;
     }
     .form-group {
       margin-bottom: 25px;
@@ -210,6 +185,7 @@
     <h1>🥚 ПОДАРУЙ ПИСАНКУ 🥚</h1>
     <div class="magic-container">
       <div class="magic-frame">
+        <!-- Прихований блок, але він все одно є в DOM -->
         <div id="regionInfo" class="region-info"></div>
         <form id="energyForm" onsubmit="event.preventDefault(); sendEnergy();">
           <div class="form-group">
@@ -261,10 +237,146 @@
       VERSION: '2.0'
     };
 
-    // Міста за регіонами (той самий об'єкт REGION_CITIES, що й раніше)
-    const REGION_CITIES = { ... }; // (скорочено для економії місця, залиште ваш)
+    // ============ МІСТА ЗА РЕГІОНАМИ ============
+    const REGION_CITIES = {
+      1: { // Поділля
+        cities: [
+          { name: 'Вінниця', lat: 49.23, lng: 28.47 },
+          { name: 'Хмельницький', lat: 49.42, lng: 27.00 },
+          { name: 'Кам’янець-Подільський', lat: 48.68, lng: 26.58 },
+          { name: 'Тернопіль', lat: 49.55, lng: 25.59 },
+          { name: 'Бердичів', lat: 49.90, lng: 28.58 }
+        ]
+      },
+      2: { // Полісся
+        cities: [
+          { name: 'Житомир', lat: 50.25, lng: 28.66 },
+          { name: 'Чернігів', lat: 51.50, lng: 31.29 },
+          { name: 'Луцьк', lat: 50.75, lng: 25.34 },
+          { name: 'Рівне', lat: 50.62, lng: 26.25 },
+          { name: 'Ковель', lat: 51.22, lng: 24.71 }
+        ]
+      },
+      3: { // Карпати
+        cities: [
+          { name: 'Львів', lat: 49.84, lng: 24.03 },
+          { name: 'Івано-Франківськ', lat: 48.92, lng: 24.71 },
+          { name: 'Ужгород', lat: 48.62, lng: 22.30 },
+          { name: 'Чернівці', lat: 48.29, lng: 25.94 },
+          { name: 'Мукачево', lat: 48.44, lng: 22.72 }
+        ]
+      },
+      4: { // Київщина
+        cities: [
+          { name: 'Київ', lat: 50.45, lng: 30.52 },
+          { name: 'Біла Церква', lat: 49.80, lng: 30.12 },
+          { name: 'Бровари', lat: 50.51, lng: 30.79 },
+          { name: 'Фастів', lat: 50.07, lng: 29.92 },
+          { name: 'Переяслав', lat: 50.07, lng: 31.45 }
+        ]
+      },
+      5: { // Львівщина
+        cities: [
+          { name: 'Львів', lat: 49.84, lng: 24.03 },
+          { name: 'Дрогобич', lat: 49.35, lng: 23.51 },
+          { name: 'Стрий', lat: 49.26, lng: 23.85 },
+          { name: 'Червоноград', lat: 50.39, lng: 24.23 },
+          { name: 'Самбір', lat: 49.52, lng: 23.20 }
+        ]
+      },
+      6: { // Одещина
+        cities: [
+          { name: 'Одеса', lat: 46.48, lng: 30.72 },
+          { name: 'Ізмаїл', lat: 45.35, lng: 28.84 },
+          { name: 'Білгород-Дністровський', lat: 46.19, lng: 30.35 },
+          { name: 'Чорноморськ', lat: 46.30, lng: 30.66 },
+          { name: 'Подільськ', lat: 47.75, lng: 29.53 }
+        ]
+      },
+      7: { // Харківщина
+        cities: [
+          { name: 'Харків', lat: 49.99, lng: 36.23 },
+          { name: 'Суми', lat: 50.91, lng: 34.80 },
+          { name: 'Куп’янськ', lat: 49.71, lng: 37.62 },
+          { name: 'Лозова', lat: 48.89, lng: 36.32 },
+          { name: 'Ізюм', lat: 49.21, lng: 37.28 }
+        ]
+      },
+      8: { // Дніпропетровщина
+        cities: [
+          { name: 'Дніпро', lat: 48.46, lng: 35.04 },
+          { name: 'Кривий Ріг', lat: 47.91, lng: 33.39 },
+          { name: 'Запоріжжя', lat: 47.84, lng: 35.14 },
+          { name: 'Кам’янське', lat: 48.51, lng: 34.60 },
+          { name: 'Нікополь', lat: 47.57, lng: 34.40 }
+        ]
+      },
+      9: { // Полтавщина
+        cities: [
+          { name: 'Полтава', lat: 49.59, lng: 34.55 },
+          { name: 'Кременчук', lat: 49.06, lng: 33.40 },
+          { name: 'Миргород', lat: 49.97, lng: 33.61 },
+          { name: 'Лубни', lat: 50.02, lng: 33.00 },
+          { name: 'Гадяч', lat: 50.37, lng: 34.00 }
+        ]
+      },
+      10: { // Чернігівщина
+        cities: [
+          { name: 'Чернігів', lat: 51.50, lng: 31.29 },
+          { name: 'Ніжин', lat: 51.05, lng: 31.88 },
+          { name: 'Прилуки', lat: 50.60, lng: 32.39 },
+          { name: 'Бахмач', lat: 51.18, lng: 32.83 },
+          { name: 'Новгород-Сіверський', lat: 52.01, lng: 33.27 }
+        ]
+      },
+      11: { // Черкащина
+        cities: [
+          { name: 'Черкаси', lat: 49.44, lng: 32.06 },
+          { name: 'Умань', lat: 48.75, lng: 30.22 },
+          { name: 'Сміла', lat: 49.22, lng: 31.87 },
+          { name: 'Золотоноша', lat: 49.67, lng: 32.04 },
+          { name: 'Канів', lat: 49.75, lng: 31.47 }
+        ]
+      },
+      12: { // Крим
+        cities: [
+          { name: 'Сімферополь', lat: 44.95, lng: 34.10 },
+          { name: 'Севастополь', lat: 44.62, lng: 33.53 },
+          { name: 'Керч', lat: 45.36, lng: 36.47 },
+          { name: 'Ялта', lat: 44.50, lng: 34.17 },
+          { name: 'Феодосія', lat: 45.03, lng: 35.38 }
+        ]
+      },
+      13: { // Донеччина
+        cities: [
+          { name: 'Донецьк', lat: 48.02, lng: 37.80 },
+          { name: 'Маріуполь', lat: 47.10, lng: 37.55 },
+          { name: 'Краматорськ', lat: 48.72, lng: 37.53 },
+          { name: 'Слов’янськ', lat: 48.85, lng: 37.62 },
+          { name: 'Бахмут', lat: 48.60, lng: 38.00 }
+        ]
+      },
+      14: { // Луганщина
+        cities: [
+          { name: 'Луганськ', lat: 48.57, lng: 39.31 },
+          { name: 'Сєвєродонецьк', lat: 48.95, lng: 38.48 },
+          { name: 'Лисичанськ', lat: 48.92, lng: 38.42 },
+          { name: 'Рубіжне', lat: 49.02, lng: 38.37 },
+          { name: 'Старобільськ', lat: 49.28, lng: 38.92 }
+        ]
+      }
+    };
 
-    const UKRAINE_MAJOR_CITIES = [ ... ]; // ваші загальні міста
+    // Загальні міста України (якщо регіон не визначено)
+    const UKRAINE_MAJOR_CITIES = [
+      { name: 'Київ', lat: 50.45, lng: 30.52 },
+      { name: 'Львів', lat: 49.84, lng: 24.03 },
+      { name: 'Одеса', lat: 46.48, lng: 30.72 },
+      { name: 'Харків', lat: 49.99, lng: 36.23 },
+      { name: 'Дніпро', lat: 48.46, lng: 35.04 },
+      { name: 'Запоріжжя', lat: 47.84, lng: 35.14 },
+      { name: 'Вінниця', lat: 49.23, lng: 28.47 }
+    ];
 
     let userRegion = null;
     let currentRegionId = null;
@@ -281,19 +393,12 @@
           document.getElementById('regionName').value = parsed.name;
           document.getElementById('regionSymbol').value = parsed.symbol || '🥚';
 
-          document.getElementById('regionInfo').innerHTML = `
-            <div class="region-symbol">${parsed.symbol || '🥚'}</div>
-            <div class="region-name">${parsed.name}</div>
-            <div class="region-desc">Обери місто, де посадити свою писанку</div>
-          `;
+          // Не показуємо блок regionInfo (але він прихований через CSS)
+          // Заповнюємо список міст
           populateCitySelect(currentRegionId);
         } else {
-          document.getElementById('regionInfo').innerHTML = `
-            <div class="region-symbol">🥚</div>
-            <div class="region-name">Україна</div>
-            <div class="region-desc">Обери місто, де посадити свою писанку</div>
-          `;
-          populateCitySelect(null);
+          // Якщо регіон не знайдено, повертаємось на перший етап
+          window.location.href = 'phase1.html';
         }
       } catch (e) {
         console.log('Помилка завантаження регіону', e);
@@ -305,12 +410,15 @@
     function populateCitySelect(regionId) {
       const select = document.getElementById('userCity');
       select.innerHTML = '<option value="" disabled selected>-- Виберіть місто --</option>';
+      
       let cities = [];
       if (regionId && REGION_CITIES[regionId]) {
         cities = REGION_CITIES[regionId].cities;
       } else {
+        // Якщо регіон не визначено, використовуємо загальні міста (але ми вже перенаправляємо, тому сюди не має потрапити)
         cities = UKRAINE_MAJOR_CITIES;
       }
+      
       cities.forEach(city => {
         const option = document.createElement('option');
         option.value = city.name;
@@ -449,4 +557,3 @@
   </script>
 </body>
 </html>
-
