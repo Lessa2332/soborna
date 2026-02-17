@@ -6,21 +6,26 @@
   <title>🥚 Етап 2: Оживи писанку | Соборна Писанка</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
+  <!-- Підключення спільної теми -->
+  <link rel="stylesheet" href="css/pysanka-theme.css">
+  
   <!-- Додаємо fallback для старих браузерів -->
   <script src="https://cdn.jsdelivr.net/npm/handtrackjs@latest/dist/handtrack.min.js"></script>
   
   <style>
+    /* ============ МІСТИЧНІ ЗМІННІ (перевизначення на випадок, якщо тема не підключена) ============ */
     :root {
-      --bordo: #8B2C2C;
-      --bordo-light: #B23B3B;
-      --gold: #FFB347;
-      --gold-light: #FFD966;
-      --cream: #FFF9E6;
-      --brown: #5A1E1E;
-      --black: #1A0F0F;
-      --scanner-glow: #00FFFF;
+      --magic-purple: #2b003e;
+      --magic-purple-dark: #1b001f;
+      --magic-purple-light: #5a1a7a;
+      --gold-magic: #D4AF37;
+      --gold-light: #E8C66E;
+      --gold-dark: #B08B2A;
+      --scanner-glow: #D4AF37; /* замість #00FFFF */
       --font-heading: 'Cormorant Garamond', serif;
       --font-body: 'Open Sans', sans-serif;
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+      --transition: all 0.3s ease;
     }
     
     * {
@@ -32,7 +37,7 @@
     }
   
     body {
-      background: linear-gradient(135deg, var(--bordo) 0%, var(--brown) 100%);
+      background: linear-gradient(135deg, var(--magic-purple) 0%, var(--magic-purple-dark) 100%);
       overflow: hidden;
       font-family: var(--font-heading);
     }
@@ -57,14 +62,14 @@
       display: block; 
     }
   
-    /* ============ ПОКРАЩЕНЕ ЗАВАНТАЖЕННЯ ============ */
+    /* ============ МАГІЧНЕ ЗАВАНТАЖЕННЯ ============ */
     #loading {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, var(--bordo) 0%, var(--brown) 100%);
+      background: linear-gradient(135deg, var(--magic-purple) 0%, var(--magic-purple-dark) 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -78,8 +83,8 @@
     .loader {
       width: 80px;
       height: 80px;
-      border: 5px solid rgba(255, 179, 71, 0.3);
-      border-top: 5px solid var(--gold);
+      border: 5px solid rgba(212, 175, 55, 0.3);
+      border-top: 5px solid var(--gold-magic);
       border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
       animation: spin 1s linear infinite, eggShape 2s ease-in-out infinite;
       margin-bottom: 30px;
@@ -102,7 +107,7 @@
     .loading-bar {
       width: 0%;
       height: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      background: linear-gradient(90deg, var(--gold-magic), var(--gold-light));
       transition: width 0.3s;
     }
     
@@ -118,21 +123,22 @@
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(139, 44, 44, 0.95);
+      background: rgba(42, 0, 62, 0.95);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      color: var(--gold);
+      color: var(--gold-magic);
       padding: 15px 30px;
       border-radius: 50px;
       font-size: 28px;
       font-weight: 600;
       z-index: 85;
       text-align: center;
-      border: 2px solid var(--gold);
+      border: 2px solid var(--gold-magic);
       display: none;
-      box-shadow: 0 0 30px rgba(255, 179, 71, 0.5);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
       white-space: nowrap;
       animation: slideDown 0.5s ease;
+      font-family: var(--font-heading);
     }
     
     @keyframes slideDown {
@@ -146,22 +152,23 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(26, 15, 15, 0.95);
+      background: rgba(42, 0, 62, 0.95);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      color: var(--gold);
+      color: var(--gold-magic);
       padding: 25px 35px;
       border-radius: 60px;
-      border: 3px solid var(--gold);
+      border: 3px solid var(--gold-magic);
       display: flex;
       align-items: center;
       gap: 20px;
       z-index: 99;
       font-size: 28px;
       font-weight: 600;
-      box-shadow: 0 0 60px rgba(255, 179, 71, 0.6);
+      box-shadow: 0 0 60px rgba(212, 175, 55, 0.6);
       white-space: nowrap;
       animation: pulse 2s ease-in-out infinite;
+      font-family: var(--font-heading);
     }
     
     @keyframes pulse {
@@ -180,14 +187,14 @@
       75% { transform: rotate(-10deg); }
     }
   
-    /* ============ ПОКРАЩЕНИЙ ЗВОРОТНИЙ ЗВ'ЯЗОК ============ */
+    /* ============ МАГІЧНИЙ ЗВОРОТНИЙ ЗВ'ЯЗОК ============ */
     #gestureFeedback {
       position: fixed;
       bottom: 120px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(26, 15, 15, 0.95);
-      color: var(--gold);
+      background: rgba(42, 0, 62, 0.95);
+      color: var(--gold-magic);
       padding: 20px 40px;
       border-radius: 60px;
       font-size: 32px;
@@ -195,11 +202,12 @@
       z-index: 90;
       opacity: 0;
       text-align: center;
-      box-shadow: 0 0 40px rgba(255, 179, 71, 0.8);
-      border: 2px solid var(--gold);
+      box-shadow: 0 0 40px rgba(212, 175, 55, 0.8);
+      border: 2px solid var(--gold-magic);
       white-space: nowrap;
       pointer-events: none;
       transition: opacity 0.3s;
+      font-family: var(--font-heading);
     }
   
     /* ============ ЧАРІВНА КНОПКА "ДАЛІ" ============ */
@@ -208,8 +216,8 @@
       bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      color: var(--bordo);
+      background: linear-gradient(135deg, var(--gold-magic), var(--gold-light));
+      color: var(--magic-purple-dark);
       border: none;
       border-radius: 60px;
       padding: 18px 50px;
@@ -218,12 +226,12 @@
       cursor: pointer;
       z-index: 100;
       display: none;
-      box-shadow: 0 0 50px var(--gold);
+      box-shadow: 0 0 50px var(--gold-magic);
       font-family: var(--font-heading);
       text-transform: uppercase;
       letter-spacing: 3px;
       transition: all 0.3s;
-      border: 2px solid white;
+      border: 2px solid var(--gold-light);
       animation: buttonAppear 0.5s ease-out, buttonGlow 2s ease-in-out infinite;
     }
     
@@ -234,7 +242,7 @@
     }
     
     @keyframes buttonGlow {
-      0%, 100% { box-shadow: 0 0 30px var(--gold); }
+      0%, 100% { box-shadow: 0 0 30px var(--gold-magic); }
       50% { box-shadow: 0 0 70px var(--gold-light); }
     }
   
@@ -244,11 +252,11 @@
     
     .btn-next.secondary {
       bottom: 120px;
-      background: rgba(26, 15, 15, 0.8);
-      color: var(--gold);
+      background: rgba(42, 0, 62, 0.8);
+      color: var(--gold-magic);
       font-size: 20px;
       padding: 12px 30px;
-      box-shadow: 0 0 30px rgba(255, 179, 71, 0.3);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
     }
   
     /* ============ ПОПЕРЕДЖЕННЯ ПРО ОСВІТЛЕННЯ ============ */
@@ -257,14 +265,14 @@
       top: 100px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.8);
-      color: var(--gold);
+      background: rgba(42, 0, 62, 0.8);
+      color: var(--gold-magic);
       padding: 15px 25px;
       border-radius: 50px;
       font-size: 16px;
       z-index: 95;
       display: none;
-      border: 2px solid var(--gold);
+      border: 2px solid var(--gold-magic);
       backdrop-filter: blur(5px);
       white-space: nowrap;
       animation: warningPulse 2s ease-in-out infinite;
@@ -281,14 +289,14 @@
       bottom: 200px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(26, 15, 15, 0.95);
-      color: var(--gold);
+      background: rgba(42, 0, 62, 0.95);
+      color: var(--gold-magic);
       padding: 20px 30px;
       border-radius: 50px;
       font-size: 24px;
       z-index: 98;
       display: none;
-      border: 2px solid var(--gold);
+      border: 2px solid var(--gold-magic);
       flex-direction: column;
       align-items: center;
       gap: 15px;
@@ -303,20 +311,21 @@
     .touch-btn {
       width: 70px;
       height: 70px;
-      background: var(--bordo);
-      border: 2px solid var(--gold);
+      background: var(--magic-purple-light);
+      border: 2px solid var(--gold-magic);
       border-radius: 50%;
-      color: var(--gold);
+      color: var(--gold-magic);
       font-size: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      transition: var(--transition);
     }
     
     .touch-btn:active {
-      background: var(--gold);
-      color: var(--bordo);
+      background: var(--gold-magic);
+      color: var(--magic-purple-dark);
       transform: scale(0.95);
     }
   
@@ -326,17 +335,17 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(139, 44, 44, 0.98);
-      color: var(--gold);
+      background: rgba(42, 0, 62, 0.98);
+      color: var(--gold-magic);
       padding: 30px;
       border-radius: 30px;
-      border: 3px solid var(--gold);
+      border: 3px solid var(--gold-magic);
       z-index: 2000;
       text-align: center;
       max-width: 80%;
       display: none;
       font-size: 20px;
-      box-shadow: 0 0 50px rgba(0,0,0,0.5);
+      box-shadow: 0 0 50px rgba(212, 175, 55, 0.5);
     }
   
     @keyframes spin {
@@ -354,6 +363,23 @@
       0% { opacity: 1; }
       100% { opacity: 0; }
     }
+
+    /* Магічні частинки (для анімацій) */
+    .magic-particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--gold-magic);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 100;
+      animation: particleFloat 2s ease-out forwards;
+    }
+    
+    @keyframes particleFloat {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx, 50px), var(--ty, -50px)) scale(0); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -363,8 +389,8 @@
     <div class="loading-progress">
       <div class="loading-bar" id="loadingBar"></div>
     </div>
-    <div class="loading-status" id="loadingStatus">Завантаження моделі розпізнавання...</div>
-    <p style="margin-top: 30px; color: rgba(255,255,255,0.9); font-size: 18px;">Покажи долоню - і станеться диво!</p>
+    <div class="loading-status" id="loadingStatus">Завантаження магічної моделі...</div>
+    <p style="margin-top: 30px; color: var(--gold-light); font-size: 18px;">Покажи долоню - і станеться диво!</p>
   </div>
   
   <video id="video" playsinline muted></video>
@@ -375,7 +401,7 @@
   <div id="gestureFeedback"></div>
   <div id="lightingWarning">💡 Увімкни світло для кращого розпізнавання</div>
   
-  <!-- Touch fallback для десктопу -->
+  <!-- Touch fallback -->
   <div id="touchFallback">
     <div>👆 Торкайся для керування</div>
     <div class="touch-controls">
@@ -399,7 +425,7 @@
     import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
     import { FilesetResolver, HandLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm";
 
-    // ============ 14 РЕГІОНІВ ============
+    // ============ 14 РЕГІОНІВ (оновлені символи під містичну тему) ============
     const REGIONS = [
       { id: 1, name: 'Поділля', texture: 'assets/regions/1-podillya.png', symbol: '🌻' },
       { id: 2, name: 'Полісся', texture: 'assets/regions/2-polissya.png', symbol: '🌲' },
@@ -417,32 +443,23 @@
       { id: 14, name: 'Луганщина', texture: 'assets/regions/14-luhansk.png', symbol: '🌻' }
     ];
 
-    // ============ ПОКРАЩЕНІ НАЛАШТУВАННЯ ============
+    // ============ МАГІЧНІ НАЛАШТУВАННЯ ============
     const CONFIG = {
-      // Основні параметри
-      SMOOTHING_FACTOR: 0.5,               // менше згладжування – швидше слідування
-      HAND_NOT_DETECTED_THRESHOLD: 45,
+      SMOOTHING_FACTOR: 0.5,
+      HAND_NOT_DETECTED_THRESHOLD: 45,      // через скільки кадрів показувати індикатор
       EGG_SCALE: 0.8,
-      EGG_HEIGHT_OFFSET: 0.0,               // без зміщення – прямо на долоні
+      EGG_HEIGHT_OFFSET: 0.0,
       MIN_SCALE: 0.3,
       MAX_SCALE: 2.2,
       ZOOM_SENSITIVITY: 3.5,
       ROTATION_SENSITIVITY: 2.0,
-      
-      // Продуктивність
       FPS_LIMIT: 30,
       PERFORMANCE_MODE: true,
-      
-      // Таймінги
       STABLE_FRAMES_FOR_NEXT: 90,
       FEEDBACK_DURATION: 1500,
       SHOW_BUTTON_DELAY: 5000,
       LIGHTING_CHECK_INTERVAL: 2000,
-      
-      // Освітлення
       MIN_BRIGHTNESS: 0.3,
-      
-      // Моделі
       USE_LITE_MODEL: true,
       CONFIDENCE_THRESHOLD: 0.5
     };
@@ -461,7 +478,7 @@
       currentRegion = REGIONS[0];
     }
 
-    // ============ ПОКРАЩЕНИЙ СТАН ДОДАТКУ ============
+    // ============ СТАН ДОДАТКУ ============
     const state = {
       landmarks: null,
       isHandVisible: false,
@@ -491,7 +508,7 @@
       usingMediaPipe: true,
       usingFallback: false,
       lastGestureTime: 0,
-      hiddenByFist: false,                  // новий прапорець – чи схована через кулак
+      hiddenByFist: false,
     };
 
     // DOM елементи
@@ -515,63 +532,67 @@
     let handLandmarker;
     let brightnessCheckInterval;
 
-    // ============ ПОКРАЩЕНІ ФУНКЦІЇ ============
-    
-    // Перевірка освітлення
+    // ============ ДОПОМІЖНІ ФУНКЦІЇ ============
+    function createMagicParticles(count = 8, x, y) {
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const particle = document.createElement('div');
+          particle.className = 'magic-particle';
+          if (x && y) {
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+          } else {
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.top = Math.random() * window.innerHeight + 'px';
+          }
+          particle.style.setProperty('--tx', (Math.random() * 100 - 50) + 'px');
+          particle.style.setProperty('--ty', (Math.random() * -100 - 50) + 'px');
+          document.body.appendChild(particle);
+          setTimeout(() => particle.remove(), 2000);
+        }, i * 50);
+      }
+    }
+
     function checkBrightness(videoElement) {
       if (!videoElement || videoElement.readyState < 2) return;
-      
       const canvas = document.createElement('canvas');
       canvas.width = 100;
       canvas.height = 100;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(videoElement, 0, 0, 100, 100);
-      
       const imageData = ctx.getImageData(0, 0, 100, 100);
       const data = imageData.data;
-      
       let sum = 0;
-      for (let i = 0; i < data.length; i += 4) {
-        sum += data[i] + data[i+1] + data[i+2];
-      }
-      
+      for (let i = 0; i < data.length; i += 4) sum += data[i] + data[i+1] + data[i+2];
       const avgBrightness = sum / (data.length / 4 * 3) / 255;
       state.isLowLight = avgBrightness < CONFIG.MIN_BRIGHTNESS;
-      
-      if (state.isLowLight) {
-        elements.lightingWarning.style.display = 'block';
-      } else {
-        elements.lightingWarning.style.display = 'none';
-      }
+      elements.lightingWarning.style.display = state.isLowLight ? 'block' : 'none';
     }
 
-    // Покращений зворотній зв'язок
     function showGestureFeedback(icon, text, duration = CONFIG.FEEDBACK_DURATION) {
       elements.gestureFeedback.innerHTML = `<span style="font-size: 48px; margin-right: 15px;">${icon}</span>${text}`;
       elements.gestureFeedback.style.animation = 'feedbackShow 0.3s forwards';
-      
       if (state.feedbackTimeout) clearTimeout(state.feedbackTimeout);
       state.feedbackTimeout = setTimeout(() => {
         elements.gestureFeedback.style.animation = 'feedbackHide 0.3s forwards';
       }, duration - 300);
-      
       if (navigator.vibrate) navigator.vibrate(50);
       state.lastGestureTime = Date.now();
+      createMagicParticles(5);
     }
 
-    // Показ помилок
     function showError(msg) {
       elements.errorMessage.style.display = 'block';
       elements.errorMessage.innerHTML = `❌ ${msg}<br><br>
         <button onclick="location.reload()" 
-          style="background:var(--gold); color:var(--bordo); border:none; 
+          style="background:var(--gold-magic); color:var(--magic-purple-dark); border:none; 
                  padding:12px 24px; border-radius:40px; margin-top:15px; 
                  font-size:20px; font-weight:bold; cursor:pointer;">
           Спробувати знову
         </button>
         <button onclick="enableTouchMode()" 
-          style="background:transparent; border:2px solid var(--gold); 
-                 color:var(--gold); padding:10px 20px; border-radius:40px; 
+          style="background:transparent; border:2px solid var(--gold-magic); 
+                 color:var(--gold-magic); padding:10px 20px; border-radius:40px; 
                  margin-top:10px; font-size:16px; cursor:pointer;">
           👆 Touch mode
         </button>`;
@@ -583,22 +604,17 @@
       elements.touchFallback.style.display = 'flex';
       elements.handIndicator.style.display = 'none';
       elements.fallbackBtn.style.display = 'none';
-      
       if (!state.eggGroup.visible) {
         state.eggGroup.visible = true;
         state.eggGroup.position.set(0, 0, 0.1);
       }
-      
       showGestureFeedback('👆', 'Touch mode active', 2000);
     };
 
     window.manualScale = function(direction) {
       let newScale = state.currentScale;
-      if (direction === 'in') {
-        newScale = Math.min(state.currentScale + 0.2, CONFIG.MAX_SCALE);
-      } else {
-        newScale = Math.max(state.currentScale - 0.2, CONFIG.MIN_SCALE);
-      }
+      if (direction === 'in') newScale = Math.min(state.currentScale + 0.2, CONFIG.MAX_SCALE);
+      else newScale = Math.max(state.currentScale - 0.2, CONFIG.MIN_SCALE);
       state.currentScale = newScale;
       state.eggGroup.scale.set(newScale, newScale, newScale);
       showGestureFeedback('🔍', direction === 'in' ? 'Збільшено' : 'Зменшено', 800);
@@ -610,41 +626,31 @@
       showGestureFeedback('🔄', 'Обертання', 800);
     };
 
-    // ============ ЦЕНТР ДОЛОНІ (точніший) ============
+    // ============ ЦЕНТР ДОЛОНІ ============
     function getPalmCenter(landmarks) {
-      // Беремо основні точки долоні: зап'ястя (0) та основи пальців (1,5,9,13,17)
       const points = [0, 1, 5, 9, 13, 17];
       let sumX = 0, sumY = 0;
       points.forEach(idx => {
         sumX += landmarks[idx].x;
         sumY += landmarks[idx].y;
       });
-      return {
-        x: sumX / points.length,
-        y: sumY / points.length
-      };
+      return { x: sumX / points.length, y: sumY / points.length };
     }
 
-    // ============ ПОКРАЩЕНИЙ РОЗПІЗНАВАЧ ЖЕСТІВ ============
+    // ============ РОЗПІЗНАВАЧ ЖЕСТІВ ============
     class GestureRecognizer {
       static recognize(landmarks) {
         if (!landmarks) return 'none';
-      
         const isFist = this.isFist(landmarks);
         if (isFist) return 'fist';
-      
         const isOpenPalm = this.isOpenPalm(landmarks);
         if (isOpenPalm) return 'open_palm';
-      
         const isTwoFingers = this.isTwoFingers(landmarks);
         if (isTwoFingers) return 'two_fingers';
-      
         const isSpreading = this.isSpreadingFingers(landmarks);
         if (isSpreading) return 'spreading';
-      
         return 'open';
       }
-    
       static isFist(landmarks) {
         const fingers = [8, 12, 16, 20];
         let curledCount = 0;
@@ -653,7 +659,6 @@
         }
         return curledCount >= 3;
       }
-    
       static isOpenPalm(landmarks) {
         const fingers = [8, 12, 16, 20];
         let straightCount = 0;
@@ -662,7 +667,6 @@
         }
         return straightCount >= 3;
       }
-    
       static isTwoFingers(landmarks) {
         const indexStraight = landmarks[8].y < landmarks[6].y - 0.01;
         const middleStraight = landmarks[12].y < landmarks[10].y - 0.01;
@@ -670,7 +674,6 @@
         const pinkyCurled = landmarks[20].y > landmarks[18].y;
         return indexStraight && middleStraight && ringCurled && pinkyCurled;
       }
-    
       static isSpreadingFingers(landmarks) {
         const thumbStraight = landmarks[4].y < landmarks[3].y;
         const indexStraight = landmarks[8].y < landmarks[6].y - 0.02;
@@ -679,14 +682,9 @@
         const pinkyCurled = landmarks[20].y > landmarks[18].y;
         return thumbStraight && indexStraight && middleCurled && ringCurled && pinkyCurled;
       }
-    
       static getThumbIndexDistance(landmarks) {
-        return Math.hypot(
-          landmarks[4].x - landmarks[8].x,
-          landmarks[4].y - landmarks[8].y
-        );
+        return Math.hypot(landmarks[4].x - landmarks[8].x, landmarks[4].y - landmarks[8].y);
       }
-    
       static getTwoFingersAngle(landmarks) {
         const dx = landmarks[8].x - landmarks[12].x;
         const dy = landmarks[8].y - landmarks[12].y;
@@ -694,7 +692,7 @@
       }
     }
 
-    // ============ ПОКРАЩЕНИЙ ОСНОВНИЙ КЛАС ============
+    // ============ ОСНОВНИЙ КЛАС ============
     class PisankaARApp {
       constructor() {
         state.currentRegion = currentRegion;
@@ -715,17 +713,11 @@
         try {
           elements.loadingStatus.textContent = 'Запуск камери...';
           await this.setupCamera();
-          
           elements.loadingStatus.textContent = 'Ініціалізація 3D...';
           await this.initThreeJS();
-          
           elements.loadingStatus.textContent = 'Завантаження розпізнавання рук...';
           await this.initHandTracking();
-          
-          brightnessCheckInterval = setInterval(() => {
-            checkBrightness(elements.video);
-          }, CONFIG.LIGHTING_CHECK_INTERVAL);
-          
+          brightnessCheckInterval = setInterval(() => checkBrightness(elements.video), CONFIG.LIGHTING_CHECK_INTERVAL);
           this.hideLoading();
           this.startAnimation();
           
@@ -765,7 +757,6 @@
             frameRate: { ideal: 30 }
           }
         };
-        
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
         } catch (err) {
@@ -777,7 +768,6 @@
             stream = await navigator.mediaDevices.getUserMedia(constraints);
           }
         }
-        
         elements.video.srcObject = stream;
         await new Promise(resolve => {
           elements.video.onloadedmetadata = () => {
@@ -789,13 +779,10 @@
       
       async initThreeJS() {
         scene = new THREE.Scene();
-      
         camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 0, 5);
-      
         const pixelRatio = CONFIG.PERFORMANCE_MODE ?
           Math.min(window.devicePixelRatio || 1, 1.5) : window.devicePixelRatio;
-      
         renderer = new THREE.WebGLRenderer({
           canvas: elements.canvas,
           alpha: true,
@@ -804,17 +791,14 @@
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(pixelRatio);
-      
-        scene.add(new THREE.AmbientLight(0xffffff, 1.2));
         
+        scene.add(new THREE.AmbientLight(0xffffff, 1.2));
         const light1 = new THREE.DirectionalLight(0xffffff, 1);
         light1.position.set(1, 1, 1);
         scene.add(light1);
-        
         const light2 = new THREE.DirectionalLight(0xffaa00, 0.5);
         light2.position.set(-1, -1, -1);
         scene.add(light2);
-        
         const pointLight = new THREE.PointLight(0xffaa00, 0.5, 10);
         pointLight.position.set(0, 0, 3);
         scene.add(pointLight);
@@ -825,7 +809,6 @@
       
       async loadRegionTexture() {
         if (!state.currentRegion) return;
-      
         const loader = new THREE.TextureLoader();
         try {
           state.regionTexture = await loader.loadAsync(state.currentRegion.texture);
@@ -834,16 +817,13 @@
           canvas.width = 256;
           canvas.height = 256;
           const ctx = canvas.getContext('2d');
-          
           const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-          gradient.addColorStop(0, '#FFD966');
-          gradient.addColorStop(0.5, '#FFB347');
-          gradient.addColorStop(1, '#8B2C2C');
-          
+          gradient.addColorStop(0, '#D4AF37');
+          gradient.addColorStop(0.5, '#5a1a7a');
+          gradient.addColorStop(1, '#2b003e');
           ctx.fillStyle = gradient;
           ctx.fillRect(0, 0, 256, 256);
-          
-          ctx.strokeStyle = '#FFD966';
+          ctx.strokeStyle = '#D4AF37';
           ctx.lineWidth = 2;
           for (let i = 0; i < 8; i++) {
             const angle = (i * Math.PI / 4);
@@ -856,11 +836,9 @@
             ctx.lineTo(x2, y2);
             ctx.stroke();
           }
-          
           ctx.fillStyle = '#FFF9E6';
           ctx.font = 'bold 80px "Cormorant Garamond"';
           ctx.fillText(state.currentRegion.symbol, 90, 150);
-          
           state.regionTexture = new THREE.CanvasTexture(canvas);
         }
       }
@@ -870,20 +848,16 @@
         state.eggGroup.visible = false;
         state.eggGroup.scale.set(0, 0, 0);
         scene.add(state.eggGroup);
-      
         const geometry = new THREE.SphereGeometry(1, 40, 40);
         const positions = geometry.attributes.position;
-      
         for (let i = 0; i < positions.count; i++) {
           const x = positions.getX(i);
           const y = positions.getY(i);
           const z = positions.getZ(i);
-         
           positions.setX(i, x * 0.85);
           positions.setY(i, y * 1.25);
           positions.setZ(i, z * 0.85);
         }
-       
         for (let i = 0; i < positions.count; i++) {
           const y = positions.getY(i);
           if (y < -0.8) {
@@ -892,16 +866,14 @@
           }
         }
         geometry.computeVertexNormals();
-      
         const material = new THREE.MeshStandardMaterial({
           map: state.regionTexture,
           roughness: 0.3,
           metalness: 0.1,
           side: THREE.DoubleSide,
-          emissive: new THREE.Color(0x442200),
-          emissiveIntensity: 0.1
+          emissive: new THREE.Color(0x5a1a7a),
+          emissiveIntensity: 0.2
         });
-      
         state.egg = new THREE.Mesh(geometry, material);
         state.egg.scale.set(state.currentScale, state.currentScale, state.currentScale);
         state.eggGroup.add(state.egg);
@@ -912,11 +884,9 @@
           const modelPath = CONFIG.USE_LITE_MODEL ?
             "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task" :
             "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
-          
           const vision = await FilesetResolver.forVisionTasks(
             "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
           );
-        
           handLandmarker = await HandLandmarker.createFromOptions(vision, {
             baseOptions: {
               modelAssetPath: modelPath,
@@ -928,7 +898,6 @@
             minHandPresenceConfidence: CONFIG.CONFIDENCE_THRESHOLD,
             minTrackingConfidence: CONFIG.CONFIDENCE_THRESHOLD
           });
-          
           console.log('✅ HandTracking завантажено');
         } catch (error) {
           console.error('HandTracking помилка:', error);
@@ -939,7 +908,6 @@
       startAnimation() {
         const animate = (time) => {
           state.animationId = requestAnimationFrame(animate);
-        
           if (time - state.lastFrameTime > 1000 / CONFIG.FPS_LIMIT) {
             this.update();
             renderer.render(scene, camera);
@@ -950,17 +918,20 @@
       }
       
       update() {
-        if (!state.usingFallback) {
-          this.detectHand();
-        }
-      
-        if (state.usingFallback) {
-          return;
+        if (!state.usingFallback) this.detectHand();
+        if (state.usingFallback) return;
+        
+        // Оновлення індикатора руки
+        if (state.isHandVisible && !state.usingFallback) {
+          elements.handIndicator.style.display = 'none'; // одразу ховаємо при виявленні руки
+        } else {
+          // Якщо рука не видна протягом порогової кількості кадрів, показуємо індикатор
+          if (state.handFrames > CONFIG.HAND_NOT_DETECTED_THRESHOLD && !state.usingFallback) {
+            elements.handIndicator.style.display = 'flex';
+          }
         }
         
         if (state.landmarks && state.isHandVisible && !state.isLowLight) {
-          
-          // Якщо писанка була схована через кулак, але зараз жест не кулак – показуємо
           if (state.hiddenByFist && state.gesture !== 'fist') {
             state.hiddenByFist = false;
             if (!state.eggGroup.visible) {
@@ -968,30 +939,23 @@
               this.animateAppear();
             }
           }
-          
-          // Якщо зараз кулак – ховаємо і запам'ятовуємо, що сховано через кулак
           if (state.gesture === 'fist') {
             if (state.eggGroup.visible) {
               state.eggGroup.visible = false;
               state.hiddenByFist = true;
               showGestureFeedback('✊', 'Писанка сховалась', 800);
             }
-            // Не виконуємо позиціонування та інші жести, поки кулак
             return;
           }
-          
-          // Якщо писанка видима – оновлюємо позицію та жести
           if (state.eggGroup.visible) {
             this.updatePosition();
             this.applyGestures();
           } else {
-            // Якщо не видима і не через кулак – спробуємо показати
             if (!state.hiddenByFist && !state.eggGroup.visible) {
               state.eggGroup.visible = true;
               this.animateAppear();
             }
           }
-         
           if (!state.buttonShown) {
             state.stableFrames++;
             if (state.stableFrames >= CONFIG.STABLE_FRAMES_FOR_NEXT) {
@@ -1001,15 +965,10 @@
             }
           }
         } else {
-          // Рука не видима – ховаємо писанку через деякий час
           if (state.eggGroup.visible && !state.usingFallback) {
-            if (state.handFrames > 10) { // якщо руки немає > 10 кадрів
+            if (state.handFrames > 10) {
               state.eggGroup.visible = false;
             }
-          }
-        
-          if (state.handFrames > CONFIG.HAND_NOT_DETECTED_THRESHOLD && !state.usingFallback) {
-            elements.handIndicator.style.display = 'flex';
           }
         }
       }
@@ -1018,38 +977,25 @@
         const targetScale = state.currentScale;
         const duration = 300;
         const startTime = Date.now();
-        
         const animate = () => {
           const elapsed = Date.now() - startTime;
           const progress = Math.min(elapsed / duration, 1);
           const easeProgress = 1 - Math.pow(1 - progress, 3);
-          
-          state.eggGroup.scale.set(
-            targetScale * easeProgress,
-            targetScale * easeProgress,
-            targetScale * easeProgress
-          );
-          
-          if (progress < 1) {
-            requestAnimationFrame(animate);
-          }
+          state.eggGroup.scale.set(targetScale * easeProgress, targetScale * easeProgress, targetScale * easeProgress);
+          if (progress < 1) requestAnimationFrame(animate);
         };
-        
         animate();
       }
       
       detectHand() {
         if (!handLandmarker || elements.video.readyState < 2) return;
-      
         try {
           const results = handLandmarker.detectForVideo(elements.video, performance.now());
-        
           if (results.landmarks?.length > 0) {
             state.prevGesture = state.gesture;
             state.landmarks = results.landmarks[0];
             state.isHandVisible = true;
             state.handFrames = 0;
-            
             const newGesture = GestureRecognizer.recognize(state.landmarks);
             if (newGesture !== state.gesture && newGesture !== 'none') {
               state.gesture = newGesture;
@@ -1066,18 +1012,12 @@
       
       updatePosition() {
         if (!state.landmarks || !state.eggGroup.visible) return;
-      
         const center = getPalmCenter(state.landmarks);
-      
-        // Пряме перетворення координат – писанка точно над долонею
         const targetX = (center.x - 0.5) * 5;
         const targetY = (0.5 - center.y) * 3 + CONFIG.EGG_HEIGHT_OFFSET;
-      
         const maxX = 2.2, maxY = 1.6;
         const clampedX = THREE.MathUtils.clamp(targetX, -maxX, maxX);
         const clampedY = THREE.MathUtils.clamp(targetY, -maxY, maxY);
-      
-        // Менше згладжування – швидше слідування
         state.eggGroup.position.x += (clampedX - state.eggGroup.position.x) * 0.8;
         state.eggGroup.position.y += (clampedY - state.eggGroup.position.y) * 0.8;
         state.eggGroup.position.z = 0.1;
@@ -1085,11 +1025,9 @@
       
       applyGestures() {
         if (!state.eggGroup || !state.eggGroup.visible) return;
-
         if (state.gesture === 'open_palm' && state.prevGesture !== 'open_palm') {
           showGestureFeedback('✋', 'Чудово!', 1000);
         }
-
         if (state.gesture === 'spreading') {
           if (!state.isSpreading) {
             state.isSpreading = true;
@@ -1097,19 +1035,15 @@
             state.baseScale = state.currentScale;
             showGestureFeedback('🤏', 'Зміна розміру', 2000);
           }
-        
           const currentDistance = GestureRecognizer.getThumbIndexDistance(state.landmarks);
           const deltaDistance = currentDistance - state.startSpreadDistance;
-        
           let newScale = state.baseScale + (deltaDistance * CONFIG.ZOOM_SENSITIVITY);
           newScale = THREE.MathUtils.clamp(newScale, CONFIG.MIN_SCALE, CONFIG.MAX_SCALE);
-        
           state.currentScale = newScale;
           state.eggGroup.scale.set(newScale, newScale, newScale);
         } else if (state.isSpreading) {
           state.isSpreading = false;
         }
-      
         if (state.gesture === 'two_fingers') {
           if (!state.isRotating) {
             state.isRotating = true;
@@ -1117,10 +1051,8 @@
             state.currentRotationY = state.eggGroup.rotation.y;
             showGestureFeedback('🔄', 'Обертання', 2000);
           }
-        
           const currentAngle = GestureRecognizer.getTwoFingersAngle(state.landmarks);
           const deltaAngle = currentAngle - state.prevRotationAngle;
-        
           state.currentRotationY += deltaAngle * CONFIG.ROTATION_SENSITIVITY;
           state.eggGroup.rotation.y = state.currentRotationY;
           state.prevRotationAngle = currentAngle;
@@ -1132,7 +1064,7 @@
       hideLoading() {
         elements.loading.style.display = 'none';
         elements.video.style.display = 'block';
-        elements.handIndicator.style.display = 'flex';
+        elements.handIndicator.style.display = 'flex'; // спочатку показуємо
       }
       
       cleanup() {
@@ -1165,3 +1097,4 @@
   </script>
 </body>
 </html>
+
