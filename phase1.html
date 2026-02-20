@@ -8,11 +8,8 @@
   <!-- Шрифти -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
-  <!-- Підключення спільної теми (якщо є) -->
-  <link rel="stylesheet" href="css/pysanka-theme.css">
-  
   <style>
-    /* ============ МІСТИЧНІ ЗМІННІ (дублюємо на випадок відсутності теми) ============ */
+    /* ============ МІСТИЧНІ ЗМІННІ ============ */
     :root {
       --magic-purple: #2b003e;
       --magic-purple-dark: #1b001f;
@@ -60,7 +57,7 @@
       z-index: -2;
     }
     
-    /* Етнічні орнаменти з боків (як у сканері) */
+    /* Етнічні орнаменти з боків */
     body::after {
       content: '';
       position: fixed;
@@ -118,7 +115,7 @@
       font-style: italic;
     }
     
-    /* ============ СКАНЕР (у стилі кібер-етно, але містичний) ============ */
+    /* ============ СКАНЕР ============ */
     .scanner-box {
       background: rgba(42, 0, 62, 0.8);
       backdrop-filter: blur(5px);
@@ -130,46 +127,46 @@
       margin: 20px auto;
       box-shadow: 0 0 50px rgba(212, 175, 55, 0.3), inset 0 0 30px rgba(212, 175, 55, 0.2);
       position: relative;
-      /* Зрізані кути як на фото */
       clip-path: polygon(5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%, 0 5%);
     }
     
-   /* Область сканування у формі писанки */
-.scan-area {
-  width: 220px;
-  height: 300px;
-  margin: 20px auto;
-  border: 3px solid var(--gold-magic);
-  border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%; /* форма яйця */
-  position: relative;
-  cursor: pointer;
-  background: radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.15), transparent 70%);
-  overflow: hidden;
-  transition: var(--transition);
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
-}
-
-.scan-area:hover {
-  box-shadow: 0 0 50px var(--gold-magic);
-  transform: scale(1.02);
-}
-
-/* Логотип HUB на всю писанку */
-.hub-logo {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Змінено з contain на cover: заповнює всю область, обрізаючи краї якщо потрібно, без спотворення пропорцій */
-  opacity: 0.7;
-  mix-blend-mode: lighten;
-  filter: drop-shadow(0 0 15px var(--gold-magic)) brightness(1.1);
-  z-index: 2;
-  pointer-events: none;
-  transition: opacity 0.5s;
-}
-    /* Етнічний візерунок поверх (легка текстура) */
+    /* Область сканування у формі писанки */
+    .scan-area {
+      width: 220px;
+      height: 300px;
+      margin: 20px auto;
+      border: 3px solid var(--gold-magic);
+      border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+      position: relative;
+      cursor: pointer;
+      background: radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.15), transparent 70%);
+      overflow: hidden;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+    }
+    
+    .scan-area:hover {
+      box-shadow: 0 0 50px var(--gold-magic);
+      transform: scale(1.02);
+    }
+    
+    /* Логотип HUB (відбиток) */
+    .hub-logo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.7;
+      mix-blend-mode: lighten;
+      filter: drop-shadow(0 0 15px var(--gold-magic)) brightness(1.1);
+      z-index: 2;
+      pointer-events: none;
+      transition: opacity 1s ease; /* Додано плавну зміну прозорості */
+    }
+    
+    /* Етнічний візерунок поверх */
     .pattern-overlay {
       position: absolute;
       top: 0;
@@ -327,9 +324,10 @@
     </div>
   </div>
 
-  <!-- Аудіоефект сканування -->
+  <!-- Аудіоефект сканування (науково-фантастичний) -->
   <audio id="scanSound">
     <source src="https://assets.mixkit.co/sfx/download/mixkit-scanning-sci-fi-alarm-905.wav" type="audio/wav" />
+    <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" type="audio/ogg" />
   </audio>
 
   <script>
@@ -377,8 +375,8 @@
       scanArea.classList.add('scanning');
       messageEl.innerHTML = '<span style="color: var(--gold-light);">🔮 Аналіз ДНК-коду... Зачекайте</span>';
       
-      // Змінюємо прозорість логотипу для ефекту
-      hubLogo.style.opacity = '0.9';
+      // Плавна поява логотипу (від 0.7 до 1.0 за 1с)
+      hubLogo.style.opacity = '1';
       
       // Відтворюємо звук (якщо підтримується)
       if (sound) {
@@ -392,6 +390,7 @@
         // Вимикаємо лінію
         scanLine.style.display = 'none';
         scanArea.classList.remove('scanning');
+        // Повертаємо прозорість логотипу до початкової
         hubLogo.style.opacity = '0.7';
         
         // Випадковий регіон
