@@ -4,12 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Етап 3: Передай енергію | Соборна Писанка</title>
-  
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-  
-  <!-- Підключаємо regions.js -->
   <script src="js/regions.js"></script>
-  
   <style>
     /* ============ НОВА ТЕМНА ТЕМА ============ */
     :root {
@@ -162,7 +158,7 @@
       letter-spacing: 1px;
     }
     
-    .input-field, textarea.input-field {
+    .input-field, textarea.input-field, select.input-field {
       width: 100%;
       padding: 15px 20px;
       background: rgba(0,0,0,0.3);
@@ -175,6 +171,16 @@
       -webkit-backdrop-filter: blur(5px);
       backdrop-filter: blur(5px);
       resize: vertical;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+    
+    select.input-field {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23d4a373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 20px center;
+      background-size: 16px;
     }
     
     textarea.input-field {
@@ -182,103 +188,16 @@
       min-height: 80px;
     }
     
-    .input-field:focus, textarea.input-field:focus {
+    .input-field:focus, textarea.input-field:focus, select.input-field:focus {
       outline: none;
       border-color: var(--gold-bright);
       box-shadow: 0 0 20px rgba(232, 199, 110, 0.3);
       background: rgba(0,0,0,0.5);
     }
     
-    .input-field::placeholder, textarea.input-field::placeholder {
-      color: rgba(255,255,255,0.5);
-    }
-    
-    /* Автодоповнення міст */
-    .city-suggestions {
-      position: absolute;
-      width: 100%;
-      background: var(--bg-card);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-      border: 2px solid var(--gold-accent);
-      border-top: none;
-      border-radius: 0 0 20px 20px;
-      max-height: 250px;
-      overflow-y: auto;
-      display: none;
-      z-index: 1000;
-      margin-top: -5px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    
-    .city-suggestion-item {
-      padding: 15px 20px;
-      cursor: pointer;
+    .input-field option {
+      background: var(--bg-dark);
       color: var(--text-light);
-      transition: var(--transition);
-      border-bottom: 1px solid rgba(212, 163, 115, 0.2);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .city-suggestion-item:last-child {
-      border-bottom: none;
-    }
-    
-    .city-suggestion-item:hover {
-      background: var(--gold-accent);
-      color: var(--bg-dark);
-    }
-    
-    .city-suggestion-item:active {
-      background: var(--gold-accent);
-      color: var(--bg-dark);
-      transform: scale(0.98);
-    }
-    
-    .city-region-badge {
-      font-size: 10px;
-      background: rgba(255,255,255,0.2);
-      padding: 3px 8px;
-      border-radius: 20px;
-      margin-left: 8px;
-    }
-    
-    .city-country-badge {
-      font-size: 10px;
-      background: rgba(255,125,0,0.3);
-      padding: 3px 8px;
-      border-radius: 20px;
-      margin-left: 8px;
-      color: var(--gold-bright);
-    }
-    
-    /* Підказка для міжнародних міст */
-    .city-hint {
-      margin-top: 8px;
-      font-size: 13px;
-      color: var(--gold-bright);
-      opacity: 0.8;
-      padding: 10px;
-      background: rgba(0,0,0,0.3);
-      border-radius: 30px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    
-    .city-hint i {
-      font-size: 18px;
-    }
-    
-    .city-hint-tag {
-      background: rgba(212, 163, 115, 0.2);
-      padding: 4px 10px;
-      border-radius: 30px;
-      font-size: 12px;
-      border: 1px solid var(--gold-accent);
     }
     
     .energy-transfer {
@@ -339,35 +258,12 @@
       cursor: pointer;
       transition: var(--transition);
       text-decoration: none;
-      position: relative;
-      overflow: hidden;
       border-radius: 50px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    .btn:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: var(--gold-accent);
-      transition: var(--transition);
-      z-index: -1;
-    }
-    
-    .btn:hover:before {
-      left: 0;
     }
     
     .btn:active {
       color: var(--bg-dark);
       transform: scale(0.98);
-    }
-    
-    .btn:active:before {
-      left: 0;
     }
     
     .btn:disabled {
@@ -415,6 +311,11 @@
       margin-top: 30px;
     }
     
+    .footer-links .btn {
+      padding: 12px 25px;
+      font-size: 18px;
+    }
+    
     .particle {
       position: absolute;
       width: 6px;
@@ -434,73 +335,50 @@
       h1 { font-size: 32px; }
       .region-name { font-size: 28px; }
       .btn { padding: 12px 25px; font-size: 18px; }
-      .city-hint { font-size: 12px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    
     <div class="ornament"></div>
-    
     <h1>ПЕРЕДАЙ ЕНЕРГІЮ</h1>
     
     <div class="magic-container">
       <div class="magic-frame">
-        
-        <!-- Інформація про регіон -->
         <div id="regionInfo" class="region-info"></div>
         
-        <!-- Форма -->
         <form id="energyForm" onsubmit="event.preventDefault(); sendEnergy();">
           <div class="form-group">
             <label class="form-label">Твоє ім'я</label>
             <input type="text" id="userName" class="input-field" placeholder="Як тебе звати?" required maxlength="50">
           </div>
 
-          <!-- НОВЕ ПОЛЕ: побажання -->
           <div class="form-group">
             <label class="form-label">Твоє побажання (необов'язково)</label>
             <textarea id="userWish" class="input-field" rows="2" placeholder="Наприклад: Миру, щастя, перемоги..." maxlength="300"></textarea>
           </div>
           
-          <div class="form-group" style="position: relative;">
-            <label class="form-label">
-              <span>Місто або місцевість</span>
-              <span style="font-size: 14px; opacity: 0.7; margin-left: 10px;">🌍</span>
-            </label>
-            <input type="text" id="userCity" class="input-field" 
-                   placeholder="Почни писати назву міста..." 
-                   required autocomplete="off">
-            
-            <!-- Автодоповнення міст -->
-            <div id="citySuggestions" class="city-suggestions"></div>
-            
-            <!-- Підказка для міст -->
-            <div class="city-hint">
-              <i>🏙️</i> <span>Міста України:</span>
-              <span class="city-hint-tag">Київ</span>
-              <span class="city-hint-tag">Львів</span>
-              <span class="city-hint-tag">Одеса</span>
-              <span class="city-hint-tag">Чорноморськ</span>
-              <span class="city-hint-tag">Умань</span>
-            </div>
-            
-            <div class="city-hint" style="margin-top: 5px;">
-              <i>✈️</i> <span>Міста світу:</span>
-              <span class="city-hint-tag">Варшава</span>
-              <span class="city-hint-tag">Лондон</span>
-              <span class="city-hint-tag">Торонто</span>
-              <span class="city-hint-tag">Чикаго</span>
-              <span class="city-hint-tag">Лісабон</span>
-            </div>
-            
-            <div class="city-hint" style="background: rgba(232, 199, 110, 0.15);">
-              <i>💡</i> Можна написати: "Народився в Чорноморську, живу в Торонто"
+          <!-- Місто предків (випадаючий список) -->
+          <div class="form-group">
+            <label class="form-label">Місто предків</label>
+            <select id="ancestorCity" class="input-field" required>
+              <option value="">Оберіть місто зі списку</option>
+            </select>
+            <div style="font-size: 12px; color: var(--gold-accent); margin-top: 5px; opacity: 0.8;">
+              🏛️ Це конкретне місто вашого родового краю
             </div>
           </div>
           
-          <!-- Енергетична анімація -->
+          <!-- Де зараз (необов'язково) -->
+          <div class="form-group">
+            <label class="form-label">Де ти зараз? (необов'язково)</label>
+            <input type="text" id="currentLocation" class="input-field" 
+                   placeholder="Наприклад: Живу в Чорноморську">
+            <div style="font-size: 12px; color: var(--gold-accent); margin-top: 5px; opacity: 0.8;">
+              🌍 Розкажи, де ти знаходишся (це не впливає на карту)
+            </div>
+          </div>
+          
           <div class="energy-transfer">
             <div class="pysanka-energy">
               <div class="energy-core" id="energyCore"></div>
@@ -518,7 +396,6 @@
           </button>
         </form>
         
-        <!-- Статус повідомлення -->
         <div id="statusMessage" class="status-message"></div>
       </div>
     </div>
@@ -536,89 +413,219 @@
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx-OsNqC20ebNEnmUxIFY4vxBKPG4CNshnKkRATPV-4n7_XT9QOWcUudJLsoY2fuheV/exec';
     const TOKEN = '1680max';
     
-    // ============ РОЗШИРЕНИЙ СЛОВНИК (200+ міст) ============
-    const UKRAINE_CITIES = {
-      // Обласні центри (всі 24 + Крим)
-      'київ': { lat: 50.45, lng: 30.52, regionId: 4, name: 'Київ', region: 'Київщина' },
-      'львів': { lat: 49.84, lng: 24.03, regionId: 5, name: 'Львів', region: 'Львівщина' },
-      'одеса': { lat: 46.48, lng: 30.72, regionId: 6, name: 'Одеса', region: 'Одещина' },
-      'харків': { lat: 49.99, lng: 36.23, regionId: 7, name: 'Харків', region: 'Харківщина' },
-      'дніпро': { lat: 48.46, lng: 35.04, regionId: 8, name: 'Дніпро', region: 'Дніпропетровщина' },
-      'донецьк': { lat: 48.02, lng: 37.80, regionId: 13, name: 'Донецьк', region: 'Донеччина' },
-      'запоріжжя': { lat: 47.84, lng: 35.14, regionId: 8, name: 'Запоріжжя', region: 'Дніпропетровщина' },
-      'кривий ріг': { lat: 47.91, lng: 33.39, regionId: 8, name: 'Кривий Ріг', region: 'Дніпропетровщина' },
-      'кропивницький': { lat: 48.51, lng: 32.26, regionId: 10, name: 'Кропивницький', region: 'Кропивниччина' },
-      'миколаїв': { lat: 46.97, lng: 32.00, regionId: 6, name: 'Миколаїв', region: 'Одещина' },
-      'маріуполь': { lat: 47.10, lng: 37.55, regionId: 13, name: 'Маріуполь', region: 'Донеччина' },
-      'луганськ': { lat: 48.57, lng: 39.31, regionId: 14, name: 'Луганськ', region: 'Луганщина' },
-      'вінниця': { lat: 49.23, lng: 28.47, regionId: 1, name: 'Вінниця', region: 'Поділля' },
-      'хмельницький': { lat: 49.42, lng: 26.98, regionId: 1, name: 'Хмельницький', region: 'Поділля' },
-      'тернопіль': { lat: 49.55, lng: 25.59, regionId: 1, name: 'Тернопіль', region: 'Поділля' },
-      'житомир': { lat: 50.25, lng: 28.66, regionId: 2, name: 'Житомир', region: 'Полісся' },
-      'чернігів': { lat: 51.50, lng: 31.29, regionId: 2, name: 'Чернігів', region: 'Полісся' },
-      'рівне': { lat: 50.62, lng: 26.25, regionId: 2, name: 'Рівне', region: 'Полісся' },
-      'луцьк': { lat: 50.75, lng: 25.34, regionId: 2, name: 'Луцьк', region: 'Полісся' },
-      'івано-франківськ': { lat: 48.92, lng: 24.71, regionId: 3, name: 'Івано-Франківськ', region: 'Карпати' },
-      'ужгород': { lat: 48.62, lng: 22.30, regionId: 3, name: 'Ужгород', region: 'Карпати' },
-      'чернівці': { lat: 48.29, lng: 25.94, regionId: 3, name: 'Чернівці', region: 'Карпати' },
-      'полтава': { lat: 49.59, lng: 34.55, regionId: 9, name: 'Полтава', region: 'Полтавщина' },
-      'суми': { lat: 50.91, lng: 34.80, regionId: 7, name: 'Суми', region: 'Харківщина' },
-      'черкаси': { lat: 49.44, lng: 32.06, regionId: 11, name: 'Черкаси', region: 'Черкащина' },
-      
-      // Кримські міста
-      'сімферополь': { lat: 44.95, lng: 34.10, regionId: 12, name: 'Сімферополь', region: 'Крим' },
-      'севастополь': { lat: 44.61, lng: 33.52, regionId: 12, name: 'Севастополь', region: 'Крим' },
-      'ялта': { lat: 44.50, lng: 34.17, regionId: 12, name: 'Ялта', region: 'Крим' },
-      'феодосія': { lat: 45.03, lng: 35.38, regionId: 12, name: 'Феодосія', region: 'Крим' },
-      'євпаторія': { lat: 45.20, lng: 33.36, regionId: 12, name: 'Євпаторія', region: 'Крим' },
-      'керч': { lat: 45.36, lng: 36.47, regionId: 12, name: 'Керч', region: 'Крим' },
-      
-      // Міста-мільйонники діаспори
-      'торонто': { lat: 43.65, lng: -79.38, country: 'Канада', name: 'Торонто', isDiaspora: true },
-      'чикаго': { lat: 41.88, lng: -87.63, country: 'США', name: 'Чикаго', isDiaspora: true },
-      'нью-йорк': { lat: 40.71, lng: -74.01, country: 'США', name: 'Нью-Йорк', isDiaspora: true },
-      'варшава': { lat: 52.23, lng: 21.01, country: 'Польща', name: 'Варшава', isDiaspora: true },
-      'берлін': { lat: 52.52, lng: 13.40, country: 'Німеччина', name: 'Берлін', isDiaspora: true },
-      'лондон': { lat: 51.51, lng: -0.13, country: 'Велика Британія', name: 'Лондон', isDiaspora: true },
-      'париж': { lat: 48.86, lng: 2.35, country: 'Франція', name: 'Париж', isDiaspora: true },
-      'рим': { lat: 41.90, lng: 12.50, country: 'Італія', name: 'Рим', isDiaspora: true },
-      'мадрид': { lat: 40.42, lng: -3.70, country: 'Іспанія', name: 'Мадрид', isDiaspora: true },
-      'лісабон': { lat: 38.72, lng: -9.14, country: 'Португалія', name: 'Лісабон', isDiaspora: true },
-      
-      // Інші популярні міста України
-      'чорноморськ': { lat: 46.30, lng: 30.66, regionId: 6, name: 'Чорноморськ', region: 'Одещина' },
-      'умань': { lat: 48.75, lng: 30.22, regionId: 11, name: 'Умань', region: 'Черкащина' },
-      'біла церква': { lat: 49.80, lng: 30.12, regionId: 4, name: 'Біла Церква', region: 'Київщина' },
-      'кременчук': { lat: 49.06, lng: 33.40, regionId: 9, name: 'Кременчук', region: 'Полтавщина' },
-      'мелітополь': { lat: 46.84, lng: 35.36, regionId: 8, name: 'Мелітополь', region: 'Дніпропетровщина' },
-      'бердянськ': { lat: 46.75, lng: 36.79, regionId: 8, name: 'Бердянськ', region: 'Дніпропетровщина' },
-      'нікополь': { lat: 47.57, lng: 34.39, regionId: 8, name: 'Нікополь', region: 'Дніпропетровщина' },
-      'словянськ': { lat: 48.85, lng: 37.61, regionId: 13, name: 'Слов\'янськ', region: 'Донеччина' },
-      'краматорськ': { lat: 48.72, lng: 37.53, regionId: 13, name: 'Краматорськ', region: 'Донеччина' },
-      'бахмут': { lat: 48.60, lng: 38.00, regionId: 13, name: 'Бахмут', region: 'Донеччина' },
-      'ізмаїл': { lat: 45.35, lng: 28.84, regionId: 6, name: 'Ізмаїл', region: 'Одещина' },
-      'южне': { lat: 46.62, lng: 31.10, regionId: 6, name: 'Южне', region: 'Одещина' },
-      'чоп': { lat: 48.43, lng: 22.21, regionId: 3, name: 'Чоп', region: 'Карпати' },
-      'мукачево': { lat: 48.44, lng: 22.71, regionId: 3, name: 'Мукачево', region: 'Карпати' }
+    // ============ СПИСОК МІСТ ЗА РЕГІОНАМИ ============
+    const REGION_CITIES = {
+      1: { // Поділля
+        name: 'Поділля',
+        cities: [
+          { name: 'Вінниця', lat: 49.23, lng: 28.47 },
+          { name: 'Хмельницький', lat: 49.42, lng: 26.98 },
+          { name: 'Тернопіль', lat: 49.55, lng: 25.59 },
+          { name: 'Бар', lat: 49.07, lng: 27.68 },
+          { name: 'Могилів-Подільський', lat: 48.45, lng: 27.80 },
+          { name: 'Жмеринка', lat: 49.04, lng: 28.11 },
+          { name: 'Кам\'янець-Подільський', lat: 48.68, lng: 26.58 },
+          { name: 'Дунаївці', lat: 48.89, lng: 26.86 },
+          { name: 'Городок', lat: 49.16, lng: 26.57 },
+          { name: 'Чортків', lat: 49.02, lng: 25.80 }
+        ]
+      },
+      2: { // Полісся
+        name: 'Полісся',
+        cities: [
+          { name: 'Житомир', lat: 50.25, lng: 28.66 },
+          { name: 'Чернігів', lat: 51.50, lng: 31.29 },
+          { name: 'Рівне', lat: 50.62, lng: 26.25 },
+          { name: 'Луцьк', lat: 50.75, lng: 25.34 },
+          { name: 'Коростень', lat: 50.95, lng: 28.64 },
+          { name: 'Новоград-Волинський', lat: 50.59, lng: 27.62 },
+          { name: 'Овруч', lat: 51.32, lng: 28.81 },
+          { name: 'Малин', lat: 50.77, lng: 29.27 },
+          { name: 'Ковель', lat: 51.22, lng: 24.71 },
+          { name: 'Володимир', lat: 50.85, lng: 24.32 }
+        ]
+      },
+      3: { // Карпати
+        name: 'Карпати',
+        cities: [
+          { name: 'Івано-Франківськ', lat: 48.92, lng: 24.71 },
+          { name: 'Ужгород', lat: 48.62, lng: 22.30 },
+          { name: 'Чернівці', lat: 48.29, lng: 25.94 },
+          { name: 'Мукачево', lat: 48.44, lng: 22.71 },
+          { name: 'Коломия', lat: 48.53, lng: 25.04 },
+          { name: 'Рахів', lat: 48.06, lng: 24.21 },
+          { name: 'Яремче', lat: 48.45, lng: 24.56 },
+          { name: 'Свалява', lat: 48.55, lng: 22.99 },
+          { name: 'Хуст', lat: 48.18, lng: 23.30 },
+          { name: 'Тячів', lat: 48.01, lng: 23.57 }
+        ]
+      },
+      4: { // Київщина
+        name: 'Київщина',
+        cities: [
+          { name: 'Київ', lat: 50.45, lng: 30.52 },
+          { name: 'Біла Церква', lat: 49.80, lng: 30.12 },
+          { name: 'Бровари', lat: 50.51, lng: 30.79 },
+          { name: 'Бориспіль', lat: 50.35, lng: 30.95 },
+          { name: 'Фастів', lat: 50.07, lng: 29.92 },
+          { name: 'Ірпінь', lat: 50.52, lng: 30.25 },
+          { name: 'Вишгород', lat: 50.58, lng: 30.49 },
+          { name: 'Обухів', lat: 50.11, lng: 30.63 },
+          { name: 'Переяслав', lat: 50.07, lng: 31.45 },
+          { name: 'Яготин', lat: 50.26, lng: 31.78 }
+        ]
+      },
+      5: { // Львівщина
+        name: 'Львівщина',
+        cities: [
+          { name: 'Львів', lat: 49.84, lng: 24.03 },
+          { name: 'Дрогобич', lat: 49.35, lng: 23.51 },
+          { name: 'Стрий', lat: 49.25, lng: 23.85 },
+          { name: 'Самбір', lat: 49.52, lng: 23.20 },
+          { name: 'Трускавець', lat: 49.28, lng: 23.51 },
+          { name: 'Червоноград', lat: 50.39, lng: 24.23 },
+          { name: 'Броди', lat: 50.08, lng: 25.15 },
+          { name: 'Сокаль', lat: 50.48, lng: 24.28 },
+          { name: 'Яворів', lat: 49.94, lng: 23.39 },
+          { name: 'Моршин', lat: 49.15, lng: 23.87 }
+        ]
+      },
+      6: { // Одещина
+        name: 'Одещина',
+        cities: [
+          { name: 'Одеса', lat: 46.48, lng: 30.72 },
+          { name: 'Чорноморськ', lat: 46.30, lng: 30.66 },
+          { name: 'Ізмаїл', lat: 45.35, lng: 28.84 },
+          { name: 'Білгород-Дністровський', lat: 46.18, lng: 30.34 },
+          { name: 'Подільськ', lat: 47.74, lng: 29.53 },
+          { name: 'Южне', lat: 46.62, lng: 31.10 },
+          { name: 'Кілія', lat: 45.45, lng: 29.26 },
+          { name: 'Рені', lat: 45.45, lng: 28.28 },
+          { name: 'Болград', lat: 45.68, lng: 28.61 },
+          { name: 'Арциз', lat: 45.99, lng: 29.42 }
+        ]
+      },
+      7: { // Харківщина
+        name: 'Харківщина',
+        cities: [
+          { name: 'Харків', lat: 49.99, lng: 36.23 },
+          { name: 'Суми', lat: 50.91, lng: 34.80 },
+          { name: 'Ізюм', lat: 49.19, lng: 37.27 },
+          { name: 'Лозова', lat: 48.89, lng: 36.31 },
+          { name: 'Чугуїв', lat: 49.84, lng: 36.68 },
+          { name: 'Богодухів', lat: 50.16, lng: 35.53 },
+          { name: 'Куп\'янськ', lat: 49.71, lng: 37.62 },
+          { name: 'Вовчанськ', lat: 50.29, lng: 36.95 },
+          { name: 'Балаклія', lat: 49.46, lng: 36.86 },
+          { name: 'Первомайський', lat: 49.39, lng: 36.21 }
+        ]
+      },
+      8: { // Дніпропетровщина
+        name: 'Дніпропетровщина',
+        cities: [
+          { name: 'Дніпро', lat: 48.46, lng: 35.04 },
+          { name: 'Кривий Ріг', lat: 47.91, lng: 33.39 },
+          { name: 'Кам\'янське', lat: 48.52, lng: 34.61 },
+          { name: 'Нікополь', lat: 47.57, lng: 34.39 },
+          { name: 'Павлоград', lat: 48.52, lng: 35.87 },
+          { name: 'Новомосковськ', lat: 48.63, lng: 35.22 },
+          { name: 'Марганець', lat: 47.65, lng: 34.62 },
+          { name: 'Жовті Води', lat: 48.35, lng: 33.50 },
+          { name: 'Покров', lat: 47.66, lng: 34.08 },
+          { name: 'Тернівка', lat: 48.52, lng: 33.98 }
+        ]
+      },
+      9: { // Полтавщина
+        name: 'Полтавщина',
+        cities: [
+          { name: 'Полтава', lat: 49.59, lng: 34.55 },
+          { name: 'Кременчук', lat: 49.06, lng: 33.40 },
+          { name: 'Лубни', lat: 50.02, lng: 33.00 },
+          { name: 'Миргород', lat: 49.97, lng: 33.61 },
+          { name: 'Гадяч', lat: 50.37, lng: 34.00 },
+          { name: 'Пирятин', lat: 50.24, lng: 32.51 },
+          { name: 'Лохвиця', lat: 50.36, lng: 33.27 },
+          { name: 'Зіньків', lat: 50.21, lng: 34.36 },
+          { name: 'Карлівка', lat: 49.46, lng: 35.13 },
+          { name: 'Кобеляки', lat: 49.14, lng: 34.20 }
+        ]
+      },
+      10: { // Кропивниччина
+        name: 'Кропивниччина',
+        cities: [
+          { name: 'Кропивницький', lat: 48.51, lng: 32.26 },
+          { name: 'Олександрія', lat: 48.67, lng: 33.12 },
+          { name: 'Світловодськ', lat: 49.05, lng: 33.25 },
+          { name: 'Знам\'янка', lat: 48.71, lng: 32.67 },
+          { name: 'Долинська', lat: 48.11, lng: 32.76 },
+          { name: 'Новоукраїнка', lat: 48.32, lng: 31.64 },
+          { name: 'Гайворон', lat: 48.34, lng: 29.86 },
+          { name: 'Мала Виска', lat: 48.64, lng: 31.62 },
+          { name: 'Бобринець', lat: 48.06, lng: 32.16 },
+          { name: 'Помічна', lat: 48.24, lng: 31.41 }
+        ]
+      },
+      11: { // Черкащина
+        name: 'Черкащина',
+        cities: [
+          { name: 'Черкаси', lat: 49.44, lng: 32.06 },
+          { name: 'Умань', lat: 48.75, lng: 30.22 },
+          { name: 'Сміла', lat: 49.22, lng: 31.87 },
+          { name: 'Золотоноша', lat: 49.67, lng: 32.04 },
+          { name: 'Канів', lat: 49.75, lng: 31.47 },
+          { name: 'Корсунь-Шевченківський', lat: 49.42, lng: 31.26 },
+          { name: 'Шпола', lat: 49.00, lng: 31.40 },
+          { name: 'Тальне', lat: 48.88, lng: 30.71 },
+          { name: 'Жашків', lat: 49.25, lng: 30.11 },
+          { name: 'Монастирище', lat: 48.99, lng: 29.81 }
+        ]
+      },
+      12: { // Крим
+        name: 'Крим',
+        cities: [
+          { name: 'Сімферополь', lat: 44.95, lng: 34.10 },
+          { name: 'Севастополь', lat: 44.61, lng: 33.52 },
+          { name: 'Ялта', lat: 44.50, lng: 34.17 },
+          { name: 'Феодосія', lat: 45.03, lng: 35.38 },
+          { name: 'Євпаторія', lat: 45.20, lng: 33.36 },
+          { name: 'Керч', lat: 45.36, lng: 36.47 },
+          { name: 'Бахчисарай', lat: 44.75, lng: 33.86 },
+          { name: 'Алушта', lat: 44.67, lng: 34.41 },
+          { name: 'Судак', lat: 44.85, lng: 34.98 },
+          { name: 'Джанкой', lat: 45.71, lng: 34.39 }
+        ]
+      },
+      13: { // Донеччина
+        name: 'Донеччина',
+        cities: [
+          { name: 'Донецьк', lat: 48.02, lng: 37.80 },
+          { name: 'Маріуполь', lat: 47.10, lng: 37.55 },
+          { name: 'Краматорськ', lat: 48.72, lng: 37.53 },
+          { name: 'Слов\'янськ', lat: 48.85, lng: 37.61 },
+          { name: 'Бахмут', lat: 48.60, lng: 38.00 },
+          { name: 'Покровськ', lat: 48.28, lng: 37.18 },
+          { name: 'Горлівка', lat: 48.33, lng: 38.09 },
+          { name: 'Макіївка', lat: 48.05, lng: 37.97 },
+          { name: 'Єнакієве', lat: 48.23, lng: 38.21 },
+          { name: 'Харцизьк', lat: 48.04, lng: 38.14 }
+        ]
+      },
+      14: { // Луганщина
+        name: 'Луганщина',
+        cities: [
+          { name: 'Луганськ', lat: 48.57, lng: 39.31 },
+          { name: 'Сєвєродонецьк', lat: 48.95, lng: 38.48 },
+          { name: 'Лисичанськ', lat: 48.92, lng: 38.42 },
+          { name: 'Рубіжне', lat: 49.01, lng: 38.37 },
+          { name: 'Кремінна', lat: 49.05, lng: 38.22 },
+          { name: 'Попасна', lat: 48.63, lng: 38.38 },
+          { name: 'Старобільськ', lat: 49.28, lng: 38.91 },
+          { name: 'Сватове', lat: 49.41, lng: 38.15 },
+          { name: 'Алчевськ', lat: 48.47, lng: 38.82 },
+          { name: 'Брянка', lat: 48.51, lng: 38.67 }
+        ]
+      }
     };
-    
-    // Міста світу для автодоповнення
-    const WORLD_CITIES = [
-      'Варшава, Польща', 'Лондон, Велика Британія', 'Нью-Йорк, США', 
-      'Торонто, Канада', 'Берлін, Німеччина', 'Прага, Чехія',
-      'Париж, Франція', 'Рим, Італія', 'Мадрид, Іспанія',
-      'Лісабон, Португалія', 'Стокгольм, Швеція', 'Осло, Норвегія',
-      'Відень, Австрія', 'Брюссель, Бельгія', 'Амстердам, Нідерланди',
-      'Чикаго, США', 'Лос-Анджелес, США', 'Майамі, США',
-      'Монреаль, Канада', 'Ванкувер, Канада', 'Едмонтон, Канада',
-      'Мельбурн, Австралія', 'Сідней, Австралія', 'Окленд, Нова Зеландія'
-    ];
-    
-    // Кеш для геокодингу
-    const geocodeCache = new Map();
-    
-    // Всі міста для пошуку
-    const ALL_CITIES = Object.keys(UKRAINE_CITIES).sort();
     
     let userRegion = null;
     
@@ -641,6 +648,22 @@
               <div class="region-name">${regionInfo.name}</div>
               <div class="region-help">Твій історичний край</div>
             `;
+            
+            // Заповнюємо випадаючий список міст для цього регіону
+            const citiesForRegion = REGION_CITIES[regionInfo.id]?.cities || [];
+            const citySelect = document.getElementById('ancestorCity');
+            citySelect.innerHTML = '<option value="">Оберіть місто зі списку</option>';
+            
+            citiesForRegion.forEach(city => {
+              const option = document.createElement('option');
+              option.value = JSON.stringify({ 
+                name: city.name, 
+                lat: city.lat, 
+                lng: city.lng 
+              });
+              option.textContent = city.name;
+              citySelect.appendChild(option);
+            });
           }
         } else {
           window.location.href = 'phase1.html';
@@ -648,231 +671,13 @@
       } catch (e) {
         console.error(e);
       }
-      
-      setupCityAutocomplete();
     });
-    
-    // Функція автодоповнення для міст
-    function setupCityAutocomplete() {
-      const input = document.getElementById('userCity');
-      const suggestions = document.getElementById('citySuggestions');
-      
-      input.addEventListener('input', function() {
-        const value = this.value.toLowerCase().trim();
-        
-        if (value.length < 2) {
-          suggestions.style.display = 'none';
-          return;
-        }
-        
-        // Шукаємо українські міста
-        const ukraineMatches = ALL_CITIES.filter(city => 
-          city.includes(value) || UKRAINE_CITIES[city].name.toLowerCase().includes(value)
-        ).slice(0, 5);
-        
-        // Шукаємо міста світу
-        const worldMatches = WORLD_CITIES.filter(city => 
-          city.toLowerCase().includes(value)
-        ).slice(0, 3);
-        
-        let html = '';
-        
-        // Додаємо українські міста
-        if (ukraineMatches.length > 0) {
-          html += '<div style="padding: 8px 15px; color: var(--gold-accent); font-size: 12px;">🇺🇦 МІСТА УКРАЇНИ</div>';
-          ukraineMatches.forEach(cityKey => {
-            const cityData = UKRAINE_CITIES[cityKey];
-            html += `
-              <div class="city-suggestion-item" onclick="selectCity('${cityData.name}')">
-                <span>🏙️ ${cityData.name}</span>
-                <span class="city-region-badge">${cityData.region || cityData.country || 'Україна'}</span>
-              </div>
-            `;
-          });
-        }
-        
-        // Додаємо міста світу
-        if (worldMatches.length > 0) {
-          html += '<div style="padding: 8px 15px; color: var(--gold-accent); font-size: 12px; margin-top: 5px;">🌍 МІСТА СВІТУ</div>';
-          worldMatches.forEach(city => {
-            html += `
-              <div class="city-suggestion-item" onclick="selectCity('${city}')">
-                <span>🌎 ${city}</span>
-                <span class="city-country-badge">світ</span>
-              </div>
-            `;
-          });
-        }
-        
-        if (html) {
-          suggestions.innerHTML = html;
-          suggestions.style.display = 'block';
-        } else {
-          suggestions.style.display = 'none';
-        }
-      });
-      
-      document.addEventListener('click', function(e) {
-        if (!input.contains(e.target)) {
-          suggestions.style.display = 'none';
-        }
-      });
-    }
-    
-    window.selectCity = function(city) {
-      document.getElementById('userCity').value = city;
-      document.getElementById('citySuggestions').style.display = 'none';
-    };
-    
-    // Функція нормалізації тексту
-    function normalizeCityInput(text) {
-      return text.toLowerCase()
-        .replace(/місто|м\.|село|с\.|смт|область|обл\.|район|р-н|народився|живу|проживаю|зараз|за кордоном/gi, '')
-        .replace(/[^\w\s\-'’]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-    
-    // ============ ВИПРАВЛЕНА ФУНКЦІЯ ГЕОКОДИНГУ ============
-    async function geocodeCity(cityInput) {
-      const cacheKey = cityInput.toLowerCase().trim();
-      
-      // ТИМЧАСОВО: очищаємо кеш для діагностики (після налагодження закоментувати)
-      geocodeCache.clear();
-      
-      // Перевіряємо кеш (після очищення він буде порожній)
-      if (geocodeCache.has(cacheKey)) {
-        console.log('📦 Використовуємо кеш для:', cityInput);
-        return geocodeCache.get(cacheKey);
-      }
-      
-      const normalized = normalizeCityInput(cityInput);
-      console.log('🔍 Нормалізований ввід:', normalized);
-      
-      // 0. ПРЯМИЙ ПОШУК ЗА КЛЮЧЕМ (найпріоритетніший)
-      if (UKRAINE_CITIES.hasOwnProperty(normalized)) {
-        const value = UKRAINE_CITIES[normalized];
-        console.log('✅ Прямий збіг за ключем:', normalized, value.name, 'координати:', value.lat, value.lng);
-        const result = {
-          coords: { lat: value.lat, lng: value.lng },
-          isDiaspora: value.isDiaspora || false,
-          country: value.country || 'Україна',
-          cityName: value.name
-        };
-        geocodeCache.set(cacheKey, result);
-        return result;
-      }
-      
-      // 1. ТОЧНИЙ ЗБІГ ЗА НАЗВОЮ МІСТА (value.name)
-      for (let [key, value] of Object.entries(UKRAINE_CITIES)) {
-        if (value.name.toLowerCase() === normalized) {
-          console.log('✅ Точний збіг за назвою:', value.name);
-          const result = {
-            coords: { lat: value.lat, lng: value.lng },
-            isDiaspora: value.isDiaspora || false,
-            country: value.country || 'Україна',
-            cityName: value.name
-          };
-          geocodeCache.set(cacheKey, result);
-          return result;
-        }
-      }
-      
-      // 2. ТОЧНИЙ ЗБІГ ЗА КЛЮЧЕМ (наприклад, "дніпропетровськ")
-      for (let [key, value] of Object.entries(UKRAINE_CITIES)) {
-        if (key === normalized) {
-          console.log('✅ Точний збіг за ключем:', key);
-          const result = {
-            coords: { lat: value.lat, lng: value.lng },
-            isDiaspora: value.isDiaspora || false,
-            country: value.country || 'Україна',
-            cityName: value.name
-          };
-          geocodeCache.set(cacheKey, result);
-          return result;
-        }
-      }
-      
-      // 3. ЧАСТКОВИЙ ПОШУК (обережніше, мінімум 3 символи)
-      for (let [key, value] of Object.entries(UKRAINE_CITIES)) {
-        if (normalized.length >= 3 && (normalized.includes(key) || key.includes(normalized))) {
-          console.log('⚠️ Частковий збіг:', key, '->', value.name);
-          const result = {
-            coords: { lat: value.lat, lng: value.lng },
-            isDiaspora: value.isDiaspora || false,
-            country: value.country || 'Україна',
-            cityName: value.name
-          };
-          geocodeCache.set(cacheKey, result);
-          return result;
-        }
-      }
-      
-      // 4. Якщо не знайшли - використовуємо Nominatim
-      try {
-        console.log('🌐 Шукаємо через Nominatim:', cityInput);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Спочатку в Україні
-        const uaQuery = encodeURIComponent(`${cityInput}, Україна`);
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${uaQuery}&limit=1&addressdetails=1`,
-          { headers: { 'User-Agent': 'SobornaPysanka/1.0 (культурний проект) - для єднання українців' } }
-        );
-        const data = await response.json();
-        
-        if (data && data[0]) {
-          console.log('✅ Знайдено в Україні через Nominatim');
-          const result = {
-            coords: { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) },
-            isDiaspora: false,
-            country: 'Україна',
-            cityName: data[0].display_name.split(',')[0]
-          };
-          geocodeCache.set(cacheKey, result);
-          return result;
-        }
-        
-        // Глобальний пошук
-        const globalQuery = encodeURIComponent(cityInput);
-        const globalResponse = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${globalQuery}&limit=1&addressdetails=1`,
-          { headers: { 'User-Agent': 'SobornaPysanka/1.0' } }
-        );
-        const globalData = await globalResponse.json();
-        
-        if (globalData && globalData[0]) {
-          console.log('🌍 Знайдено глобально через Nominatim');
-          const country = globalData[0].address?.country || 'інша країна';
-          const result = {
-            coords: { lat: parseFloat(globalData[0].lat), lng: parseFloat(globalData[0].lon) },
-            isDiaspora: true,
-            country: country,
-            cityName: globalData[0].display_name.split(',')[0]
-          };
-          geocodeCache.set(cacheKey, result);
-          return result;
-        }
-      } catch (error) {
-        console.log('⚠️ Помилка Nominatim:', error);
-      }
-      
-      // 5. Якщо нічого не знайшли - центр України
-      console.log('❌ Місто не знайдено, використовуємо центр');
-      const result = {
-        coords: { lat: 49.0, lng: 32.0 },
-        isDiaspora: false,
-        country: 'Україна',
-        cityName: cityInput
-      };
-      geocodeCache.set(cacheKey, result);
-      return result;
-    }
     
     async function sendEnergy() {
       const name = document.getElementById('userName').value.trim();
       const wish = document.getElementById('userWish').value.trim();
-      const city = document.getElementById('userCity').value.trim();
+      const ancestorCitySelect = document.getElementById('ancestorCity');
+      const currentLocation = document.getElementById('currentLocation').value.trim();
       const regionId = document.getElementById('regionId').value;
       const regionName = document.getElementById('regionName').value;
       const symbol = document.getElementById('regionSymbol').value;
@@ -882,8 +687,8 @@
         return;
       }
       
-      if (!city) {
-        showStatus('Розкажи, звідки ти', 'error');
+      if (!ancestorCitySelect.value) {
+        showStatus('Оберіть місто предків зі списку', 'error');
         return;
       }
       
@@ -891,36 +696,30 @@
       btn.disabled = true;
       btn.textContent = 'Відправляється...';
       
-      showStatus('🔍 Шукаємо твоє місто...', 'loading');
+      showStatus('🔮 Передаємо енергію...', 'loading');
       animateEnergyTransfer();
       
-      // ============ ГЕОКОДИНГ ============
-      const geoResult = await geocodeCity(city);
+      // Отримуємо вибране місто
+      const selectedCity = JSON.parse(ancestorCitySelect.value);
       
-      console.log('📍 РЕЗУЛЬТАТ ГЕОКОДИНГУ:', {
-        введене_місто: city,
-        знайдене_місто: geoResult.cityName,
-        координати: geoResult.coords,
-        isDiaspora: geoResult.isDiaspora
-      });
-      
-      // ============ ВІДПРАВКА В GOOGLE SHEETS ============
+      // Формуємо дані для відправки
       const postData = {
         token: TOKEN,
         userName: name,
         userWish: wish,
-        city: city,
-        detectedCity: geoResult.cityName,
+        ancestorCity: selectedCity.name,
+        currentLocation: currentLocation,
         regionName: regionName,
         regionId: regionId,
-        lat: geoResult.coords.lat,
-        lng: geoResult.coords.lng,
+        lat: selectedCity.lat,
+        lng: selectedCity.lng,
         origin: window.location.origin,
-        isDiaspora: geoResult.isDiaspora || false
+        isDiaspora: false // За замовчуванням, можна додати логіку пізніше
       };
       
-      console.log('📤 Відправляємо дані з координатами:', postData);
+      console.log('📤 Відправляємо дані:', postData);
       
+      // Відправка на Google Apps Script
       fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -928,7 +727,7 @@
         body: JSON.stringify(postData)
       }).catch(() => {});
       
-      // ============ ЗБЕРЕЖЕННЯ ЛОКАЛЬНО ============
+      // Локальне збереження
       setTimeout(() => {
         const participants = JSON.parse(localStorage.getItem('pysanka_participants') || '[]');
         
@@ -936,29 +735,18 @@
           id: Date.now(),
           name: name,
           wish: wish,
-          city: city,
-          detectedCity: geoResult.cityName,
+          ancestorCity: selectedCity.name,
+          currentLocation: currentLocation,
           region: regionName,
           regionId: parseInt(regionId),
-          country: geoResult.country,
           timestamp: new Date().toISOString(),
-          coords: geoResult.coords,
-          symbol: symbol,
-          isDiaspora: geoResult.isDiaspora
+          coords: { lat: selectedCity.lat, lng: selectedCity.lng },
+          symbol: symbol
         });
         
         localStorage.setItem('pysanka_participants', JSON.stringify(participants));
         
-        let message = `Дякуємо, ${name}!`;
-        if (geoResult.isDiaspora) {
-          message = `Дякуємо, ${name} з ${geoResult.country}! Твоє серце з Україною! 🥚🇺🇦`;
-        } else if (geoResult.cityName && geoResult.cityName !== city) {
-          message = `Дякуємо, ${name} з міста ${geoResult.cityName}! 🥚`;
-        } else {
-          message = `Дякуємо, ${name}! Твій голос додано до карти! 🥚`;
-        }
-        
-        showStatus(message, 'success');
+        showStatus(`Дякуємо, ${name}! Енергію передано! 🥚`, 'success');
         document.getElementById('energyText').innerHTML = '✨ Енергію передано! ✨';
         document.getElementById('viewMapBtn').style.display = 'inline-block';
         btn.style.display = 'none';
