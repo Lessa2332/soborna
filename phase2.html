@@ -21,7 +21,7 @@
       --gold-magic: #D4AF37;
       --gold-light: #E8C66E;
       --gold-dark: #B08B2A;
-      --scanner-glow: #D4AF37; /* замість #00FFFF */
+      --scanner-glow: #D4AF37;
       --font-heading: 'Cormorant Garamond', serif;
       --font-body: 'Open Sans', sans-serif;
       --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
@@ -60,6 +60,76 @@
     #canvas { 
       z-index: 2; 
       display: block; 
+    }
+  
+    /* ============ КНОПКА ПЕРЕМИКАННЯ КАМЕРИ ============ */
+    .camera-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 200;
+      background: rgba(42, 0, 62, 0.8);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--gold-magic);
+      border-radius: 50px;
+      padding: 10px 20px;
+      color: var(--gold-magic);
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+      transition: var(--transition);
+    }
+    
+    .camera-toggle:hover {
+      background: var(--gold-magic);
+      color: var(--magic-purple-dark);
+      transform: scale(1.05);
+    }
+    
+    .camera-toggle:active {
+      transform: scale(0.95);
+    }
+  
+    /* ============ ПАНЕЛЬ ПІДКАЗОК ПРО ЖЕСТИ ============ */
+    .gesture-hint-panel {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(42, 0, 62, 0.85);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--gold-magic);
+      border-radius: 60px;
+      padding: 12px 24px;
+      display: flex;
+      gap: 30px;
+      z-index: 150;
+      color: var(--gold-light);
+      font-size: 16px;
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .gesture-hint-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .gesture-hint-icon {
+      font-size: 28px;
+      filter: drop-shadow(0 0 5px var(--gold-magic));
+    }
+    
+    .gesture-hint-text {
+      font-family: var(--font-body);
+      font-size: 14px;
+      white-space: nowrap;
     }
   
     /* ============ МАГІЧНЕ ЗАВАНТАЖЕННЯ ============ */
@@ -380,6 +450,26 @@
       0% { transform: translate(0, 0) scale(1); opacity: 1; }
       100% { transform: translate(var(--tx, 50px), var(--ty, -50px)) scale(0); opacity: 0; }
     }
+    
+    /* Адаптація для мобільних */
+    @media (max-width: 600px) {
+      .gesture-hint-panel {
+        bottom: 80px;
+        padding: 8px 16px;
+        gap: 15px;
+        font-size: 12px;
+      }
+      .gesture-hint-icon {
+        font-size: 20px;
+      }
+      .gesture-hint-text {
+        font-size: 10px;
+      }
+      .camera-toggle {
+        padding: 6px 12px;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -395,6 +485,31 @@
   
   <video id="video" playsinline muted></video>
   <canvas id="canvas"></canvas>
+  
+  <!-- Кнопка перемикання камери -->
+  <div class="camera-toggle" id="cameraToggleBtn" onclick="toggleCamera()">
+    <span>📷</span> <span>Змінити камеру</span>
+  </div>
+  
+  <!-- Панель підказок про жести -->
+  <div class="gesture-hint-panel">
+    <div class="gesture-hint-item">
+      <span class="gesture-hint-icon">👋</span>
+      <span class="gesture-hint-text">Покажи долоню</span>
+    </div>
+    <div class="gesture-hint-item">
+      <span class="gesture-hint-icon">✊</span>
+      <span class="gesture-hint-text">Кулак – сховати</span>
+    </div>
+    <div class="gesture-hint-item">
+      <span class="gesture-hint-icon">🤏</span>
+      <span class="gesture-hint-text">Розсувай – масштаб</span>
+    </div>
+    <div class="gesture-hint-item">
+      <span class="gesture-hint-icon">✌️</span>
+      <span class="gesture-hint-text">Два пальці – обертати</span>
+    </div>
+  </div>
   
   <div id="regionInfo"></div>
   <div id="handIndicator"><span>👋</span> Покажи долоню!</div>
@@ -446,7 +561,7 @@
     // ============ МАГІЧНІ НАЛАШТУВАННЯ ============
     const CONFIG = {
       SMOOTHING_FACTOR: 0.5,
-      HAND_NOT_DETECTED_THRESHOLD: 45,      // через скільки кадрів показувати індикатор
+      HAND_NOT_DETECTED_THRESHOLD: 45,
       EGG_SCALE: 0.8,
       EGG_HEIGHT_OFFSET: 0.0,
       MIN_SCALE: 0.3,
@@ -509,6 +624,7 @@
       usingFallback: false,
       lastGestureTime: 0,
       hiddenByFist: false,
+      currentFacingMode: 'environment' // 'environment' або 'user'
     };
 
     // DOM елементи
@@ -525,12 +641,14 @@
       fallbackBtn: document.getElementById('fallbackBtn'),
       touchFallback: document.getElementById('touchFallback'),
       lightingWarning: document.getElementById('lightingWarning'),
-      errorMessage: document.getElementById('errorMessage')
+      errorMessage: document.getElementById('errorMessage'),
+      cameraToggleBtn: document.getElementById('cameraToggleBtn')
     };
 
     let scene, camera, renderer;
     let handLandmarker;
     let brightnessCheckInterval;
+    let appInstance; // зберігаємо екземпляр додатку для доступу з глобальних функцій
 
     // ============ ДОПОМІЖНІ ФУНКЦІЇ ============
     function createMagicParticles(count = 8, x, y) {
@@ -626,6 +744,33 @@
       showGestureFeedback('🔄', 'Обертання', 800);
     };
 
+    // ============ ПЕРЕМИКАННЯ КАМЕРИ ============
+    window.toggleCamera = async function() {
+      if (!appInstance) return;
+      // Змінюємо режим
+      state.currentFacingMode = state.currentFacingMode === 'environment' ? 'user' : 'environment';
+      
+      // Зупиняємо поточний потік
+      if (elements.video.srcObject) {
+        elements.video.srcObject.getTracks().forEach(track => track.stop());
+      }
+      
+      // Показуємо завантаження
+      elements.loading.style.display = 'flex';
+      elements.loadingStatus.textContent = 'Перемикання камери...';
+      
+      try {
+        // Запускаємо нову камеру
+        await appInstance.setupCamera();
+        // HandLandmarker автоматично працюватиме з новим відеопотоком
+        elements.loading.style.display = 'none';
+        elements.video.style.display = 'block';
+      } catch (err) {
+        console.error('Помилка перемикання камери:', err);
+        showError('Не вдалося перемкнути камеру');
+      }
+    };
+
     // ============ ЦЕНТР ДОЛОНІ ============
     function getPalmCenter(landmarks) {
       const points = [0, 1, 5, 9, 13, 17];
@@ -698,6 +843,7 @@
         state.currentRegion = currentRegion;
         this.checkBrowserSupport();
         this.init();
+        appInstance = this; // зберігаємо для глобальних функцій
       }
       
       checkBrowserSupport() {
@@ -748,33 +894,33 @@
       }
       
       async setupCamera() {
-        let stream = null;
+        // Зупиняємо попередній потік, якщо є
+        if (elements.video.srcObject) {
+          elements.video.srcObject.getTracks().forEach(track => track.stop());
+        }
+        
         const constraints = {
           video: {
-            facingMode: { ideal: 'environment' },
+            facingMode: state.currentFacingMode, // використовуємо поточний режим
             width: { ideal: 1280 },
             height: { ideal: 720 },
             frameRate: { ideal: 30 }
           }
         };
+        
         try {
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          elements.video.srcObject = stream;
+          await new Promise(resolve => {
+            elements.video.onloadedmetadata = () => {
+              elements.video.play();
+              resolve();
+            };
+          });
         } catch (err) {
-          constraints.video.facingMode = 'environment';
-          try {
-            stream = await navigator.mediaDevices.getUserMedia(constraints);
-          } catch (err2) {
-            constraints.video.facingMode = 'user';
-            stream = await navigator.mediaDevices.getUserMedia(constraints);
-          }
+          console.error('Помилка доступу до камери:', err);
+          throw err;
         }
-        elements.video.srcObject = stream;
-        await new Promise(resolve => {
-          elements.video.onloadedmetadata = () => {
-            elements.video.play();
-            resolve();
-          };
-        });
       }
       
       async initThreeJS() {
@@ -923,9 +1069,8 @@
         
         // Оновлення індикатора руки
         if (state.isHandVisible && !state.usingFallback) {
-          elements.handIndicator.style.display = 'none'; // одразу ховаємо при виявленні руки
+          elements.handIndicator.style.display = 'none';
         } else {
-          // Якщо рука не видна протягом порогової кількості кадрів, показуємо індикатор
           if (state.handFrames > CONFIG.HAND_NOT_DETECTED_THRESHOLD && !state.usingFallback) {
             elements.handIndicator.style.display = 'flex';
           }
@@ -1064,7 +1209,7 @@
       hideLoading() {
         elements.loading.style.display = 'none';
         elements.video.style.display = 'block';
-        elements.handIndicator.style.display = 'flex'; // спочатку показуємо
+        elements.handIndicator.style.display = 'flex';
       }
       
       cleanup() {
