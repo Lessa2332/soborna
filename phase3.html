@@ -11,18 +11,17 @@
   <script src="js/regions.js"></script>
   
   <style>
+    /* ============ НОВА ТЕМНА ТЕМА ============ */
     :root {
-      --bordo: #6a1e2a;
-      --bordo-light: #8b2f3c;
-      --gold: #c9a03d;
-      --gold-light: #e5b73b;
-      --cream: #f5eee6;
-      --brown: #4a2c1a;
-      --beige: #e8d9c0;
-      --dark: #1a1a1a;
-      --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
-      --font-body: 'Open Sans', 'Helvetica', sans-serif;
-      --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
+      --bg-dark: #121212;
+      --bg-card: rgba(30, 30, 30, 0.9);
+      --gold-accent: #d4a373;
+      --gold-bright: #e8c66e;
+      --orange-ukf: #ff7d00;
+      --text-light: #f5f5f5;
+      --font-heading: 'Cormorant Garamond', serif;
+      --font-body: 'Open Sans', sans-serif;
+      --shadow-lg: 0 15px 35px rgba(0,0,0,0.6);
       --transition: all 0.3s ease;
       --safe-area-top: env(safe-area-inset-top, 0px);
       --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -37,22 +36,13 @@
     
     body {
       font-family: var(--font-body);
-      background: linear-gradient(135deg, var(--bordo) 0%, var(--brown) 100%);
-      color: var(--cream);
+      background-color: var(--bg-dark);
+      color: var(--text-light);
       min-height: 100vh;
       position: relative;
       padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-    }
-    
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: url('data:image/svg+xml;utf8,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="%23c9a03d" stroke-width="0.5" opacity="0.1"/></svg>');
-      pointer-events: none;
+      line-height: 1.6;
+      background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 L20 0 L40 20 L20 40 Z' fill='none' stroke='%23d4a373' stroke-width='0.5' opacity='0.1'/%3E%3C/svg%3E");
     }
     
     .container {
@@ -65,16 +55,16 @@
     
     h1 {
       font-family: var(--font-heading);
-      color: var(--gold);
+      color: var(--gold-accent);
       text-align: center;
       font-size: 42px;
       margin-bottom: 10px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
       letter-spacing: 2px;
     }
     
     .ornament {
-      background-image: url('data:image/svg+xml;utf8,<svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg"><path d="M10 15 L30 5 L50 15 L70 5 L90 15 L110 5" stroke="%23c9a03d" fill="none" stroke-width="1.5"/><circle cx="20" cy="15" r="2" fill="%23e5b73b"/><circle cx="50" cy="15" r="2" fill="%23e5b73b"/><circle cx="80" cy="15" r="2" fill="%23e5b73b"/><circle cx="110" cy="15" r="2" fill="%23e5b73b"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg"><path d="M10 15 L30 5 L50 15 L70 5 L90 15 L110 5" stroke="%23d4a373" fill="none" stroke-width="1.5"/><circle cx="20" cy="15" r="2" fill="%23e8c66e"/><circle cx="50" cy="15" r="2" fill="%23e8c66e"/><circle cx="80" cy="15" r="2" fill="%23e8c66e"/><circle cx="110" cy="15" r="2" fill="%23e8c66e"/></svg>');
       height: 30px;
       width: 100%;
       background-repeat: repeat-x;
@@ -90,13 +80,13 @@
     
     .magic-frame {
       position: relative;
-      background: rgba(26, 26, 26, 0.6);
+      background: var(--bg-card);
       -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
-      border: 2px solid var(--gold);
+      border: 2px solid var(--gold-accent);
       border-radius: 30px;
       padding: 30px 25px;
-      box-shadow: var(--shadow-lg), 0 0 30px rgba(201, 160, 61, 0.2);
+      box-shadow: var(--shadow-lg), 0 0 30px rgba(212, 163, 115, 0.2);
     }
     
     .magic-frame:before {
@@ -106,7 +96,7 @@
       left: 10%;
       width: 80%;
       height: 10px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
       border-radius: 50%;
     }
     
@@ -117,7 +107,7 @@
       left: 10%;
       width: 80%;
       height: 10px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
       border-radius: 50%;
     }
     
@@ -125,14 +115,14 @@
       text-align: center;
       margin-bottom: 30px;
       padding: 20px;
-      background: rgba(106, 30, 42, 0.5);
+      background: rgba(0,0,0,0.3);
       border-radius: 20px;
-      border: 1px solid var(--gold);
+      border: 1px solid var(--gold-accent);
     }
     
     .region-symbol {
       font-size: 64px;
-      filter: drop-shadow(0 0 15px var(--gold));
+      filter: drop-shadow(0 0 15px var(--gold-accent));
       margin-bottom: 10px;
       animation: float 3s ease-in-out infinite;
     }
@@ -145,14 +135,14 @@
     .region-name {
       font-family: var(--font-heading);
       font-size: 32px;
-      color: var(--gold);
+      color: var(--gold-accent);
       margin-bottom: 5px;
     }
     
     .region-help {
       font-size: 14px;
       opacity: 0.8;
-      color: var(--cream);
+      color: var(--text-light);
       margin-top: 5px;
       font-style: italic;
     }
@@ -166,7 +156,7 @@
       display: block;
       font-family: var(--font-heading);
       font-size: 20px;
-      color: var(--gold);
+      color: var(--gold-accent);
       margin-bottom: 8px;
       font-weight: 600;
       letter-spacing: 1px;
@@ -175,12 +165,12 @@
     .input-field, textarea.input-field {
       width: 100%;
       padding: 15px 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid var(--gold);
+      background: rgba(0,0,0,0.3);
+      border: 2px solid var(--gold-accent);
       border-radius: 50px;
       font-family: var(--font-body);
       font-size: 16px;
-      color: white;
+      color: var(--text-light);
       transition: var(--transition);
       -webkit-backdrop-filter: blur(5px);
       backdrop-filter: blur(5px);
@@ -194,23 +184,23 @@
     
     .input-field:focus, textarea.input-field:focus {
       outline: none;
-      border-color: var(--gold-light);
-      box-shadow: 0 0 20px rgba(229, 183, 59, 0.3);
-      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 20px rgba(232, 199, 110, 0.3);
+      background: rgba(0,0,0,0.5);
     }
     
     .input-field::placeholder, textarea.input-field::placeholder {
-      color: rgba(255, 255, 255, 0.5);
+      color: rgba(255,255,255,0.5);
     }
     
     /* Автодоповнення міст */
     .city-suggestions {
       position: absolute;
       width: 100%;
-      background: rgba(106, 30, 42, 0.98);
+      background: var(--bg-card);
       -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
-      border: 2px solid var(--gold);
+      border: 2px solid var(--gold-accent);
       border-top: none;
       border-radius: 0 0 20px 20px;
       max-height: 250px;
@@ -218,15 +208,15 @@
       display: none;
       z-index: 1000;
       margin-top: -5px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     
     .city-suggestion-item {
       padding: 15px 20px;
       cursor: pointer;
-      color: white;
+      color: var(--text-light);
       transition: var(--transition);
-      border-bottom: 1px solid rgba(201, 160, 61, 0.2);
+      border-bottom: 1px solid rgba(212, 163, 115, 0.2);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -237,13 +227,13 @@
     }
     
     .city-suggestion-item:hover {
-      background: var(--gold);
-      color: var(--bordo);
+      background: var(--gold-accent);
+      color: var(--bg-dark);
     }
     
     .city-suggestion-item:active {
-      background: var(--gold);
-      color: var(--bordo);
+      background: var(--gold-accent);
+      color: var(--bg-dark);
       transform: scale(0.98);
     }
     
@@ -257,21 +247,21 @@
     
     .city-country-badge {
       font-size: 10px;
-      background: rgba(229, 183, 59, 0.3);
+      background: rgba(255,125,0,0.3);
       padding: 3px 8px;
       border-radius: 20px;
       margin-left: 8px;
-      color: var(--gold-light);
+      color: var(--gold-bright);
     }
     
     /* Підказка для міжнародних міст */
     .city-hint {
       margin-top: 8px;
       font-size: 13px;
-      color: var(--gold-light);
+      color: var(--gold-bright);
       opacity: 0.8;
       padding: 10px;
-      background: rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.3);
       border-radius: 30px;
       display: flex;
       align-items: center;
@@ -284,11 +274,11 @@
     }
     
     .city-hint-tag {
-      background: rgba(201, 160, 61, 0.2);
+      background: rgba(212, 163, 115, 0.2);
       padding: 4px 10px;
       border-radius: 30px;
       font-size: 12px;
-      border: 1px solid var(--gold);
+      border: 1px solid var(--gold-accent);
     }
     
     .energy-transfer {
@@ -306,16 +296,16 @@
     .energy-core {
       width: 60px;
       height: 80px;
-      background: radial-gradient(circle at 30% 30%, var(--gold), var(--bordo));
+      background: radial-gradient(circle at 30% 30%, var(--gold-accent), #5a3e2b);
       border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
       margin: 0 auto;
       animation: energyPulse 2s infinite;
-      border: 2px solid var(--gold-light);
+      border: 2px solid var(--gold-bright);
     }
     
     @keyframes energyPulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 30px var(--gold); }
-      50% { transform: scale(1.1); box-shadow: 0 0 60px var(--gold); }
+      0%, 100% { transform: scale(1); box-shadow: 0 0 30px var(--gold-accent); }
+      50% { transform: scale(1.1); box-shadow: 0 0 60px var(--gold-accent); }
     }
     
     .energy-ring {
@@ -325,7 +315,7 @@
       transform: translate(-50%, -50%);
       width: 80px;
       height: 80px;
-      border: 2px solid var(--gold);
+      border: 2px solid var(--gold-accent);
       border-radius: 50%;
       animation: ringPulse 2s infinite;
     }
@@ -339,13 +329,13 @@
       display: inline-block;
       padding: 15px 35px;
       background: transparent;
-      border: 2px solid var(--gold);
-      color: var(--gold);
+      border: 2px solid var(--gold-accent);
+      color: var(--gold-accent);
       font-family: var(--font-heading);
       font-size: 20px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
       cursor: pointer;
       transition: var(--transition);
       text-decoration: none;
@@ -362,7 +352,7 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: var(--gold);
+      background: var(--gold-accent);
       transition: var(--transition);
       z-index: -1;
     }
@@ -372,7 +362,7 @@
     }
     
     .btn:active {
-      color: var(--bordo);
+      color: var(--bg-dark);
       transform: scale(0.98);
     }
     
@@ -401,20 +391,20 @@
     }
     
     .status-success {
-      background: rgba(76, 175, 80, 0.3);
-      border: 2px solid #4CAF50;
+      background: rgba(40, 167, 69, 0.3);
+      border: 2px solid #28a745;
       color: #fff;
     }
     
     .status-error {
-      background: rgba(244, 67, 54, 0.3);
-      border: 2px solid #F44336;
+      background: rgba(220, 53, 69, 0.3);
+      border: 2px solid #dc3545;
       color: #fff;
     }
     
     .status-loading {
       background: rgba(255, 193, 7, 0.3);
-      border: 2px solid #FFC107;
+      border: 2px solid #ffc107;
       color: #fff;
     }
     
@@ -429,7 +419,7 @@
       position: absolute;
       width: 6px;
       height: 6px;
-      background: var(--gold);
+      background: var(--gold-accent);
       border-radius: 50%;
       animation: particleFloat 3s infinite;
       z-index: 1;
@@ -505,7 +495,7 @@
               <span class="city-hint-tag">Лісабон</span>
             </div>
             
-            <div class="city-hint" style="background: rgba(229, 183, 59, 0.15);">
+            <div class="city-hint" style="background: rgba(232, 199, 110, 0.15);">
               <i>💡</i> Можна написати: "Народився в Чорноморську, живу в Торонто"
             </div>
           </div>
@@ -516,7 +506,7 @@
               <div class="energy-core" id="energyCore"></div>
               <div class="energy-ring"></div>
             </div>
-            <p style="color: var(--gold); opacity: 0.9;" id="energyText">Твоя енергія готова</p>
+            <p style="color: var(--gold-accent); opacity: 0.9;" id="energyText">Твоя енергія готова</p>
           </div>
           
           <input type="hidden" id="regionId">
@@ -691,7 +681,7 @@
         
         // Додаємо українські міста
         if (ukraineMatches.length > 0) {
-          html += '<div style="padding: 8px 15px; color: var(--gold); font-size: 12px;">🇺🇦 МІСТА УКРАЇНИ</div>';
+          html += '<div style="padding: 8px 15px; color: var(--gold-accent); font-size: 12px;">🇺🇦 МІСТА УКРАЇНИ</div>';
           ukraineMatches.forEach(cityKey => {
             const cityData = UKRAINE_CITIES[cityKey];
             html += `
@@ -705,7 +695,7 @@
         
         // Додаємо міста світу
         if (worldMatches.length > 0) {
-          html += '<div style="padding: 8px 15px; color: var(--gold); font-size: 12px; margin-top: 5px;">🌍 МІСТА СВІТУ</div>';
+          html += '<div style="padding: 8px 15px; color: var(--gold-accent); font-size: 12px; margin-top: 5px;">🌍 МІСТА СВІТУ</div>';
           worldMatches.forEach(city => {
             html += `
               <div class="city-suggestion-item" onclick="selectCity('${city}')">
@@ -745,7 +735,7 @@
         .trim();
     }
     
-    // Функція геокодингу
+    // ============ ВИПРАВЛЕНА ФУНКЦІЯ ГЕОКОДИНГУ ============
     async function geocodeCity(cityInput) {
       const cacheKey = cityInput.toLowerCase().trim();
       
@@ -758,25 +748,52 @@
       const normalized = normalizeCityInput(cityInput);
       console.log('🔍 Нормалізований ввід:', normalized);
       
-      // 1. Спочатку шукаємо в локальному словнику
+      // 1. ТОЧНИЙ ПОШУК ЗА НАЗВОЮ МІСТА (value.name)
       for (let [key, value] of Object.entries(UKRAINE_CITIES)) {
-        if (normalized.includes(key) || key.includes(normalized) || 
-            (value.name && normalized.includes(value.name.toLowerCase()))) {
-          console.log('✅ Знайдено в локальному словнику:', value.name);
-          
+        if (value.name.toLowerCase() === normalized) {
+          console.log('✅ Точний збіг за назвою:', value.name);
           const result = {
             coords: { lat: value.lat, lng: value.lng },
             isDiaspora: value.isDiaspora || false,
             country: value.country || 'Україна',
             cityName: value.name
           };
-          
           geocodeCache.set(cacheKey, result);
           return result;
         }
       }
       
-      // 2. Якщо не знайшли - використовуємо Nominatim
+      // 2. ТОЧНИЙ ЗБІГ ЗА КЛЮЧЕМ (наприклад, "дніпропетровськ")
+      for (let [key, value] of Object.entries(UKRAINE_CITIES)) {
+        if (key === normalized) {
+          console.log('✅ Точний збіг за ключем:', key);
+          const result = {
+            coords: { lat: value.lat, lng: value.lng },
+            isDiaspora: value.isDiaspora || false,
+            country: value.country || 'Україна',
+            cityName: value.name
+          };
+          geocodeCache.set(cacheKey, result);
+          return result;
+        }
+      }
+      
+      // 3. ЧАСТКОВИЙ ПОШУК (обережніше, мінімум 3 символи)
+      for (let [key, value] of Object.entries(UKRAINE_CITIES)) {
+        if (normalized.length >= 3 && (normalized.includes(key) || key.includes(normalized))) {
+          console.log('⚠️ Частковий збіг:', key, '->', value.name);
+          const result = {
+            coords: { lat: value.lat, lng: value.lng },
+            isDiaspora: value.isDiaspora || false,
+            country: value.country || 'Україна',
+            cityName: value.name
+          };
+          geocodeCache.set(cacheKey, result);
+          return result;
+        }
+      }
+      
+      // 4. Якщо не знайшли - використовуємо Nominatim
       try {
         console.log('🌐 Шукаємо через Nominatim:', cityInput);
         
@@ -842,7 +859,7 @@
         console.log('⚠️ Помилка геокодингу:', error);
       }
       
-      // 3. Якщо нічого не знайшли - центр України
+      // 5. Якщо нічого не знайшли - центр України
       console.log('❌ Місто не знайдено, використовуємо центр України');
       
       const result = {
@@ -858,7 +875,7 @@
     
     async function sendEnergy() {
       const name = document.getElementById('userName').value.trim();
-      const wish = document.getElementById('userWish').value.trim();   // ОТРИМУЄМО ПОБАЖАННЯ
+      const wish = document.getElementById('userWish').value.trim();
       const city = document.getElementById('userCity').value.trim();
       const regionId = document.getElementById('regionId').value;
       const regionName = document.getElementById('regionName').value;
@@ -884,25 +901,30 @@
       // ============ ГЕОКОДИНГ ============
       const geoResult = await geocodeCity(city);
       
+      console.log('📍 РЕЗУЛЬТАТ ГЕОКОДИНГУ:', {
+        введене_місто: city,
+        знайдене_місто: geoResult.cityName,
+        координати: geoResult.coords,
+        isDiaspora: geoResult.isDiaspora
+      });
+      
       // ============ ВІДПРАВКА В GOOGLE SHEETS ============
-      // Формуємо об'єкт з усіма полями, які очікує бекенд
       const postData = {
-        token: TOKEN,                       // обов'язково!
+        token: TOKEN,
         userName: name,
-        userWish: wish,                      // побажання
+        userWish: wish,
         city: city,
         detectedCity: geoResult.cityName,
         regionName: regionName,
         regionId: regionId,
         lat: geoResult.coords.lat,
         lng: geoResult.coords.lng,
-        origin: window.location.origin,      // звідки прийшов запит
+        origin: window.location.origin,
         isDiaspora: geoResult.isDiaspora || false
       };
       
       console.log('📤 Відправляємо дані з координатами:', postData);
       
-      // Використовуємо fetch з режимом no-cors (Google Apps Script перенаправляє)
       fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -931,7 +953,6 @@
         
         localStorage.setItem('pysanka_participants', JSON.stringify(participants));
         
-        // Персоналізоване повідомлення
         let message = `Дякуємо, ${name}!`;
         if (geoResult.isDiaspora) {
           message = `Дякуємо, ${name} з ${geoResult.country}! Твоє серце з Україною! 🥚🇺🇦`;
@@ -982,5 +1003,3 @@
   </script>
 </body>
 </html>
-
-
