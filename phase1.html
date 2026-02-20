@@ -163,7 +163,7 @@
       filter: drop-shadow(0 0 15px var(--gold-magic)) brightness(1.1);
       z-index: 2;
       pointer-events: none;
-      transition: opacity 1s ease; /* Додано плавну зміну прозорості */
+      transition: opacity 2s ease; /* Збільшено до 2 секунд */
     }
     
     /* Етнічний візерунок поверх */
@@ -289,6 +289,21 @@
       color: var(--magic-purple-dark);
     }
     
+    /* Підказка для мобільних */
+    .tap-hint {
+      text-align: center;
+      color: var(--gold-light);
+      font-size: 14px;
+      margin-top: 10px;
+      opacity: 0.8;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    
     /* Аудіо-елемент прихований */
     #scanSound {
       display: none;
@@ -299,6 +314,7 @@
       h1 { font-size: 28px; }
       .scan-area { width: 180px; height: 250px; }
       .btn { padding: 10px 20px; font-size: 16px; }
+      .tap-hint { font-size: 16px; }
     }
   </style>
 </head>
@@ -308,12 +324,15 @@
   <div class="subtitle">Сканування генетичного коду...</div>
 
   <div class="scanner-box">
-    <div class="scan-area" id="scanArea" onclick="startScan()">
+    <div class="scan-area" id="scanArea" onclick="startScan()" ontouchstart="startScan()">
       <div class="pattern-overlay"></div>
       <div id="scanLine" class="scan-line"></div>
       <!-- Логотип HUB як відбиток -->
       <img src="assets/hub.png" alt="Hub" class="hub-logo" id="hubLogo">
     </div>
+    
+    <!-- Підказка для мобільних -->
+    <div class="tap-hint">👆 Торкнись яйця, щоб активувати сканер</div>
     
     <div id="message"></div>
     <div id="regionDisplay"></div>
@@ -324,7 +343,7 @@
     </div>
   </div>
 
-  <!-- Аудіоефект сканування (науково-фантастичний) -->
+  <!-- Аудіоефект сканування -->
   <audio id="scanSound">
     <source src="https://assets.mixkit.co/sfx/download/mixkit-scanning-sci-fi-alarm-905.wav" type="audio/wav" />
     <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" type="audio/ogg" />
@@ -361,7 +380,10 @@
     let sound = document.getElementById('scanSound');
     
     // Функція запуску сканування
-    function startScan() {
+    function startScan(event) {
+      // Запобігаємо подвійному спрацюванню на мобільних
+      if (event) event.preventDefault();
+      
       // Якщо сканування вже активне, ігноруємо
       if (scanLine.style.display === 'block') return;
       
@@ -375,7 +397,7 @@
       scanArea.classList.add('scanning');
       messageEl.innerHTML = '<span style="color: var(--gold-light);">🔮 Аналіз ДНК-коду... Зачекайте</span>';
       
-      // Плавна поява логотипу (від 0.7 до 1.0 за 1с)
+      // Плавна поява логотипу (від 0.7 до 1.0 за 2с)
       hubLogo.style.opacity = '1';
       
       // Відтворюємо звук (якщо підтримується)
@@ -384,7 +406,7 @@
         sound.play().catch(e => console.log('Аудіо не відтворено'));
       }
       
-      // Через 4 секунди завершуємо сканування
+      // Через 5 секунд завершуємо сканування
       if (scanTimer) clearTimeout(scanTimer);
       scanTimer = setTimeout(() => {
         // Вимикаємо лінію
@@ -414,7 +436,7 @@
         
         // Вібро (якщо є)
         if (navigator.vibrate) navigator.vibrate([100, 50, 200]);
-      }, 4000);
+      }, 5000); // Збільшено до 5 секунд
     }
     
     // Скидання сканера
@@ -446,4 +468,3 @@
 
 </body>
 </html>
-
