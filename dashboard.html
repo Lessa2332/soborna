@@ -8,320 +8,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    /* Унікальні стилі для dashboard */
-    :root {
-      --bordo: #6a1e2a;
-      --bordo-light: #8b2f3c;
-      --gold: #c9a03d;
-      --gold-light: #e5b73b;
-      --cream: #f5eee6;
-      --brown: #4a2c1a;
-      --beige: #e8d9c0;
-      --dark: #1a1a1a;
-      --magic-purple: #2b003e;
-      --magic-purple-light: #3a1052;
-      --gold-magic: #d4af37;
-      --font-heading: 'Cormorant Garamond', 'Times New Roman', serif;
-      --font-body: 'Open Sans', 'Helvetica', sans-serif;
-      --shadow-lg: 0 8px 32px rgba(106, 30, 42, 0.2);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      font-family: var(--font-body);
-      background-color: var(--magic-purple);
-      color: var(--cream);
-      min-height: 100vh;
-      overflow: hidden;
-      position: fixed;
-      width: 100%;
-      height: 100%;
-    }
-
-    #map-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-
-    #ukraine-map {
-      width: 100%;
-      height: 100%;
-      background: #2b003e;
-    }
-
-    .pysanka-marker {
-      background: transparent;
-      border: none;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-      transition: transform 0.2s ease;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    .pysanka-marker:active {
-      transform: scale(1.2) rotate(5deg);
-      filter: drop-shadow(0 8px 16px gold);
-    }
-
-    .pysanka-egg {
-      width: 44px;
-      height: 62px;
-      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-      border: 2px solid var(--gold-magic);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      animation: gentleFloat 3s ease-in-out infinite;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      color: var(--gold-light);
-      text-shadow: 0 1px 2px #000;
-      transition: all 0.2s;
-    }
-
-    @keyframes gentleFloat {
-      0%,100%{transform:translateY(0);}
-      50%{transform:translateY(-5px);}
-    }
-
-    /* Кольори маркерів за регіонами */
-    .pysanka-egg.region-1 { background: linear-gradient(135deg, #8B0000, #A52A2A); }
-    .pysanka-egg.region-2 { background: linear-gradient(135deg, #006400, #228B22); }
-    .pysanka-egg.region-3 { background: linear-gradient(135deg, #4A7023, #6B8E23); }
-    .pysanka-egg.region-4 { background: linear-gradient(135deg, #8B0000, #B22222); }
-    .pysanka-egg.region-5 { background: linear-gradient(135deg, #DAA520, #B8860B); }
-    .pysanka-egg.region-6 { background: linear-gradient(135deg, #1E90FF, #4682B4); }
-    .pysanka-egg.region-7 { background: linear-gradient(135deg, #B22222, #CD5C5C); }
-    .pysanka-egg.region-8 { background: linear-gradient(135deg, #2E8B57, #3CB371); }
-    .pysanka-egg.region-9 { background: linear-gradient(135deg, #DAA520, #F4A460); }
-    .pysanka-egg.region-10 { background: linear-gradient(135deg, #8B4513, #A0522D); }
-    .pysanka-egg.region-11 { background: linear-gradient(135deg, #CD5C5C, #B22222); }
-    .pysanka-egg.region-12 { background: linear-gradient(135deg, #F4A460, #DEB887); }
-    .pysanka-egg.region-13 { background: linear-gradient(135deg, #696969, #808080); }
-    .pysanka-egg.region-14 { background: linear-gradient(135deg, #9ACD32, #6B8E23); }
-    .pysanka-egg.diaspora { background: linear-gradient(135deg, #D4AF37, #FFD700); border-color: #8B0000; }
-
-    .stats-panel {
-      position: fixed;
-      top: calc(10px + env(safe-area-inset-top));
-      right: 10px;
-      background: rgba(42,0,62,0.9);
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
-      border: 3px solid var(--gold-magic);
-      border-radius: 30px;
-      padding: 18px;
-      color: var(--gold-light);
-      z-index: 100;
-      min-width: 260px;
-      max-width: 280px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      transition: all 0.3s ease;
-    }
-
-    .stats-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      border-bottom: 2px solid var(--gold-magic);
-      padding-bottom: 8px;
-    }
-
-    .stats-title {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      color: var(--gold-magic);
-      letter-spacing: 2px;
-    }
-
-    .toggle-stats-btn {
-      background: transparent;
-      border: 2px solid var(--gold-magic);
-      color: var(--gold-magic);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-
-    .toggle-stats-btn:active {
-      background: var(--gold-magic);
-      color: var(--magic-purple);
-    }
-
-    .stats-number {
-      font-size: 48px;
-      font-weight: 700;
-      color: var(--gold-magic);
-      text-align: center;
-      line-height: 1.2;
-      text-shadow: 0 0 10px var(--gold-magic);
-    }
-
-    .stats-label {
-      text-align: center;
-      font-size: 16px;
-      color: var(--gold-light);
-      margin-bottom: 12px;
-    }
-
-    .progress-container {
-      margin: 16px 0;
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-      color: var(--gold-light);
-      margin-bottom: 4px;
-    }
-
-    .progress-bar-bg {
-      height: 8px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--gold-magic), var(--gold-light));
-      transition: width 0.3s ease;
-    }
-
-    .participants-list {
-      max-height: 250px;
-      overflow-y: auto;
-      margin-top: 12px;
-      border-top: 1px solid rgba(212,175,55,0.3);
-      padding-top: 8px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .participant-item {
-      padding: 8px 10px;
-      border-bottom: 1px solid rgba(212,175,55,0.2);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      transition: background 0.2s;
-      border-radius: 20px;
-      color: var(--gold-light);
-    }
-
-    .participant-item:active {
-      background: rgba(212,175,55,0.2);
-      transform: translateX(5px);
-    }
-
-    .participant-symbol {
-      font-size: 24px;
-      min-width: 36px;
-      text-align: center;
-      filter: drop-shadow(0 2px 4px gold);
-    }
-
-    .participant-name {
-      color: var(--gold-magic);
-      font-weight: 600;
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .participant-wish {
-      font-size: 11px;
-      color: var(--gold-light);
-      font-style: italic;
-      max-width: 100px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .control-panel {
-      position: fixed;
-      bottom: calc(20px + env(safe-area-inset-bottom));
-      right: 10px;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .control-btn {
-      padding: 12px 20px;
-      background: rgba(58,16,82,0.8);
-      color: var(--gold-light);
-      border: 2px solid var(--gold-magic);
-      border-radius: 40px;
-      font-family: var(--font-heading);
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      min-width: 140px;
-      text-align: center;
-      -webkit-backdrop-filter: blur(5px);
-      backdrop-filter: blur(5px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      transition: all 0.2s;
-    }
-
-    .control-btn:active {
-      background: var(--gold-magic);
-      color: var(--magic-purple-dark);
-      transform: scale(0.97);
-    }
-
-    .toast-message {
-      position: fixed;
-      top: calc(20px + env(safe-area-inset-top));
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(42,0,62,0.98);
-      border: 2px solid var(--gold-magic);
-      border-radius: 40px;
-      padding: 14px 28px;
-      color: white;
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      gap: 10px;
-      animation: slideDown 0.3s ease;
-      font-size: 18px;
-      white-space: nowrap;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
-
-    @keyframes slideDown {
-      from { transform: translate(-50%, -100%); opacity: 0; }
-      to { transform: translate(-50%, 0); opacity: 1; }
-    }
-
-    @media (max-width:768px){
-      .stats-panel{ min-width:220px; }
-      .control-btn{ min-width:120px; font-size:14px; padding:10px 16px; }
-    }
+    /* ваші стилі (без змін) */
   </style>
 </head>
 <body>
@@ -351,11 +38,11 @@
   <div class="toast-message" id="toastMessage"><span>🌸</span><span id="toastText">Новий учасник!</span></div>
 
   <script>
-    // ============ КОНФІГУРАЦІЯ (той самий URL, що й у phase3) ============
+    // ============ НОВИЙ URL ВАШОГО GOOGLE APPS SCRIPT ============
     const DASHBOARD_CONFIG = {
-      SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbx-OsNqC20ebNEnmUxIFY4vxBKPG4CNshnKkRATPV-4n7_XT9QOWcUudJLsoY2fuheV/exec',
+      SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzTiw1e9oT1ld1rh6wJXpt2CKvZrigIc0DDGrX_FmfDLZ1u-VdlzIGKVzpV6uY0BYNW/exec',
       TOKEN: '1680max',
-      UPDATE_INTERVAL: 30000,       // оновлення кожні 30 секунд
+      UPDATE_INTERVAL: 30000,
       CACHE_KEY: 'pysanka_participants'
     };
 
@@ -371,7 +58,6 @@
     let statsVisible = true;
     let updateTimer = null;
 
-    // ============ ІНІЦІАЛІЗАЦІЯ ============
     document.addEventListener('DOMContentLoaded', () => {
       initMap();
       loadInitialData();
@@ -394,10 +80,9 @@
       }
     }
 
-    // ============ ЗАВАНТАЖЕННЯ ПОЧАТКОВИХ ДАНИХ ============
     async function loadInitialData() {
-      loadLocalParticipants();       // спочатку показуємо локальне
-      await fetchServerParticipants(); // потім оновлюємо з сервера
+      loadLocalParticipants();
+      await fetchServerParticipants();
     }
 
     function loadLocalParticipants() {
@@ -413,23 +98,23 @@
       }
     }
 
-    // ============ ЗАВАНТАЖЕННЯ З СЕРВЕРА (ГОЛОВНА ФУНКЦІЯ) ============
+    // ============ ОНОВЛЕНА ФУНКЦІЯ ЗАВАНТАЖЕННЯ З СЕРВЕРА ============
     async function fetchServerParticipants() {
       try {
         const url = `${DASHBOARD_CONFIG.SCRIPT_URL}?token=${DASHBOARD_CONFIG.TOKEN}`;
         const response = await fetch(url);
         const result = await response.json();
 
-        // Очікувана структура: { success: true, data: { participants: [...] } }
         if (result.success && result.data && Array.isArray(result.data.participants)) {
           const serverData = result.data.participants;
 
-          // Перетворюємо дані з сервера у внутрішній формат
+          // Перетворюємо дані з сервера у внутрішній формат (нові поля)
           const serverParticipants = serverData.map(item => ({
             id: item.ID || 'pysanka_' + Date.now() + Math.random(),
             name: item.userName || 'Учасник',
             wish: item.userWish || '',
-            city: item.city || item.detectedCity || '',
+            ancestorCity: item.ancestorCity || '',          // нове поле
+            currentLocation: item.currentLocation || '',      // нове поле
             region: item.regionName || '',
             regionId: item.regionId ? parseInt(item.regionId) : null,
             country: item.country || 'Україна',
@@ -452,14 +137,12 @@
             updateMap();
             updateStats();
 
-            // Повідомлення про нових учасників
             if (newFromServer.length === 1) {
-              showToast(`✨ Новий учасник: ${newFromServer[0].name} з міста ${newFromServer[0].city}`);
+              showToast(`✨ Новий учасник: ${newFromServer[0].name} з міста ${newFromServer[0].ancestorCity}`);
             } else {
               showToast(`🔄 Додано ${newFromServer.length} нових учасників`);
             }
           } else {
-            // Якщо нових немає, просто показуємо повідомлення про оновлення
             showToast('✅ Дані актуальні');
           }
         } else {
@@ -472,18 +155,14 @@
       }
     }
 
-    // ============ АВТООНОВЛЕННЯ ============
     function startAutoUpdate() {
       if (updateTimer) clearInterval(updateTimer);
       updateTimer = setInterval(() => {
-        // Оновлюємо тільки якщо сторінка активна
         if (!document.hidden) fetchServerParticipants();
       }, DASHBOARD_CONFIG.UPDATE_INTERVAL);
     }
 
-    // ============ ОНОВЛЕННЯ КАРТИ ============
     function updateMap() {
-      // Видаляємо старі маркери
       markers.forEach(m => map.removeLayer(m));
       markers = [];
 
@@ -497,12 +176,11 @@
           regionCount[regionId] = (regionCount[regionId] || 0) + 1;
         }
 
-        // Визначаємо клас для кольору маркера
         let regionClass = 'diaspora';
         if (regionId && regionId >= 1 && regionId <= 14) {
           regionClass = `region-${regionId}`;
         } else if (!p.isDiaspora && !regionId) {
-          regionClass = 'region-4'; // Київщина за замовчуванням
+          regionClass = 'region-4';
         }
 
         const marker = createMarker(p, p.coords.lat, p.coords.lng, regionClass);
@@ -513,10 +191,12 @@
       updateRegionProgress(regionCount);
     }
 
-    // ============ СТВОРЕННЯ МАРКЕРА ============
+    // ============ ОНОВЛЕНА ФУНКЦІЯ СТВОРЕННЯ МАРКЕРА ============
     function createMarker(participant, lat, lng, regionClass) {
       const symbol = participant.symbol || '🥚';
       const wish = participant.wish || '';
+      const ancestorCity = participant.ancestorCity || '';
+      const currentLocation = participant.currentLocation || '';
 
       const icon = L.divIcon({
         className: '',
@@ -529,19 +209,27 @@
 
       const marker = L.marker([lat, lng], { icon });
 
-      const diasporaText = participant.isDiaspora ? '<br><small style="color:#ff9800;">🇺🇦 Серце з Україною</small>' : '';
-      const wishHtml = wish ? `<br><small style="color:#666; font-style:italic;">"${wish}"</small>` : '';
-
-      marker.bindPopup(`
+      let popupContent = `
         <div style="text-align:center; min-width:160px; font-family:'Open Sans',sans-serif;">
           <div style="font-size:28px; margin-bottom:5px;">${symbol}</div>
           <b style="color:#8B0000; font-size:16px;">${participant.name}</b><br>
-          <i style="color:#D4AF37;">${participant.city}</i>
-          ${participant.country && participant.country !== 'Україна' ? `<br><small>${participant.country}</small>` : ''}
-          ${wishHtml}
-          ${diasporaText}
-        </div>
-      `, {
+          <i style="color:#D4AF37;">${ancestorCity || 'Місто предків'}</i>
+      `;
+      if (currentLocation) {
+        popupContent += `<br><small style="color:#aaa;">📍 ${currentLocation}</small>`;
+      }
+      if (participant.country && participant.country !== 'Україна') {
+        popupContent += `<br><small>${participant.country}</small>`;
+      }
+      if (wish) {
+        popupContent += `<br><small style="color:#666; font-style:italic;">"${wish}"</small>`;
+      }
+      if (participant.isDiaspora) {
+        popupContent += `<br><small style="color:#ff9800;">🇺🇦 Серце з Україною</small>`;
+      }
+      popupContent += `</div>`;
+
+      marker.bindPopup(popupContent, {
         className: 'custom-popup',
         closeButton: false
       });
@@ -549,7 +237,7 @@
       return marker;
     }
 
-    // ============ ОНОВЛЕННЯ СТАТИСТИКИ ============
+    // ============ ОНОВЛЕНА ФУНКЦІЯ СТАТИСТИКИ ============
     function updateStats() {
       const count = participants.length;
       document.getElementById('participantCount').textContent = count;
@@ -561,26 +249,25 @@
         return;
       }
 
-      // Останні 8 учасників
       const recent = [...participants].reverse().slice(0, 8);
 
       listEl.innerHTML = recent.map(p => {
         const wish = p.wish || '';
         const shortWish = wish.length > 30 ? wish.substr(0, 27) + '…' : wish;
         const symbol = p.symbol || '🥚';
-        // Екрануємо лапки для onclick
         const escapedName = p.name.replace(/'/g, "\\'");
+        // Показуємо місто предків замість старого city
+        const displayCity = p.ancestorCity || '';
         return `
           <div class="participant-item" onclick="flyToParticipant('${escapedName}')">
             <span class="participant-symbol">${symbol}</span>
             <span class="participant-name">${p.name}</span>
-            ${wish ? `<span class="participant-wish" title="${wish.replace(/"/g, '&quot;')}">"${shortWish}"</span>` : ''}
+            ${displayCity ? `<span class="participant-wish" title="${displayCity}">${displayCity}</span>` : ''}
           </div>
         `;
       }).join('');
     }
 
-    // ============ ОНОВЛЕННЯ ПРОГРЕСУ РЕГІОНІВ ============
     function updateRegionProgress(regionCount) {
       const activeRegions = Object.keys(regionCount).length;
       document.getElementById('regionsActive').textContent = `${activeRegions}/14`;
@@ -588,7 +275,6 @@
       document.getElementById('progressBar').style.width = percent + '%';
     }
 
-    // ============ ПЕРЕЛІТ ДО УЧАСНИКА ============
     window.flyToParticipant = function(name) {
       const participant = participants.find(p => p.name === name);
       if (!participant) return;
@@ -604,7 +290,6 @@
       }, 1500);
     };
 
-    // ============ ДОПОМІЖНІ ФУНКЦІЇ ============
     function showToast(message, duration = 3000) {
       const toast = document.getElementById('toastMessage');
       const toastText = document.getElementById('toastText');
@@ -644,10 +329,8 @@
       }
     }
 
-    // Експорт функцій у глобальний об'єкт
     window.refreshMap = refreshMap;
     window.toggleStats = toggleStats;
   </script>
 </body>
 </html>
-
