@@ -405,6 +405,25 @@
       box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
     }
   
+    /* ============ ВУЖЧІ КНОПКИ ТА ПЕРЕМІЩЕННЯ ВПРАВО ВНИЗ (оновлення) ============ */
+    .btn-next {
+      padding: 12px 30px; /* зменшено горизонтальні відступи */
+      font-size: 24px;    /* трохи менший шрифт */
+      left: auto;         /* скасовуємо центрування */
+      right: 30px;        /* притискаємо до правого краю */
+      bottom: 40px;
+      transform: none;    /* прибираємо трансформацію */
+    }
+    
+    .btn-next.secondary {
+      padding: 10px 20px;
+      font-size: 18px;
+      right: 30px;
+      bottom: 120px;      /* залишається вище основної кнопки */
+      left: auto;
+      transform: none;
+    }
+  
     /* ============ ПОПЕРЕДЖЕННЯ ПРО ОСВІТЛЕННЯ ============ */
     #lightingWarning {
       position: fixed;
@@ -541,6 +560,18 @@
       }
       .hint-panel {
         width: 250px;
+      }
+      .btn-next {
+        right: 20px;
+        bottom: 30px;
+        padding: 10px 24px;
+        font-size: 20px;
+      }
+      .btn-next.secondary {
+        right: 20px;
+        bottom: 100px;
+        padding: 8px 16px;
+        font-size: 16px;
       }
     }
   </style>
