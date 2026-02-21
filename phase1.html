@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Етап 1: Поклик предків | Соборна Писанка</title>
+  <title data-i18n="title">Етап 1: Поклик предків | Соборна Писанка</title>
   
   <!-- Шрифти -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
@@ -82,6 +82,36 @@
       transform: scaleX(-1);
     }
     
+    /* Кнопка мови */
+    .lang-switcher {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 200;
+      display: flex;
+      gap: 8px;
+    }
+    .lang-btn {
+      background: rgba(42,0,62,0.8);
+      backdrop-filter: blur(5px);
+      border: 2px solid var(--gold-magic);
+      color: var(--gold-magic);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lang-btn.active {
+      background: var(--gold-magic);
+      color: var(--magic-purple-dark);
+    }
+    
     h1 {
       font-family: var(--font-heading);
       font-size: 36px;
@@ -150,7 +180,6 @@
       transform: scale(1.02);
     }
     
-    /* Логотип HUB (відбиток) */
     .hub-logo {
       position: absolute;
       top: 0;
@@ -163,10 +192,9 @@
       filter: drop-shadow(0 0 15px var(--gold-magic)) brightness(1.1);
       z-index: 2;
       pointer-events: none;
-      transition: opacity 2s ease; /* Збільшено до 2 секунд */
+      transition: opacity 2s ease;
     }
     
-    /* Етнічний візерунок поверх */
     .pattern-overlay {
       position: absolute;
       top: 0;
@@ -180,7 +208,6 @@
       z-index: 3;
     }
     
-    /* Лінія сканування */
     .scan-line {
       position: absolute;
       left: 0;
@@ -201,12 +228,10 @@
       100% { top: 95%; opacity: 0; }
     }
     
-    /* Магічне сяйво навколо області сканування (активне) */
     .scan-area.scanning {
       box-shadow: 0 0 80px var(--gold-magic);
     }
     
-    /* Інформаційне повідомлення */
     #message {
       font-family: var(--font-heading);
       font-size: 20px;
@@ -216,7 +241,6 @@
       text-shadow: 0 0 10px var(--gold-magic);
     }
     
-    /* Регіон, що відображається після сканування */
     #regionDisplay {
       font-size: 32px;
       font-weight: 700;
@@ -227,7 +251,6 @@
       font-family: var(--font-heading);
     }
     
-    /* Кнопки */
     .btn-group {
       display: flex;
       gap: 15px;
@@ -289,7 +312,6 @@
       color: var(--magic-purple-dark);
     }
     
-    /* Підказка для мобільних */
     .tap-hint {
       text-align: center;
       color: var(--gold-light);
@@ -304,12 +326,8 @@
       50% { opacity: 1; }
     }
     
-    /* Аудіо-елемент прихований */
-    #scanSound {
-      display: none;
-    }
+    #scanSound { display: none; }
     
-    /* Адаптивність */
     @media (max-width: 500px) {
       h1 { font-size: 28px; }
       .scan-area { width: 180px; height: 250px; }
@@ -319,53 +337,103 @@
   </style>
 </head>
 <body>
+  <!-- Кнопки мови -->
+  <div class="lang-switcher">
+    <button class="lang-btn" data-lang="uk" onclick="setLanguage('uk')">UA</button>
+    <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+  </div>
 
-  <h1>🧬 ПОКЛИК ПРЕДКІВ 🧬</h1>
-  <div class="subtitle">Сканування генетичного коду...</div>
+  <h1 data-i18n="title">🧬 ПОКЛИК ПРЕДКІВ 🧬</h1>
+  <div class="subtitle" data-i18n="subtitle">Сканування генетичного коду...</div>
 
   <div class="scanner-box">
     <div class="scan-area" id="scanArea" onclick="startScan()" ontouchstart="startScan()">
       <div class="pattern-overlay"></div>
       <div id="scanLine" class="scan-line"></div>
-      <!-- Логотип HUB як відбиток -->
       <img src="assets/hub.png" alt="Hub" class="hub-logo" id="hubLogo">
     </div>
     
-    <!-- Підказка для мобільних -->
-    <div class="tap-hint">👆 Торкнись пальцем, щоб активувати сканер</div>
+    <div class="tap-hint" data-i18n="tapHint">👆 Торкнись пальцем, щоб активувати сканер</div>
     
     <div id="message"></div>
     <div id="regionDisplay"></div>
     
     <div class="btn-group">
-      <button class="btn" onclick="resetScan()" id="resetBtn" style="display: none;">Повторити</button>
-      <a href="phase2.html" class="btn btn-gold" id="continueBtn" style="display: none;">Далі →</a>
+      <button class="btn" onclick="resetScan()" id="resetBtn" style="display: none;" data-i18n="resetBtn">Повторити</button>
+      <a href="phase2.html" class="btn btn-gold" id="continueBtn" style="display: none;" data-i18n="continueBtn">Далі →</a>
     </div>
   </div>
 
-  <!-- Аудіоефект сканування -->
   <audio id="scanSound">
     <source src="https://assets.mixkit.co/sfx/download/mixkit-scanning-sci-fi-alarm-905.wav" type="audio/wav" />
     <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" type="audio/ogg" />
   </audio>
 
   <script>
+    // ============ ПЕРЕКЛАДИ ============
+    const translations = {
+      uk: {
+        title: '🧬 ПОКЛИК ПРЕДКІВ 🧬',
+        subtitle: 'Сканування генетичного коду...',
+        tapHint: '👆 Торкнись пальцем, щоб активувати сканер',
+        resetBtn: 'Повторити',
+        continueBtn: 'Далі →',
+        scanning: '🔮 Аналіз ДНК-коду... Зачекайте',
+        success: '✅ ДНК ідентифіковано!'
+      },
+      en: {
+        title: '🧬 CALL OF ANCESTORS 🧬',
+        subtitle: 'Scanning genetic code...',
+        tapHint: '👆 Tap to activate the scanner',
+        resetBtn: 'Repeat',
+        continueBtn: 'Next →',
+        scanning: '🔮 Analyzing DNA code... Please wait',
+        success: '✅ DNA identified!'
+      }
+    };
+
+    function setLanguage(lang) {
+      localStorage.setItem('appLanguage', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+      // Оновлюємо динамічні повідомлення, якщо вони зараз показані
+      const msgEl = document.getElementById('message');
+      if (msgEl.innerHTML.includes('Аналіз') || msgEl.innerHTML.includes('Analyzing')) {
+        if (lang === 'uk') msgEl.innerHTML = `<span style="color: var(--gold-light);">${translations.uk.scanning}</span>`;
+        else msgEl.innerHTML = `<span style="color: var(--gold-light);">${translations.en.scanning}</span>`;
+      } else if (msgEl.innerHTML.includes('✅')) {
+        if (lang === 'uk') msgEl.innerHTML = `<span style="color: var(--gold-magic);">${translations.uk.success}</span>`;
+        else msgEl.innerHTML = `<span style="color: var(--gold-magic);">${translations.en.success}</span>`;
+      }
+    }
+
     // ============ 14 РЕГІОНІВ ============
     const REGIONS = [
-      { id: 1, name: 'Поділля', symbol: '🌻' },
-      { id: 2, name: 'Полісся', symbol: '🌲' },
-      { id: 3, name: 'Карпати', symbol: '🏔️' },
-      { id: 4, name: 'Київщина', symbol: '🏛️' },
-      { id: 5, name: 'Львівщина', symbol: '🦁' },
-      { id: 6, name: 'Одещина', symbol: '⚓' },
-      { id: 7, name: 'Харківщина', symbol: '⚙️' },
-      { id: 8, name: 'Дніпропетровщина', symbol: '🌊' },
-      { id: 9, name: 'Полтавщина', symbol: '🌻' },
-      { id: 10, name: 'Чернігівщина', symbol: '📚' },
-      { id: 11, name: 'Черкащина', symbol: '🎭' },
-      { id: 12, name: 'Крим', symbol: '🏖️' },
-      { id: 13, name: 'Донеччина', symbol: '⛏️' },
-      { id: 14, name: 'Луганщина', symbol: '🌻' }
+      { id: 1, name: 'Поділля', nameEn: 'Podillia', symbol: '🌻' },
+      { id: 2, name: 'Полісся', nameEn: 'Polissia', symbol: '🌲' },
+      { id: 3, name: 'Карпати', nameEn: 'Carpathians', symbol: '🏔️' },
+      { id: 4, name: 'Київщина', nameEn: 'Kyiv region', symbol: '🏛️' },
+      { id: 5, name: 'Львівщина', nameEn: 'Lviv region', symbol: '🦁' },
+      { id: 6, name: 'Одещина', nameEn: 'Odesa region', symbol: '⚓' },
+      { id: 7, name: 'Харківщина', nameEn: 'Kharkiv region', symbol: '⚙️' },
+      { id: 8, name: 'Дніпропетровщина', nameEn: 'Dnipro region', symbol: '🌊' },
+      { id: 9, name: 'Полтавщина', nameEn: 'Poltava region', symbol: '🌻' },
+      { id: 10, name: 'Чернігівщина', nameEn: 'Chernihiv region', symbol: '📚' },
+      { id: 11, name: 'Черкащина', nameEn: 'Cherkasy region', symbol: '🎭' },
+      { id: 12, name: 'Крим', nameEn: 'Crimea', symbol: '🏖️' },
+      { id: 13, name: 'Донеччина', nameEn: 'Donetsk region', symbol: '⛏️' },
+      { id: 14, name: 'Луганщина', nameEn: 'Luhansk region', symbol: '🌻' }
     ];
     
     let currentRegion = null;
@@ -379,67 +447,55 @@
     let hubLogo = document.getElementById('hubLogo');
     let sound = document.getElementById('scanSound');
     
-    // Функція запуску сканування
     function startScan(event) {
-      // Запобігаємо подвійному спрацюванню на мобільних
       if (event) event.preventDefault();
-      
-      // Якщо сканування вже активне, ігноруємо
       if (scanLine.style.display === 'block') return;
       
-      // Ховаємо попередні кнопки, якщо вони були
       resetBtn.style.display = 'none';
       continueBtn.style.display = 'none';
       regionDisplay.innerHTML = '';
       
-      // Показуємо лінію, додаємо клас анімації
       scanLine.style.display = 'block';
       scanArea.classList.add('scanning');
-      messageEl.innerHTML = '<span style="color: var(--gold-light);">🔮 Аналіз ДНК-коду... Зачекайте</span>';
       
-      // Плавна поява логотипу (від 0.7 до 1.0 за 2с)
+      const lang = localStorage.getItem('appLanguage') || 'uk';
+      messageEl.innerHTML = `<span style="color: var(--gold-light);">${translations[lang].scanning}</span>`;
+      
       hubLogo.style.opacity = '1';
       
-      // Відтворюємо звук (якщо підтримується)
       if (sound) {
         sound.currentTime = 0;
         sound.play().catch(e => console.log('Аудіо не відтворено'));
       }
       
-      // Через 5 секунд завершуємо сканування
       if (scanTimer) clearTimeout(scanTimer);
       scanTimer = setTimeout(() => {
-        // Вимикаємо лінію
         scanLine.style.display = 'none';
         scanArea.classList.remove('scanning');
-        // Повертаємо прозорість логотипу до початкової
         hubLogo.style.opacity = '0.7';
         
-        // Випадковий регіон
         const randomIndex = Math.floor(Math.random() * REGIONS.length);
         currentRegion = REGIONS[randomIndex];
         
-        // Показуємо результат
-        messageEl.innerHTML = `<span style="color: var(--gold-magic);">✅ ДНК ідентифіковано!</span>`;
-        regionDisplay.innerHTML = `${currentRegion.symbol} ${currentRegion.name}`;
+        const currentLang = localStorage.getItem('appLanguage') || 'uk';
+        const regionName = currentLang === 'uk' ? currentRegion.name : currentRegion.nameEn;
+        messageEl.innerHTML = `<span style="color: var(--gold-magic);">${translations[currentLang].success}</span>`;
+        regionDisplay.innerHTML = `${currentRegion.symbol} ${regionName}`;
         
-        // Зберігаємо в localStorage
         localStorage.setItem('pysanka_region', JSON.stringify({
           id: currentRegion.id,
           name: currentRegion.name,
+          nameEn: currentRegion.nameEn,
           symbol: currentRegion.symbol
         }));
         
-        // Показуємо кнопки
         resetBtn.style.display = 'inline-block';
         continueBtn.style.display = 'inline-block';
         
-        // Вібро (якщо є)
         if (navigator.vibrate) navigator.vibrate([100, 50, 200]);
-      }, 5000); // Збільшено до 5 секунд
+      }, 5000);
     }
     
-    // Скидання сканера
     function resetScan() {
       scanLine.style.display = 'none';
       scanArea.classList.remove('scanning');
@@ -451,21 +507,23 @@
       if (scanTimer) clearTimeout(scanTimer);
     }
     
-    // Перевірка на вже збережений регіон при завантаженні
     window.addEventListener('load', function() {
+      const savedLang = localStorage.getItem('appLanguage') || 'uk';
+      setLanguage(savedLang);
+      
       const saved = localStorage.getItem('pysanka_region');
       if (saved) {
         try {
           const region = JSON.parse(saved);
-          messageEl.innerHTML = `<span style="color: var(--gold-magic);">✅ ДНК ідентифіковано!</span>`;
-          regionDisplay.innerHTML = `${region.symbol || '🥚'} ${region.name}`;
+          const currentLang = localStorage.getItem('appLanguage') || 'uk';
+          const regionName = currentLang === 'uk' ? region.name : (region.nameEn || region.name);
+          messageEl.innerHTML = `<span style="color: var(--gold-magic);">${translations[currentLang].success}</span>`;
+          regionDisplay.innerHTML = `${region.symbol || '🥚'} ${regionName}`;
           resetBtn.style.display = 'inline-block';
           continueBtn.style.display = 'inline-block';
         } catch (e) {}
       }
     });
   </script>
-
 </body>
 </html>
-
