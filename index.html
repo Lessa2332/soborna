@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Соборна Писанка | Код предків</title>
+  <title data-i18n="title">Соборна Писанка | Код предків</title>
   
-  <!-- Open Graph мета-теги -->
+  <!-- Open Graph мета-теги (залишаємо без змін) -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://lessa232.github.io/pysanka/" />
   <meta property="og:title" content="🥚 СОБОРНА ПИСАНКА 🥚" />
@@ -55,6 +55,38 @@
       color: var(--text-light);
       line-height: 1.6;
       background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 20 L20 0 L40 20 L20 40 Z' fill='none' stroke='%23d4a373' stroke-width='0.5' opacity='0.1'/%3E%3C/svg%3E");
+    }
+    
+    /* ============ КНОПКА ПЕРЕМИКАННЯ МОВИ ============ */
+    .lang-switcher {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      display: flex;
+      gap: 8px;
+    }
+    .lang-btn {
+      background: transparent;
+      border: 2px solid var(--gold-accent);
+      color: var(--gold-accent);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lang-btn.active {
+      background: var(--gold-accent);
+      color: var(--bg-dark);
+    }
+    .lang-btn:active {
+      transform: scale(0.95);
     }
     
     /* ============ HERO ============ */
@@ -358,10 +390,10 @@
     }
     
     .footer img {
-  height: 40px;
-  margin-bottom: 15px;
-  opacity: 0.9;
-}
+      height: 40px;
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
     
     .footer p {
       margin: 8px 0;
@@ -371,10 +403,7 @@
     
     /* ============ МЕДІА-ЗАПИТИ ============ */
     @media (min-width: 768px) {
-      .hero {
-        padding: 60px 20px;
-        border-radius: 0 0 60px 60px;
-      }
+      .hero { padding: 60px 20px; border-radius: 0 0 60px 60px; }
       .hero h1 { font-size: 48px; }
       .hero p { font-size: 22px; }
       .egg-animation { width: 150px; height: 210px; }
@@ -443,12 +472,18 @@
 </head>
 <body>
   <div class="hero">
+    <!-- Кнопки перемикання мови -->
+    <div class="lang-switcher">
+      <button class="lang-btn" data-lang="uk" onclick="setLanguage('uk')">UA</button>
+      <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+    </div>
+  
     <div class="egg-animation"></div>
-    <h1>🥚 СОБОРНА ПИСАНКА 🥚</h1>
-    <p>
+    <h1 data-i18n="hero.title">🥚 СОБОРНА ПИСАНКА 🥚</h1>
+    <p data-i18n="hero.subtitle">
       Інтерактивна AR-подорож у світ духовних координат
     </p>
-    <div class="region-count">🇺🇦 Україна</div>
+    <div class="region-count" data-i18n="hero.region">🇺🇦 Україна</div>
   </div>
   
   <div class="steps">
@@ -456,8 +491,8 @@
       <div class="step-number">1</div>
       <div class="step-icon">🔮</div>
       <div class="step-content">
-        <h3>Поклик предків</h3>
-        <p>Дізнайся свій ДНК-код</p>
+        <h3 data-i18n="step1.title">Поклик предків</h3>
+        <p data-i18n="step1.desc">Дізнайся свій ДНК-код</p>
       </div>
     </div>
     
@@ -465,8 +500,8 @@
       <div class="step-number">2</div>
       <div class="step-icon">👆</div>
       <div class="step-content">
-        <h3>На долоні</h3>
-        <p>Керуй жестами</p>
+        <h3 data-i18n="step2.title">На долоні</h3>
+        <p data-i18n="step2.desc">Керуй жестами</p>
       </div>
     </div>
     
@@ -474,8 +509,8 @@
       <div class="step-number">3</div>
       <div class="step-icon">⚡</div>
       <div class="step-content">
-        <h3>Передай енергію</h3>
-        <p>Залиш своє ім'я на карті</p>
+        <h3 data-i18n="step3.title">Передай енергію</h3>
+        <p data-i18n="step3.desc">Залиш своє ім'я на карті</p>
       </div>
     </div>
     
@@ -483,26 +518,26 @@
       <div class="step-number">4</div>
       <div class="step-icon">🥚</div>
       <div class="step-content">
-        <h3>Соборність</h3>
-        <p>Побач єднання всіх регіонів</p>
+        <h3 data-i18n="step4.title">Соборність</h3>
+        <p data-i18n="step4.desc">Побач єднання всіх регіонів</p>
       </div>
     </div>
   </div>
   
   <!-- Статистика з localStorage -->
   <div class="stats-banner" id="statsBanner" style="display: none;">
-    <span id="participantsCount">0</span> учасників уже долучилися до Соборної Писанки!
+    <span id="participantsCount">0</span> <span data-i18n="stats.joined">учасників уже долучилися до Соборної Писанки!</span>
   </div>
   
   <div class="qr-section">
-    <h2>🥚 Скануй для участі</h2>
+    <h2 data-i18n="qr.title">🥚 Скануй для участі</h2>
     <div class="qr-code">
       <img src="qr-code.png" alt="QR-код">
     </div>
-    <p>
+    <p data-i18n="qr.desc">
       Наведи камеру смартфона, щоб розпочати подорож
     </p>
-    <button class="btn" onclick="window.location.href='phase1.html'">
+    <button class="btn" onclick="window.location.href='phase1.html'" data-i18n="qr.button">
       🥚 Почати подорож
     </button>
   </div>
@@ -510,11 +545,105 @@
   <div class="footer">
     <div class="footer-logo">🥚</div>
     <img src="assets/logo-museum.png" alt="Хаб Писанкарство">
-    <p>Проєкт створено для ХАБ Писанкарство</p>
-    <p>© 2025 | SmartLessa | Олеся Бохонок</p>
+    <p data-i18n="footer.project">Проєкт створено для ХАБ Писанкарство</p>
+    <p data-i18n="footer.copyright">© 2025 | SmartLessa | Олеся Бохонок</p>
   </div>
   
   <script>
+    // ============ ПЕРЕКЛАДИ ============
+    const translations = {
+      uk: {
+        title: 'Соборна Писанка | Код предків',
+        'hero.title': '🥚 СОБОРНА ПИСАНКА 🥚',
+        'hero.subtitle': 'Інтерактивна AR-подорож у світ духовних координат',
+        'hero.region': '🇺🇦 Україна',
+        'step1.title': 'Поклик предків',
+        'step1.desc': 'Дізнайся свій ДНК-код',
+        'step2.title': 'На долоні',
+        'step2.desc': 'Керуй жестами',
+        'step3.title': 'Передай енергію',
+        'step3.desc': 'Залиш своє ім\'я на карті',
+        'step4.title': 'Соборність',
+        'step4.desc': 'Побач єднання всіх регіонів',
+        'stats.joined': 'учасників уже долучилися до Соборної Писанки!',
+        'qr.title': '🥚 Скануй для участі',
+        'qr.desc': 'Наведи камеру смартфона, щоб розпочати подорож',
+        'qr.button': '🥚 Почати подорож',
+        'footer.project': 'Проєкт створено для ХАБ Писанкарство',
+        'footer.copyright': '© 2025 | SmartLessa | Олеся Бохонок'
+      },
+      en: {
+        title: 'Cathedral Pysanka | Ancestral Code',
+        'hero.title': '🥚 CATHEDRAL PYSANKA 🥚',
+        'hero.subtitle': 'Interactive AR journey into the world of spiritual coordinates',
+        'hero.region': '🇺🇦 Ukraine',
+        'step1.title': 'Call of Ancestors',
+        'step1.desc': 'Discover your DNA code',
+        'step2.title': 'On the Palm',
+        'step2.desc': 'Control with gestures',
+        'step3.title': 'Transfer Energy',
+        'step3.desc': 'Leave your name on the map',
+        'step4.title': 'Unity',
+        'step4.desc': 'See the unity of all regions',
+        'stats.joined': 'participants have already joined the Cathedral Pysanka!',
+        'qr.title': '🥚 Scan to participate',
+        'qr.desc': 'Point your smartphone camera to start the journey',
+        'qr.button': '🥚 Start Journey',
+        'footer.project': 'Project created for HUB Pysankarstvo',
+        'footer.copyright': '© 2025 | SmartLessa | Olesya Bokhonok'
+      }
+    };
+
+    // ============ ФУНКЦІЇ ДЛЯ МОВИ ============
+    function setLanguage(lang) {
+      localStorage.setItem('appLanguage', lang);
+      applyLanguage(lang);
+      // Оновлюємо активний стан кнопок
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+    }
+
+    function applyLanguage(lang) {
+      const elements = document.querySelectorAll('[data-i18n]');
+      elements.forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+          if (el.tagName === 'TITLE') {
+            el.textContent = translations[lang][key];
+          } else {
+            el.textContent = translations[lang][key];
+          }
+        }
+      });
+    }
+
+    // Завантажуємо збережену мову при старті
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedLang = localStorage.getItem('appLanguage') || 'uk';
+      setLanguage(savedLang);
+      
+      // Інша логіка (статистика, регіон тощо) залишається без змін
+      updateStats();
+      checkRegion();
+      detectDevice();
+      
+      const footerLogo = document.querySelector('.footer-logo');
+      if (footerLogo) {
+        footerLogo.addEventListener('dblclick', function() {
+          resetAllData();
+        });
+      }
+      
+      let resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+          detectDevice();
+        }, 250);
+      });
+    });
+
     // ============ СТАТИСТИКА ============
     function updateStats() {
       try {
@@ -530,7 +659,6 @@
       }
     }
     
-    // ============ ПЕРЕВІРКА РЕГІОНІВ ============
     function checkRegion() {
       const savedRegion = localStorage.getItem('pysanka_region');
       if (savedRegion) {
@@ -541,7 +669,6 @@
       }
     }
     
-    // ============ ОЧИЩЕННЯ ДАНИХ ============
     function resetAllData() {
       if (confirm('Очистити всі дані про учасників?')) {
         localStorage.removeItem('pysanka_participants');
@@ -550,7 +677,6 @@
       }
     }
     
-    // ============ ВИЗНАЧЕННЯ ТИПУ ПРИСТРОЮ ============
     function detectDevice() {
       const width = window.innerWidth;
       if (width < 768) {
@@ -564,31 +690,6 @@
         document.body.classList.add('desktop-device');
       }
     }
-    
-    // ============ ЗАПУСК ============
-    document.addEventListener('DOMContentLoaded', function() {
-      updateStats();
-      checkRegion();
-      detectDevice();
-      
-      // Додаємо кнопку скидання (подвійний клік на лого)
-      const footerLogo = document.querySelector('.footer-logo');
-      if (footerLogo) {
-        footerLogo.addEventListener('dblclick', function() {
-          resetAllData();
-        });
-      }
-      
-      // Додаємо обробник зміни розміру вікна
-      let resizeTimer;
-      window.addEventListener('resize', function() {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
-          detectDevice();
-        }, 250);
-      });
-    });
   </script>
 </body>
 </html>
-
