@@ -44,11 +44,11 @@
       height: 100%;
     }
 
-    /* Кнопка мови */
+    /* Кнопка мови - ліворуч */
     .lang-switcher {
       position: fixed;
       top: 20px;
-      right: 20px;
+      left: 20px;
       z-index: 200;
       display: flex;
       gap: 8px;
@@ -355,7 +355,7 @@
   </style>
 </head>
 <body>
-  <!-- Кнопки мови -->
+  <!-- Кнопки мови (ліворуч) -->
   <div class="lang-switcher">
     <button class="lang-btn" data-lang="uk" onclick="setLanguage('uk')">UA</button>
     <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
@@ -437,9 +437,10 @@
       if (toastText.textContent.includes('Новий') || toastText.textContent.includes('New')) {
         toastText.textContent = translations[lang].toastNew;
       }
+      // Оновлюємо плейсхолдери та інші динамічні елементи, якщо потрібно
     }
 
-    // ============ ІНША ЛОГІКА (залишається майже без змін) ============
+    // ============ ІНША ЛОГІКА ============
     const DASHBOARD_CONFIG = {
       SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzTiw1e9oT1ld1rh6wJXpt2CKvZrigIc0DDGrX_FmfDLZ1u-VdlzIGKVzpV6uY0BYNW/exec',
       TOKEN: '1680max',
@@ -544,7 +545,7 @@
               showToast(translations[lang].toastAdded.replace('{count}', newFromServer.length));
             }
           } else {
-            // Дані актуальні
+            // Дані актуальні, можна показати "оновлено"
           }
         } else {
           console.log('Сервер повернув помилку:', result.error);
