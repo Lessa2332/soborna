@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>🥚 Етап 2: Оживи писанку | Соборна Писанка</title>
+  <title data-i18n="title">🥚 Етап 2: Оживи писанку | Соборна Писанка</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   
   <!-- Підключення спільної теми -->
@@ -62,11 +62,41 @@
       display: block; 
     }
   
+    /* ============ КНОПКА ПЕРЕМИКАННЯ МОВИ ============ */
+    .lang-switcher {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 250;
+      display: flex;
+      gap: 8px;
+    }
+    .lang-btn {
+      background: rgba(42, 0, 62, 0.8);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--gold-magic);
+      color: var(--gold-magic);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lang-btn.active {
+      background: var(--gold-magic);
+      color: var(--magic-purple-dark);
+    }
+  
     /* ============ КНОПКА ПЕРЕМИКАННЯ КАМЕРИ ============ */
     .camera-toggle {
       position: fixed;
       top: 20px;
-      right: 80px; /* зміщено ліворуч, щоб звільнити місце для кнопки підказок */
+      right: 80px;
       z-index: 200;
       background: rgba(42, 0, 62, 0.8);
       backdrop-filter: blur(10px);
@@ -130,7 +160,7 @@
     .hint-panel {
       position: fixed;
       top: 0;
-      right: -300px; /* спочатку прихована */
+      right: -300px;
       width: 280px;
       height: 100%;
       background: rgba(42, 0, 62, 0.95);
@@ -407,19 +437,19 @@
   
     /* ============ ВУЖЧІ КНОПКИ ТА ПЕРЕМІЩЕННЯ ВПРАВО ВНИЗ (оновлення) ============ */
     .btn-next {
-      padding: 12px 30px; /* зменшено горизонтальні відступи */
-      font-size: 24px;    /* трохи менший шрифт */
-      left: auto;         /* скасовуємо центрування */
-      right: 30px;        /* притискаємо до правого краю */
+      padding: 12px 30px;
+      font-size: 24px;
+      left: auto;
+      right: 30px;
       bottom: 40px;
-      transform: none;    /* прибираємо трансформацію */
+      transform: none;
     }
     
     .btn-next.secondary {
       padding: 10px 20px;
       font-size: 18px;
       right: 30px;
-      bottom: 120px;      /* залишається вище основної кнопки */
+      bottom: 120px;
       left: auto;
       transform: none;
     }
@@ -529,7 +559,6 @@
       100% { opacity: 0; }
     }
 
-    /* Магічні частинки (для анімацій) */
     .magic-particle {
       position: absolute;
       width: 4px;
@@ -546,8 +575,16 @@
       100% { transform: translate(var(--tx, 50px), var(--ty, -50px)) scale(0); opacity: 0; }
     }
     
-    /* Адаптація для мобільних */
     @media (max-width: 600px) {
+      .lang-switcher {
+        top: 10px;
+        left: 10px;
+      }
+      .lang-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
+      }
       .camera-toggle {
         right: 70px;
         padding: 6px 12px;
@@ -577,14 +614,20 @@
   </style>
 </head>
 <body>
+  <!-- Кнопки мови -->
+  <div class="lang-switcher">
+    <button class="lang-btn" data-lang="uk" onclick="setLanguage('uk')">UA</button>
+    <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+  </div>
+
   <div id="loading">
     <div class="loader"></div>
-    <div style="font-size: 2.2em; margin-bottom: 10px;">🥚 Чарівна писанка прокидається...</div>
+    <div id="loadingTitle" style="font-size: 2.2em; margin-bottom: 10px;" data-i18n="loading.title">🥚 Чарівна писанка прокидається...</div>
     <div class="loading-progress">
       <div class="loading-bar" id="loadingBar"></div>
     </div>
-    <div class="loading-status" id="loadingStatus">Завантаження магічної моделі...</div>
-    <p style="margin-top: 30px; color: var(--gold-light); font-size: 18px;">Покажи долоню - і станеться диво!</p>
+    <div class="loading-status" id="loadingStatus" data-i18n="loading.status">Завантаження магічної моделі...</div>
+    <p id="loadingHint" style="margin-top: 30px; color: var(--gold-light); font-size: 18px;" data-i18n="loading.hint">Покажи долоню - і станеться диво!</p>
   </div>
   
   <video id="video" playsinline muted></video>
@@ -592,7 +635,7 @@
   
   <!-- Кнопка перемикання камери -->
   <div class="camera-toggle" id="cameraToggleBtn" onclick="toggleCamera()">
-    <span>📷</span> <span>Змінити камеру</span>
+    <span>📷</span> <span data-i18n="cameraToggle">Змінити камеру</span>
   </div>
   
   <!-- Кнопка відкриття панелі підказок -->
@@ -603,49 +646,49 @@
   <!-- Виїздна панель підказок -->
   <div class="hint-panel" id="hintPanel">
     <div class="hint-panel-close" onclick="toggleHintPanel()">✕</div>
-    <div class="hint-panel-title">Магія жестів</div>
+    <div class="hint-panel-title" data-i18n="hint.title">Магія жестів</div>
     
     <div class="hint-panel-item">
       <div class="hint-panel-icon">👋</div>
       <div class="hint-panel-text">
-        <strong>Покажи долоню</strong>
-        Писанка з'явиться і слідуватиме за твоєю рукою
+        <strong data-i18n="hint.palm.title">Покажи долоню</strong>
+        <span data-i18n="hint.palm.desc">Писанка з'явиться і слідуватиме за твоєю рукою</span>
       </div>
     </div>
     
     <div class="hint-panel-item">
       <div class="hint-panel-icon">✊</div>
       <div class="hint-panel-text">
-        <strong>Стисни кулак</strong>
-        Писанка сховається, розтисни – з'явиться знову
+        <strong data-i18n="hint.fist.title">Стисни кулак</strong>
+        <span data-i18n="hint.fist.desc">Писанка сховається, розтисни – з'явиться знову</span>
       </div>
     </div>
     
     <div class="hint-panel-item">
       <div class="hint-panel-icon">🤏</div>
       <div class="hint-panel-text">
-        <strong>Розсувай пальці</strong>
-        Великий та вказівний – змінюй розмір писанки
+        <strong data-i18n="hint.spread.title">Розсувай пальці</strong>
+        <span data-i18n="hint.spread.desc">Великий та вказівний – змінюй розмір писанки</span>
       </div>
     </div>
     
     <div class="hint-panel-item">
       <div class="hint-panel-icon">✌️</div>
       <div class="hint-panel-text">
-        <strong>Два пальці</strong>
-        Вказівний та середній – обертай писанку
+        <strong data-i18n="hint.two.title">Два пальці</strong>
+        <span data-i18n="hint.two.desc">Вказівний та середній – обертай писанку</span>
       </div>
     </div>
   </div>
   
   <div id="regionInfo"></div>
-  <div id="handIndicator"><span>👋</span> Покажи долоню!</div>
+  <div id="handIndicator"><span>👋</span> <span data-i18n="handIndicator">Покажи долоню!</span></div>
   <div id="gestureFeedback"></div>
-  <div id="lightingWarning">💡 Увімкни світло для кращого розпізнавання</div>
+  <div id="lightingWarning" data-i18n="lightingWarning">💡 Увімкни світло для кращого розпізнавання</div>
   
   <!-- Touch fallback -->
   <div id="touchFallback">
-    <div>👆 Торкайся для керування</div>
+    <div data-i18n="touchFallback.title">👆 Торкайся для керування</div>
     <div class="touch-controls">
       <button class="touch-btn" onclick="manualScale('in')">🔍+</button>
       <button class="touch-btn" onclick="manualScale('out')">🔍-</button>
@@ -653,11 +696,11 @@
     </div>
   </div>
   
-  <button class="btn-next" id="nextBtn" onclick="goToNextPhase()">
+  <button class="btn-next" id="nextBtn" onclick="goToNextPhase()" data-i18n="nextBtn">
     ✨ ДАЛІ ✨
   </button>
   
-  <button class="btn-next secondary" id="fallbackBtn" onclick="enableTouchMode()" style="display: none;">
+  <button class="btn-next secondary" id="fallbackBtn" onclick="enableTouchMode()" style="display: none;" data-i18n="fallbackBtn">
     👆 Touch mode
   </button>
   
@@ -667,22 +710,138 @@
     import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
     import { FilesetResolver, HandLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm";
 
-    // ============ 14 РЕГІОНІВ ============
+    // ============ ПЕРЕКЛАДИ ============
+    const translations = {
+      uk: {
+        title: '🥚 Етап 2: Оживи писанку | Соборна Писанка',
+        'loading.title': '🥚 Чарівна писанка прокидається...',
+        'loading.status': 'Завантаження магічної моделі...',
+        'loading.hint': 'Покажи долоню - і станеться диво!',
+        cameraToggle: 'Змінити камеру',
+        'hint.title': 'Магія жестів',
+        'hint.palm.title': 'Покажи долоню',
+        'hint.palm.desc': 'Писанка з\'явиться і слідуватиме за твоєю рукою',
+        'hint.fist.title': 'Стисни кулак',
+        'hint.fist.desc': 'Писанка сховається, розтисни – з\'явиться знову',
+        'hint.spread.title': 'Розсувай пальці',
+        'hint.spread.desc': 'Великий та вказівний – змінюй розмір писанки',
+        'hint.two.title': 'Два пальці',
+        'hint.two.desc': 'Вказівний та середній – обертай писанку',
+        handIndicator: 'Покажи долоню!',
+        lightingWarning: '💡 Увімкни світло для кращого розпізнавання',
+        'touchFallback.title': '👆 Торкайся для керування',
+        nextBtn: '✨ ДАЛІ ✨',
+        fallbackBtn: '👆 Touch mode',
+        // Динамічні повідомлення (для showGestureFeedback, showError)
+        feedbackReady: 'Час у подорож!',
+        feedbackPysankaReady: 'Чарівна писанка готова!',
+        feedbackScaleUp: 'Збільшено',
+        feedbackScaleDown: 'Зменшено',
+        feedbackRotate: 'Обертання',
+        feedbackFistHide: 'Писанка сховалась',
+        feedbackGreat: 'Чудово!',
+        feedbackTouchMode: 'Touch mode active',
+        feedbackZoomIn: 'Збільшено',
+        feedbackZoomOut: 'Зменшено',
+        errorNoCamera: 'Ваш браузер не підтримує камеру. Використовуйте touch mode',
+        errorCamera: 'Не вдалося запустити камеру. Спробуйте touch mode',
+        errorCameraSwitch: 'Не вдалося перемкнути камеру',
+        cameraSwitching: 'Перемикання камери...',
+        cameraStart: 'Запуск камери...',
+        threeInit: 'Ініціалізація 3D...',
+        handLoading: 'Завантаження розпізнавання рук...',
+        regionHelp: 'Твій історичний край'
+      },
+      en: {
+        title: '🥚 Stage 2: Bring the Pysanka to Life | Cathedral Pysanka',
+        'loading.title': '🥚 The magical pysanka is awakening...',
+        'loading.status': 'Loading magic model...',
+        'loading.hint': 'Show your palm - and magic will happen!',
+        cameraToggle: 'Switch camera',
+        'hint.title': 'Magic of Gestures',
+        'hint.palm.title': 'Show palm',
+        'hint.palm.desc': 'The pysanka appears and follows your hand',
+        'hint.fist.title': 'Make a fist',
+        'hint.fist.desc': 'The pysanka hides, open hand – appears again',
+        'hint.spread.title': 'Spread fingers',
+        'hint.spread.desc': 'Thumb and index – resize the pysanka',
+        'hint.two.title': 'Two fingers',
+        'hint.two.desc': 'Index and middle – rotate the pysanka',
+        handIndicator: 'Show your palm!',
+        lightingWarning: '💡 Turn on light for better recognition',
+        'touchFallback.title': '👆 Touch to control',
+        nextBtn: '✨ NEXT ✨',
+        fallbackBtn: '👆 Touch mode',
+        feedbackReady: 'Time to travel!',
+        feedbackPysankaReady: 'Magical pysanka is ready!',
+        feedbackScaleUp: 'Enlarged',
+        feedbackScaleDown: 'Reduced',
+        feedbackRotate: 'Rotation',
+        feedbackFistHide: 'Pysanka hidden',
+        feedbackGreat: 'Great!',
+        feedbackTouchMode: 'Touch mode active',
+        feedbackZoomIn: 'Zoomed in',
+        feedbackZoomOut: 'Zoomed out',
+        errorNoCamera: 'Your browser does not support camera. Use touch mode',
+        errorCamera: 'Failed to start camera. Try touch mode',
+        errorCameraSwitch: 'Failed to switch camera',
+        cameraSwitching: 'Switching camera...',
+        cameraStart: 'Starting camera...',
+        threeInit: 'Initializing 3D...',
+        handLoading: 'Loading hand recognition...',
+        regionHelp: 'Your historical land'
+      }
+    };
+
+    // ============ МОВНІ ФУНКЦІЇ ============
+    let currentLang = localStorage.getItem('appLanguage') || 'uk';
+
+    function t(key) {
+      return translations[currentLang] && translations[currentLang][key] ? translations[currentLang][key] : key;
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('appLanguage', lang);
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      applyLanguage();
+    }
+
+    function applyLanguage() {
+      // Оновлюємо всі елементи з data-i18n
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = t(key);
+      });
+      // Оновлюємо регіон, якщо він є
+      if (state.currentRegion) {
+        updateRegionInfo();
+      }
+      // Оновлюємо статуси завантаження, якщо вони ще показані
+      const loadingStatus = document.getElementById('loadingStatus');
+      if (loadingStatus && !loadingStatus.getAttribute('data-i18n-updated')) {
+        // вже оновлено через data-i18n
+      }
+    }
+
+    // ============ 14 РЕГІОНІВ (з nameEn) ============
     const REGIONS = [
-      { id: 1, name: 'Поділля', texture: 'assets/regions/1-podillya.png', symbol: '🌻' },
-      { id: 2, name: 'Полісся', texture: 'assets/regions/2-polissya.png', symbol: '🌲' },
-      { id: 3, name: 'Карпати', texture: 'assets/regions/3-carpathians.png', symbol: '🏔️' },
-      { id: 4, name: 'Київщина', texture: 'assets/regions/4-kyiv.png', symbol: '🏛️' },
-      { id: 5, name: 'Львівщина', texture: 'assets/regions/5-lviv.png', symbol: '🦁' },
-      { id: 6, name: 'Одещина', texture: 'assets/regions/6-odesa.png', symbol: '⚓' },
-      { id: 7, name: 'Харківщина', texture: 'assets/regions/7-kharkiv.png', symbol: '⚙️' },
-      { id: 8, name: 'Дніпропетровщина', texture: 'assets/regions/8-dnipro.png', symbol: '🌊' },
-      { id: 9, name: 'Полтавщина', texture: 'assets/regions/9-poltava.png', symbol: '🌾' },
-      { id: 10, name: 'Чернігівщина', texture: 'assets/regions/10-chernihiv.png', symbol: '📚' },
-      { id: 11, name: 'Черкащина', texture: 'assets/regions/11-cherkasy.png', symbol: '🎭' },
-      { id: 12, name: 'Крим', texture: 'assets/regions/12-crimea.png', symbol: '🏖️' },
-      { id: 13, name: 'Донеччина', texture: 'assets/regions/13-donetsk.png', symbol: '⛏️' },
-      { id: 14, name: 'Луганщина', texture: 'assets/regions/14-luhansk.png', symbol: '🌻' }
+      { id: 1, name: 'Поділля', nameEn: 'Podillia', texture: 'assets/regions/1-podillya.png', symbol: '🌻' },
+      { id: 2, name: 'Полісся', nameEn: 'Polissia', texture: 'assets/regions/2-polissya.png', symbol: '🌲' },
+      { id: 3, name: 'Карпати', nameEn: 'Carpathians', texture: 'assets/regions/3-carpathians.png', symbol: '🏔️' },
+      { id: 4, name: 'Київщина', nameEn: 'Kyiv region', texture: 'assets/regions/4-kyiv.png', symbol: '🏛️' },
+      { id: 5, name: 'Львівщина', nameEn: 'Lviv region', texture: 'assets/regions/5-lviv.png', symbol: '🦁' },
+      { id: 6, name: 'Одещина', nameEn: 'Odesa region', texture: 'assets/regions/6-odesa.png', symbol: '⚓' },
+      { id: 7, name: 'Харківщина', nameEn: 'Kharkiv region', texture: 'assets/regions/7-kharkiv.png', symbol: '⚙️' },
+      { id: 8, name: 'Дніпропетровщина', nameEn: 'Dnipro region', texture: 'assets/regions/8-dnipro.png', symbol: '🌊' },
+      { id: 9, name: 'Полтавщина', nameEn: 'Poltava region', texture: 'assets/regions/9-poltava.png', symbol: '🌾' },
+      { id: 10, name: 'Чернігівщина', nameEn: 'Chernihiv region', texture: 'assets/regions/10-chernihiv.png', symbol: '📚' },
+      { id: 11, name: 'Черкащина', nameEn: 'Cherkasy region', texture: 'assets/regions/11-cherkasy.png', symbol: '🎭' },
+      { id: 12, name: 'Крим', nameEn: 'Crimea', texture: 'assets/regions/12-crimea.png', symbol: '🏖️' },
+      { id: 13, name: 'Донеччина', nameEn: 'Donetsk region', texture: 'assets/regions/13-donetsk.png', symbol: '⛏️' },
+      { id: 14, name: 'Луганщина', nameEn: 'Luhansk region', texture: 'assets/regions/14-luhansk.png', symbol: '🌻' }
     ];
 
     // ============ МАГІЧНІ НАЛАШТУВАННЯ ============
@@ -712,7 +871,10 @@
       const savedRegion = localStorage.getItem('pysanka_region');
       if (savedRegion) {
         const parsed = JSON.parse(savedRegion);
+        // Знаходимо повний регіон з nameEn
         currentRegion = REGIONS.find(r => r.id === parsed.id) || REGIONS[0];
+        // Додаємо nameEn якщо його немає в parsed (для сумісності)
+        if (!parsed.nameEn) parsed.nameEn = currentRegion.nameEn;
       } else {
         currentRegion = REGIONS[Math.floor(Math.random() * REGIONS.length)];
       }
@@ -779,12 +941,18 @@
     let brightnessCheckInterval;
     let appInstance;
 
-    // ============ ФУНКЦІЯ ДЛЯ ПАНЕЛІ ПІДКАЗОК ============
+    // ============ ДОПОМІЖНІ ФУНКЦІЇ ============
+    function updateRegionInfo() {
+      if (!state.currentRegion) return;
+      const name = currentLang === 'uk' ? state.currentRegion.name : state.currentRegion.nameEn;
+      elements.regionInfo.style.display = 'block';
+      elements.regionInfo.innerHTML = `${state.currentRegion.symbol} ${name}`;
+    }
+
     window.toggleHintPanel = function() {
       elements.hintPanel.classList.toggle('open');
     };
 
-    // ============ ДОПОМІЖНІ ФУНКЦІЇ ============
     function createMagicParticles(count = 8, x, y) {
       for (let i = 0; i < count; i++) {
         setTimeout(() => {
@@ -821,7 +989,8 @@
       elements.lightingWarning.style.display = state.isLowLight ? 'block' : 'none';
     }
 
-    function showGestureFeedback(icon, text, duration = CONFIG.FEEDBACK_DURATION) {
+    function showGestureFeedback(icon, textKey, duration = CONFIG.FEEDBACK_DURATION) {
+      const text = t(textKey);
       elements.gestureFeedback.innerHTML = `<span style="font-size: 48px; margin-right: 15px;">${icon}</span>${text}`;
       elements.gestureFeedback.style.animation = 'feedbackShow 0.3s forwards';
       if (state.feedbackTimeout) clearTimeout(state.feedbackTimeout);
@@ -833,20 +1002,20 @@
       createMagicParticles(5);
     }
 
-    function showError(msg) {
+    function showError(msgKey) {
       elements.errorMessage.style.display = 'block';
-      elements.errorMessage.innerHTML = `❌ ${msg}<br><br>
+      elements.errorMessage.innerHTML = `❌ ${t(msgKey)}<br><br>
         <button onclick="location.reload()" 
           style="background:var(--gold-magic); color:var(--magic-purple-dark); border:none; 
                  padding:12px 24px; border-radius:40px; margin-top:15px; 
                  font-size:20px; font-weight:bold; cursor:pointer;">
-          Спробувати знову
+          ${t('errorRetry') || 'Спробувати знову'}
         </button>
         <button onclick="enableTouchMode()" 
           style="background:transparent; border:2px solid var(--gold-magic); 
                  color:var(--gold-magic); padding:10px 20px; border-radius:40px; 
                  margin-top:10px; font-size:16px; cursor:pointer;">
-          👆 Touch mode
+          👆 ${t('fallbackBtn')}
         </button>`;
     }
 
@@ -860,7 +1029,7 @@
         state.eggGroup.visible = true;
         state.eggGroup.position.set(0, 0, 0.1);
       }
-      showGestureFeedback('👆', 'Touch mode active', 2000);
+      showGestureFeedback('👆', 'feedbackTouchMode', 2000);
     };
 
     window.manualScale = function(direction) {
@@ -869,13 +1038,14 @@
       else newScale = Math.max(state.currentScale - 0.2, CONFIG.MIN_SCALE);
       state.currentScale = newScale;
       state.eggGroup.scale.set(newScale, newScale, newScale);
-      showGestureFeedback('🔍', direction === 'in' ? 'Збільшено' : 'Зменшено', 800);
+      const key = direction === 'in' ? 'feedbackZoomIn' : 'feedbackZoomOut';
+      showGestureFeedback('🔍', key, 800);
     };
 
     window.manualRotate = function() {
       state.currentRotationY += Math.PI / 4;
       state.eggGroup.rotation.y = state.currentRotationY;
-      showGestureFeedback('🔄', 'Обертання', 800);
+      showGestureFeedback('🔄', 'feedbackRotate', 800);
     };
 
     // ============ ПЕРЕМИКАННЯ КАМЕРИ ============
@@ -888,7 +1058,7 @@
       }
       
       elements.loading.style.display = 'flex';
-      elements.loadingStatus.textContent = 'Перемикання камери...';
+      elements.loadingStatus.textContent = t('cameraSwitching');
       
       try {
         await appInstance.setupCamera();
@@ -896,7 +1066,7 @@
         elements.video.style.display = 'block';
       } catch (err) {
         console.error('Помилка перемикання камери:', err);
-        showError('Не вдалося перемкнути камеру');
+        showError('errorCameraSwitch');
       }
     };
 
@@ -978,7 +1148,7 @@
       checkBrowserSupport() {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
           elements.fallbackBtn.style.display = 'block';
-          showError('Ваш браузер не підтримує камеру. Використовуйте touch mode');
+          showError('errorNoCamera');
           return false;
         }
         return true;
@@ -986,26 +1156,25 @@
       
       async init() {
         try {
-          elements.loadingStatus.textContent = 'Запуск камери...';
+          elements.loadingStatus.textContent = t('cameraStart');
           await this.setupCamera();
-          elements.loadingStatus.textContent = 'Ініціалізація 3D...';
+          elements.loadingStatus.textContent = t('threeInit');
           await this.initThreeJS();
-          elements.loadingStatus.textContent = 'Завантаження розпізнавання рук...';
+          elements.loadingStatus.textContent = t('handLoading');
           await this.initHandTracking();
           brightnessCheckInterval = setInterval(() => checkBrightness(elements.video), CONFIG.LIGHTING_CHECK_INTERVAL);
           this.hideLoading();
           this.startAnimation();
           
           if (state.currentRegion) {
-            elements.regionInfo.style.display = 'block';
-            elements.regionInfo.innerHTML = `${state.currentRegion.symbol} ${state.currentRegion.name}`;
+            updateRegionInfo();
           }
           
           setTimeout(() => {
             if (!state.buttonShown) {
               state.buttonShown = true;
               elements.nextBtn.style.display = 'block';
-              showGestureFeedback('🎉', 'Час у подорож!', 3000);
+              showGestureFeedback('🎉', 'feedbackReady', 3000);
             }
           }, CONFIG.SHOW_BUTTON_DELAY);
           
@@ -1018,7 +1187,7 @@
         } catch (error) {
           console.error('Помилка:', error);
           elements.fallbackBtn.style.display = 'block';
-          showError('Не вдалося запустити камеру. Спробуйте touch mode');
+          showError('errorCamera');
         }
       }
       
@@ -1215,7 +1384,7 @@
             if (state.eggGroup.visible) {
               state.eggGroup.visible = false;
               state.hiddenByFist = true;
-              showGestureFeedback('✊', 'Писанка сховалась', 800);
+              showGestureFeedback('✊', 'feedbackFistHide', 800);
             }
             return;
           }
@@ -1233,7 +1402,7 @@
             if (state.stableFrames >= CONFIG.STABLE_FRAMES_FOR_NEXT) {
               state.buttonShown = true;
               elements.nextBtn.style.display = 'block';
-              showGestureFeedback('🎉', 'Чарівна писанка готова!', 3000);
+              showGestureFeedback('🎉', 'feedbackPysankaReady', 3000);
             }
           }
         } else {
@@ -1298,14 +1467,14 @@
       applyGestures() {
         if (!state.eggGroup || !state.eggGroup.visible) return;
         if (state.gesture === 'open_palm' && state.prevGesture !== 'open_palm') {
-          showGestureFeedback('✋', 'Чудово!', 1000);
+          showGestureFeedback('✋', 'feedbackGreat', 1000);
         }
         if (state.gesture === 'spreading') {
           if (!state.isSpreading) {
             state.isSpreading = true;
             state.startSpreadDistance = GestureRecognizer.getThumbIndexDistance(state.landmarks);
             state.baseScale = state.currentScale;
-            showGestureFeedback('🤏', 'Зміна розміру', 2000);
+            showGestureFeedback('🤏', 'feedbackScale', 2000);
           }
           const currentDistance = GestureRecognizer.getThumbIndexDistance(state.landmarks);
           const deltaDistance = currentDistance - state.startSpreadDistance;
@@ -1321,7 +1490,7 @@
             state.isRotating = true;
             state.prevRotationAngle = GestureRecognizer.getTwoFingersAngle(state.landmarks);
             state.currentRotationY = state.eggGroup.rotation.y;
-            showGestureFeedback('🔄', 'Обертання', 2000);
+            showGestureFeedback('🔄', 'feedbackRotate', 2000);
           }
           const currentAngle = GestureRecognizer.getTwoFingersAngle(state.landmarks);
           const deltaAngle = currentAngle - state.prevRotationAngle;
@@ -1363,6 +1532,8 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
+      // Ініціалізуємо мову
+      setLanguage(currentLang);
       const app = new PisankaARApp();
       window.addEventListener('beforeunload', () => app.cleanup());
     });
